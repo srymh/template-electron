@@ -1,0 +1,9 @@
+/**
+ * styles.cssはshadcn/uiが自動生成するので変更したくない。
+ * そのためcustom.cssを作ることでグローバルに適用するカスタムスタイルを作成している。
+ */
+@layer base {
+  body {
+    @apply overflow-hidden;
+  }
+}
