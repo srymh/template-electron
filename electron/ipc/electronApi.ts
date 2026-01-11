@@ -10,6 +10,7 @@ import type { ThemeApi, THEME_API_KEY } from '../features/theme'
 import type { WebApi, WEB_API_KEY } from '../features/web'
 import type { McpApi, MCP_API_KEY } from '../features/mcp'
 import type { AiAgentApi, AI_AGENT_API_KEY } from '../features/aiAgent'
+import type { AiChatApi, AI_CHAT_API_KEY } from '../features/aiChat'
 import type { KakeiboApi, Kakeibo_API_KEY } from '../features/kakeibo'
 
 type ElectronRendererApi = {
@@ -22,6 +23,7 @@ export type ElectronMainApi = {
   [WEB_API_KEY]: WebApi
   [MCP_API_KEY]: McpApi
   [AI_AGENT_API_KEY]: AiAgentApi
+  [AI_CHAT_API_KEY]: AiChatApi
   [Kakeibo_API_KEY]: KakeiboApi
 }
 
@@ -84,6 +86,12 @@ export const electronApi = createElectronApi<
           chunk: useChannelAsEvent('aiAgent.on.chunk'),
           done: useChannelAsEvent('aiAgent.on.done'),
           error: useChannelAsEvent('aiAgent.on.error'),
+        },
+      },
+      aiChat: {
+        chat: useChannelAsInvoke('aiChat.chat'),
+        on: {
+          chunk: useChannelAsEvent('aiChat.on.chunk'),
         },
       },
       kakeibo: {

@@ -1,6 +1,7 @@
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
+import { aiDevtoolsPlugin } from '@tanstack/react-ai-devtools'
 
 import { Layout } from '../components/layout'
 
@@ -37,7 +38,11 @@ function Component() {
               render: <TanStackRouterDevtoolsPanel />,
             },
             TanStackQueryDevtools,
+            aiDevtoolsPlugin(),
           ]}
+          eventBusConfig={{
+            connectToServerBus: true, // おそらく意味がない
+          }}
         />
       )}
     </>

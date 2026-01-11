@@ -83,6 +83,10 @@ const data = {
           title: 'Chat',
           url: '/demo/chat',
         },
+        {
+          title: 'Chat(TanStack AI)',
+          url: '/demo/chat-t',
+        },
       ],
     },
     {
