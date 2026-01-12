@@ -14,8 +14,6 @@ const MODEL_NAME = import.meta.env.VITE_AI_AGENT_MODEL_NAME ?? '' // 使用す�
 const BASE_URL = import.meta.env.VITE_AI_AGENT_BASE_URL ?? '' // AIサーバーのベースURL
 const API_KEY = import.meta.env.VITE_AI_AGENT_API_KEY ?? '' // 必要に応じてAPIキーを設定
 
-console.log('AI Agent Config:', { MODEL_NAME, BASE_URL, API_KEY })
-
 const useAiAgent = () => {
   /**
    * AIエージェントの初期化状態
