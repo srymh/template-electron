@@ -4,6 +4,7 @@ import { getThemeApi } from '../features/theme'
 import { getWebApi } from '../features/web'
 import { MCP_API_KEY, getMcpApi } from '../features/mcp'
 import { AI_AGENT_API_KEY, getAiAgentApi } from '../features/aiAgent'
+import { getAiChatApi } from '../features/aiChat'
 import { Kakeibo_API_KEY, getKakeiboApi } from '../features/kakeibo'
 
 import type { WebContents } from 'electron'
@@ -29,6 +30,7 @@ export const registerIpc = createRegisterIpc<ElectronMainApi, Context>(
     const aiAgent = getAiAgentApi(
       (webContents: WebContents) => getContext(webContents)[AI_AGENT_API_KEY],
     )
+    const aiChat = getAiChatApi()
     const kakeibo = getKakeiboApi(
       (webContents: WebContents) => getContext(webContents)[Kakeibo_API_KEY],
     )
@@ -79,6 +81,8 @@ export const registerIpc = createRegisterIpc<ElectronMainApi, Context>(
       'aiAgent.on.chunk': { type: 'event', addEventListener: aiAgent.on.chunk },
       'aiAgent.on.done': { type: 'event', addEventListener: aiAgent.on.done },
       'aiAgent.on.error': { type: 'event', addEventListener: aiAgent.on.error },
+      'aiChat.chat': { type: 'invoke', method: aiChat.chat },
+      'aiChat.on.chunk': { type: 'event', addEventListener: aiChat.on.chunk },
       'kakeibo.entries': { type: 'invoke', method: kakeibo.entries },
     })
   },

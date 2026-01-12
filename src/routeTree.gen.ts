@@ -17,6 +17,7 @@ import { Route as DemoTanstackQueryRouteImport } from './routes/demo.tanstack-qu
 import { Route as DemoTableRouteImport } from './routes/demo.table'
 import { Route as DemoKakeiboRouteImport } from './routes/demo.kakeibo'
 import { Route as DemoFsRouteImport } from './routes/demo.fs'
+import { Route as DemoChatTRouteImport } from './routes/demo.chat-t'
 import { Route as DemoChatRouteImport } from './routes/demo.chat'
 
 const DemoRouteRoute = DemoRouteRouteImport.update({
@@ -59,6 +60,11 @@ const DemoFsRoute = DemoFsRouteImport.update({
   path: '/fs',
   getParentRoute: () => DemoRouteRoute,
 } as any)
+const DemoChatTRoute = DemoChatTRouteImport.update({
+  id: '/chat-t',
+  path: '/chat-t',
+  getParentRoute: () => DemoRouteRoute,
+} as any)
 const DemoChatRoute = DemoChatRouteImport.update({
   id: '/chat',
   path: '/chat',
@@ -69,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/demo': typeof DemoRouteRouteWithChildren
   '/demo/chat': typeof DemoChatRoute
+  '/demo/chat-t': typeof DemoChatTRoute
   '/demo/fs': typeof DemoFsRoute
   '/demo/kakeibo': typeof DemoKakeiboRoute
   '/demo/table': typeof DemoTableRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/demo/chat': typeof DemoChatRoute
+  '/demo/chat-t': typeof DemoChatTRoute
   '/demo/fs': typeof DemoFsRoute
   '/demo/kakeibo': typeof DemoKakeiboRoute
   '/demo/table': typeof DemoTableRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/demo': typeof DemoRouteRouteWithChildren
   '/demo/chat': typeof DemoChatRoute
+  '/demo/chat-t': typeof DemoChatTRoute
   '/demo/fs': typeof DemoFsRoute
   '/demo/kakeibo': typeof DemoKakeiboRoute
   '/demo/table': typeof DemoTableRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
     | '/'
     | '/demo'
     | '/demo/chat'
+    | '/demo/chat-t'
     | '/demo/fs'
     | '/demo/kakeibo'
     | '/demo/table'
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/demo/chat'
+    | '/demo/chat-t'
     | '/demo/fs'
     | '/demo/kakeibo'
     | '/demo/table'
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
     | '/'
     | '/demo'
     | '/demo/chat'
+    | '/demo/chat-t'
     | '/demo/fs'
     | '/demo/kakeibo'
     | '/demo/table'
@@ -196,6 +208,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoFsRouteImport
       parentRoute: typeof DemoRouteRoute
     }
+    '/demo/chat-t': {
+      id: '/demo/chat-t'
+      path: '/chat-t'
+      fullPath: '/demo/chat-t'
+      preLoaderRoute: typeof DemoChatTRouteImport
+      parentRoute: typeof DemoRouteRoute
+    }
     '/demo/chat': {
       id: '/demo/chat'
       path: '/chat'
@@ -208,6 +227,7 @@ declare module '@tanstack/react-router' {
 
 interface DemoRouteRouteChildren {
   DemoChatRoute: typeof DemoChatRoute
+  DemoChatTRoute: typeof DemoChatTRoute
   DemoFsRoute: typeof DemoFsRoute
   DemoKakeiboRoute: typeof DemoKakeiboRoute
   DemoTableRoute: typeof DemoTableRoute
@@ -218,6 +238,7 @@ interface DemoRouteRouteChildren {
 
 const DemoRouteRouteChildren: DemoRouteRouteChildren = {
   DemoChatRoute: DemoChatRoute,
+  DemoChatTRoute: DemoChatTRoute,
   DemoFsRoute: DemoFsRoute,
   DemoKakeiboRoute: DemoKakeiboRoute,
   DemoTableRoute: DemoTableRoute,
