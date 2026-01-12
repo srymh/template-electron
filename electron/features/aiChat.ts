@@ -35,13 +35,6 @@ export function getAiChatApi(): WithWebContentsApi<AiChatApi> {
       const channel = createResponseChannel('aiChat.on.chunk')
 
       try {
-        // API key が必要なモデルに対応しておらず、使用不可。
-        // const gpt20CloudAdapter = createOllamaChat(
-        //   'gpt-oss:20b-cloud',
-        //   'http://localhost:11434',
-        //   'ollama-cloud-model-api-key', // API key はサポートされていない！
-        // )
-
         const filteredMessages: ModelMessage<string>[] = []
         for (const msg of messages) {
           if (typeof msg.content === 'string') {
@@ -55,7 +48,10 @@ export function getAiChatApi(): WithWebContentsApi<AiChatApi> {
         }
 
         const stream = chat({
-          adapter: createOllamaChat('qwen3:1.7b', 'http://localhost:11434'),
+          adapter: createOllamaChat(
+            'gpt-oss:20b-cloud',
+            'http://localhost:11434',
+          ),
           messages: filteredMessages,
         })
 
