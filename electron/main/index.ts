@@ -22,10 +22,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 // │ │ └── index.html
 // │ │
 // │ ├─┬ dist-electron
-// │ │ ├── main.js
-// │ │ └── preload.mjs
+// │ │ ├─┬ main
+// │ │ │ └── index.js
+// │ │ └─┬ preload
+// │ │   └── index.mjs
 // │
-process.env.APP_ROOT = path.join(__dirname, '..')
+process.env.APP_ROOT = path.join(__dirname, '..', '..')
 
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 export const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
@@ -47,7 +49,7 @@ function createWindow() {
   const wind = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
-      preload: path.join(__dirname, 'preload.mjs'),
+      preload: path.join(__dirname, '..', 'preload', 'index.mjs'),
     },
   })
   win = wind
