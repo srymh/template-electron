@@ -10,8 +10,10 @@ declare namespace NodeJS {
      * │ │ └── index.html
      * │ │
      * │ ├─┬ dist-electron
-     * │ │ ├── main.js
-     * │ │ └── preload.js
+     * │ │ ├─┬ main
+     * │ │ │ └── index.js
+     * │ │ └─┬ preload
+     * │ │   └── index.mjs
      * │
      * ```
      */
@@ -21,7 +23,7 @@ declare namespace NodeJS {
   }
 }
 
-// Used in Renderer process, expose in `preload.ts`
+// Used in Renderer process, expose in `preload/index.ts`
 interface Window {
-  electronApi: import('./ipc/electronApi').ElectronApi
+  electronApi: import('./main/ipc/electronApi').ElectronApi
 }

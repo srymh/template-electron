@@ -8,5 +8,4 @@ package.json
 prettier.config.js
 README.md
 tsconfig.json
-vite.config.ts
 src/components/ui/**
