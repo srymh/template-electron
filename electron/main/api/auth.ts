@@ -1,8 +1,8 @@
 import type { WebContents } from 'electron'
 
 import type { ApiInterface, WithWebContentsApi } from '../lib/ipc'
-import type { AuthRuntime } from '../services/auth/authRuntime'
-import type { AuthStatus } from '../services/auth/authService'
+import type { AuthRuntime } from '../features/auth/authRuntime'
+import type { AuthStatus } from '../features/auth/authService'
 
 // -----------------------------------------------------------------------------
 // 型定義

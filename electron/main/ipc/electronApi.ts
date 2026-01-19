@@ -5,14 +5,14 @@ import type {
   FileSystemApi,
   FileSystemRendererApi,
   FS_API_KEY,
-} from '../features/fs'
-import type { ThemeApi, THEME_API_KEY } from '../features/theme'
-import type { WebApi, WEB_API_KEY } from '../features/web'
-import type { McpApi, MCP_API_KEY } from '../features/mcp'
-import type { AiAgentApi, AI_AGENT_API_KEY } from '../features/aiAgent'
-import type { AiChatApi, AI_CHAT_API_KEY } from '../features/aiChat'
-import type { KakeiboApi, Kakeibo_API_KEY } from '../features/kakeibo'
-import type { AuthApi, AUTH_API_KEY } from '../features/auth'
+} from '../api/fs'
+import type { ThemeApi, THEME_API_KEY } from '../api/theme'
+import type { WebApi, WEB_API_KEY } from '../api/web'
+import type { McpApi, MCP_API_KEY } from '../api/mcp'
+import type { AiAgentApi, AI_AGENT_API_KEY } from '../api/aiAgent'
+import type { AiChatApi, AI_CHAT_API_KEY } from '../api/aiChat'
+import type { KakeiboApi, Kakeibo_API_KEY } from '../api/kakeibo'
+import type { AuthApi, AUTH_API_KEY } from '../api/auth'
 
 type ElectronRendererApi = {
   [FS_API_KEY]: FileSystemRendererApi

@@ -6,14 +6,14 @@ import path from 'node:path'
 
 import { createContextMenu } from './windows/contextMenu'
 import { registerIpc } from './ipc/register'
-import { createAuthRuntime } from './services/auth/authRuntime'
+import { createAuthRuntime } from './features/auth/authRuntime'
 
 import type { WebContents } from 'electron'
-import type { AiAgent } from './services/ai-agent/AiAgent'
-import type { McpServer } from './services/mcp'
-import type { DataBase } from './services/db/db'
+import type { AiAgent } from './features/ai-agent/AiAgent'
+import type { McpServer } from './features/mcp'
+import type { DataBase } from './features/db/db'
 import type { Context as AppContext } from './ipc/register'
-import type { AuthRuntime } from './services/auth/authRuntime'
+import type { AuthRuntime } from './features/auth/authRuntime'
 
 // const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))

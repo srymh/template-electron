@@ -1,7 +1,7 @@
 import crypto from 'node:crypto'
 
 import { createResponseChannel } from '../lib/ipc'
-import { AiAgent } from '../services/ai-agent/AiAgent'
+import { AiAgent } from '../features/ai-agent/AiAgent'
 
 import type { WebContents } from 'electron'
 import type {

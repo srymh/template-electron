@@ -1,7 +1,7 @@
-import { createAppDataBase } from '../services/db/db'
+import { createAppDataBase } from '../features/db/db'
 
 import type { WebContents } from 'electron'
-import type { DataBase } from '../services/db/db'
+import type { DataBase } from '../features/db/db'
 import type { ApiInterface, WithWebContentsApi } from '../lib/ipc'
 
 // -----------------------------------------------------------------------------

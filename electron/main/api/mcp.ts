@@ -1,7 +1,7 @@
-import { startServer as startMcpServer } from '../services/mcp'
+import { startServer as startMcpServer } from '../features/mcp'
 
 import type { WebContents } from 'electron'
-import type { McpServer } from '../services/mcp'
+import type { McpServer } from '../features/mcp'
 import type {
   ApiInterface,
   WithWebContents,
