@@ -24,7 +24,7 @@ export interface BaseMessage {
 export interface InvokeRequestMessage extends BaseMessage {
   type: 'invoke-request'
   channel: string
-  args: any[]
+  args: Array<any>
 }
 
 /**
@@ -94,7 +94,7 @@ export interface InvokeTransport {
    * @param args Arguments to pass
    * @returns Promise that resolves with the result
    */
-  invoke(channel: string, ...args: any[]): Promise<any>
+  invoke: (channel: string, ...args: Array<any>) => Promise<any>
 }
 
 /**
@@ -107,7 +107,7 @@ export interface EventTransport {
    * @param listener The event listener callback
    * @returns Function to unsubscribe
    */
-  subscribe(channel: string, listener: (data: any) => void): () => void
+  subscribe: (channel: string, listener: (data: any) => void) => () => void
 }
 
 /**
@@ -117,7 +117,7 @@ export interface RpcTransport extends InvokeTransport, EventTransport {
   /**
    * Close/cleanup the transport
    */
-  close?(): void
+  close?: () => void
 }
 
 /**
@@ -129,7 +129,7 @@ export interface ServerTransport {
    * @param channel The channel/method name
    * @param handler The handler function
    */
-  handleInvoke(channel: string, handler: (...args: any[]) => Promise<any>): void
+  handleInvoke: (channel: string, handler: (...args: Array<any>) => Promise<any>) => void
 
   /**
    * Register a handler for event subscriptions
@@ -137,18 +137,18 @@ export interface ServerTransport {
    * @param onSubscribe Callback when a client subscribes
    * @param onUnsubscribe Callback when a client unsubscribes
    */
-  handleEvent(
+  handleEvent: (
     channel: string,
     onSubscribe: (sendData: (data: any) => void) => () => void
-  ): void
+  ) => void
 
   /**
    * Start the server
    */
-  start?(): Promise<void>
+  start?: () => Promise<void>
 
   /**
    * Stop the server
    */
-  stop?(): Promise<void>
+  stop?: () => Promise<void>
 }

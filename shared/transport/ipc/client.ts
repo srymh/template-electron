@@ -16,7 +16,7 @@ export class IpcTransport implements RpcTransport {
   /**
    * Invoke a method on the main process
    */
-  async invoke(channel: string, ...args: any[]): Promise<any> {
+  async invoke(channel: string, ...args: Array<any>): Promise<any> {
     return ipcRenderer.invoke(channel, ...args)
   }
 
@@ -27,7 +27,7 @@ export class IpcTransport implements RpcTransport {
     const responseChannel = `${channel}::response`
 
     // Create wrapper to unwrap IPC event format
-    const listenerWrapper = (_: Electron.IpcRendererEvent, ...args: any[]) => {
+    const listenerWrapper = (_: Electron.IpcRendererEvent, ...args: Array<any>) => {
       // Convention: only args[0] is passed to listener
       listener(args[0])
     }

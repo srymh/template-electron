@@ -4,7 +4,7 @@
  * Client-side WebSocket transport implementation
  */
 
-import type { RpcTransport, RpcMessage, InvokeResponseMessage, InvokeErrorMessage, EventDataMessage } from '../types'
+import type { EventDataMessage, InvokeErrorMessage, InvokeResponseMessage, RpcMessage, RpcTransport } from '../types'
 
 /**
  * Client-side WebSocket transport
@@ -65,10 +65,10 @@ export class WebSocketTransport implements RpcTransport {
 
       switch (message.type) {
         case 'invoke-response':
-          this.handleInvokeResponse(message as InvokeResponseMessage | InvokeErrorMessage)
+          this.handleInvokeResponse(message)
           break
         case 'event-data':
-          this.handleEventData(message as EventDataMessage)
+          this.handleEventData(message)
           break
       }
     } catch (error) {
@@ -150,7 +150,7 @@ export class WebSocketTransport implements RpcTransport {
   /**
    * Invoke a method
    */
-  async invoke(channel: string, ...args: any[]): Promise<any> {
+  async invoke(channel: string, ...args: Array<any>): Promise<any> {
     const id = this.generateId()
 
     return new Promise((resolve, reject) => {

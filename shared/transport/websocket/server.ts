@@ -4,8 +4,8 @@
  * Server-side WebSocket transport implementation for Node.js/Electron main process
  */
 
-import { WebSocketServer, WebSocket } from 'ws'
-import type { ServerTransport, RpcMessage, InvokeRequestMessage, EventSubscribeMessage, EventUnsubscribeMessage } from '../types'
+import { WebSocket, WebSocketServer } from 'ws'
+import type { EventSubscribeMessage, EventUnsubscribeMessage, InvokeRequestMessage, RpcMessage, ServerTransport } from '../types'
 
 /**
  * Client connection state
@@ -21,7 +21,7 @@ interface ClientState {
 export class WebSocketServerTransport implements ServerTransport {
   private server: WebSocketServer | null = null
   private clients = new Map<WebSocket, ClientState>()
-  private invokeHandlers = new Map<string, (...args: any[]) => Promise<any>>()
+  private invokeHandlers = new Map<string, (...args: Array<any>) => Promise<any>>()
   private eventHandlers = new Map<string, (sendData: (data: any) => void) => () => void>()
 
   constructor(
@@ -95,13 +95,13 @@ export class WebSocketServerTransport implements ServerTransport {
 
       switch (message.type) {
         case 'invoke-request':
-          await this.handleInvokeRequest(ws, message as InvokeRequestMessage)
+          await this.handleInvokeRequest(ws, message)
           break
         case 'event-subscribe':
-          this.handleEventSubscribe(ws, message as EventSubscribeMessage)
+          this.handleEventSubscribe(ws, message)
           break
         case 'event-unsubscribe':
-          this.handleEventUnsubscribe(ws, message as EventUnsubscribeMessage)
+          this.handleEventUnsubscribe(ws, message)
           break
       }
     } catch (error) {
@@ -228,7 +228,7 @@ export class WebSocketServerTransport implements ServerTransport {
   /**
    * Register a handler for invoke requests
    */
-  handleInvoke(channel: string, handler: (...args: any[]) => Promise<any>): void {
+  handleInvoke(channel: string, handler: (...args: Array<any>) => Promise<any>): void {
     this.invokeHandlers.set(channel, handler)
     console.log(`WebSocket invoke handler registered for: ${channel}`)
   }
