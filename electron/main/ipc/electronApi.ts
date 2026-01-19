@@ -12,6 +12,7 @@ import type { McpApi, MCP_API_KEY } from '../features/mcp'
 import type { AiAgentApi, AI_AGENT_API_KEY } from '../features/aiAgent'
 import type { AiChatApi, AI_CHAT_API_KEY } from '../features/aiChat'
 import type { KakeiboApi, Kakeibo_API_KEY } from '../features/kakeibo'
+import type { AuthApi, AUTH_API_KEY } from '../features/auth'
 
 type ElectronRendererApi = {
   [FS_API_KEY]: FileSystemRendererApi
@@ -25,6 +26,7 @@ export type ElectronMainApi = {
   [AI_AGENT_API_KEY]: AiAgentApi
   [AI_CHAT_API_KEY]: AiChatApi
   [Kakeibo_API_KEY]: KakeiboApi
+  [AUTH_API_KEY]: AuthApi
 }
 
 const getPathForFile: FileSystemRendererApi['getPathForFile'] = async (
@@ -96,6 +98,11 @@ export const electronApi = createElectronApi<
       },
       kakeibo: {
         entries: useChannelAsInvoke('kakeibo.entries'),
+      },
+      auth: {
+        getStatus: useChannelAsInvoke('auth.getStatus'),
+        login: useChannelAsInvoke('auth.login'),
+        logout: useChannelAsInvoke('auth.logout'),
       },
     }),
   ({ defineHelper }) =>

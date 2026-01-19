@@ -6,8 +6,29 @@ export const electronApi: ElectronApi = (() => {
   if (isElectron) {
     return window.electronApi
   } else {
+    let mockUser: { username: string } | null = null
+
     // Mock implementation for non-Electron environments
     return {
+      auth: {
+        getStatus: async () =>
+          Promise.resolve({
+            isAuthenticated: Boolean(mockUser),
+            user: mockUser,
+          }),
+        // eslint-disable-next-line @typescript-eslint/require-await
+        login: async (username: string, _password: string) => {
+          mockUser = { username }
+          return {
+            isAuthenticated: true,
+            user: mockUser,
+          }
+        },
+        // eslint-disable-next-line @typescript-eslint/require-await
+        logout: async () => {
+          mockUser = null
+        },
+      },
       theme: {
         setTheme: () => Promise.resolve(),
         getTheme: () => Promise.resolve('light' as const),

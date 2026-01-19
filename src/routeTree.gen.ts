@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as DemoRouteRouteImport } from './routes/demo.route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DemoIndexRouteImport } from './routes/demo.index'
@@ -20,6 +21,11 @@ import { Route as DemoFsRouteImport } from './routes/demo.fs'
 import { Route as DemoChatTRouteImport } from './routes/demo.chat-t'
 import { Route as DemoChatRouteImport } from './routes/demo.chat'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DemoRouteRoute = DemoRouteRouteImport.update({
   id: '/demo',
   path: '/demo',
@@ -74,6 +80,7 @@ const DemoChatRoute = DemoChatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/demo': typeof DemoRouteRouteWithChildren
+  '/login': typeof LoginRoute
   '/demo/chat': typeof DemoChatRoute
   '/demo/chat-t': typeof DemoChatTRoute
   '/demo/fs': typeof DemoFsRoute
@@ -85,6 +92,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/demo/chat': typeof DemoChatRoute
   '/demo/chat-t': typeof DemoChatTRoute
   '/demo/fs': typeof DemoFsRoute
@@ -98,6 +106,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/demo': typeof DemoRouteRouteWithChildren
+  '/login': typeof LoginRoute
   '/demo/chat': typeof DemoChatRoute
   '/demo/chat-t': typeof DemoChatTRoute
   '/demo/fs': typeof DemoFsRoute
@@ -112,6 +121,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/demo'
+    | '/login'
     | '/demo/chat'
     | '/demo/chat-t'
     | '/demo/fs'
@@ -123,6 +133,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/login'
     | '/demo/chat'
     | '/demo/chat-t'
     | '/demo/fs'
@@ -135,6 +146,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/demo'
+    | '/login'
     | '/demo/chat'
     | '/demo/chat-t'
     | '/demo/fs'
@@ -148,10 +160,18 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DemoRouteRoute: typeof DemoRouteRouteWithChildren
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/demo': {
       id: '/demo'
       path: '/demo'
@@ -254,6 +274,7 @@ const DemoRouteRouteWithChildren = DemoRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DemoRouteRoute: DemoRouteRouteWithChildren,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
