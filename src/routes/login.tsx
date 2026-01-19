@@ -49,7 +49,8 @@ function LoginRouteComponent() {
         <div className="space-y-1">
           <h1 className="text-lg font-semibold">Login</h1>
           <p className="text-sm text-muted-foreground">
-            Demo認証: 何を入れてもOK（ローカル保存）
+            オフライン認証: 初回はユーザー作成、その後はパスワード検証（SQLite /
+            Main管理）
           </p>
         </div>
 

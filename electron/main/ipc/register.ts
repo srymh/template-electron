@@ -6,17 +6,20 @@ import { MCP_API_KEY, getMcpApi } from '../features/mcp'
 import { AI_AGENT_API_KEY, getAiAgentApi } from '../features/aiAgent'
 import { getAiChatApi } from '../features/aiChat'
 import { Kakeibo_API_KEY, getKakeiboApi } from '../features/kakeibo'
+import { AUTH_API_KEY, getAuthApi } from '../features/auth'
 
 import type { WebContents } from 'electron'
 import type { McpApiContext } from '../features/mcp'
 import type { AiAgentContext } from '../features/aiAgent'
 import type { KakeiboContext } from '../features/kakeibo'
+import type { AuthContext } from '../features/auth'
 import type { ElectronMainApi } from './electronApi'
 
 export type Context = {
   [MCP_API_KEY]: McpApiContext
   [AI_AGENT_API_KEY]: AiAgentContext
   [Kakeibo_API_KEY]: KakeiboContext
+  [AUTH_API_KEY]: AuthContext
 }
 
 export const registerIpc = createRegisterIpc<ElectronMainApi, Context>(
@@ -33,6 +36,9 @@ export const registerIpc = createRegisterIpc<ElectronMainApi, Context>(
     const aiChat = getAiChatApi()
     const kakeibo = getKakeiboApi(
       (webContents: WebContents) => getContext(webContents)[Kakeibo_API_KEY],
+    )
+    const auth = getAuthApi(
+      (webContents: WebContents) => getContext(webContents)[AUTH_API_KEY],
     )
 
     return defineHelper({
@@ -84,6 +90,9 @@ export const registerIpc = createRegisterIpc<ElectronMainApi, Context>(
       'aiChat.chat': { type: 'invoke', method: aiChat.chat },
       'aiChat.on.chunk': { type: 'event', addEventListener: aiChat.on.chunk },
       'kakeibo.entries': { type: 'invoke', method: kakeibo.entries },
+      'auth.getStatus': { type: 'invoke', method: auth.getStatus },
+      'auth.login': { type: 'invoke', method: auth.login },
+      'auth.logout': { type: 'invoke', method: auth.logout },
     })
   },
 )

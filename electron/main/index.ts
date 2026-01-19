@@ -6,6 +6,7 @@ import path from 'node:path'
 
 import { createContextMenu } from './windows/contextMenu'
 import { registerIpc } from './ipc/register'
+import { createAuthDb, ensureAuthDb } from './services/auth/authDb'
 
 import type { WebContents } from 'electron'
 import type { AiAgent } from './services/ai-agent/AiAgent'
@@ -42,6 +43,7 @@ let win: BrowserWindow | null
 let aiAgent: AiAgent | null = null
 let mcpServer: McpServer | null = null
 let db: DataBase | null = null
+let authDb: DataBase | null = null
 const registerIpcCache = new WeakMap<WebContents, Map<string, () => void>>()
 const contextMap = new WeakMap<WebContents, AppContext>()
 
@@ -83,6 +85,12 @@ function createWindow() {
         db = newDb
       },
     },
+    auth: {
+      getDb: () => authDb,
+      setDb: (newDb: DataBase | null) => {
+        authDb = newDb
+      },
+    },
   })
 
   // Test active push message to Renderer-process.
@@ -108,6 +116,11 @@ app.on('window-all-closed', () => {
   }
 })
 
+app.on('before-quit', () => {
+  authDb?.close()
+  authDb = null
+})
+
 app.on('activate', () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
@@ -118,6 +131,10 @@ app.on('activate', () => {
 
 app.whenReady().then(() => {
   registerCustomProtocol()
+
+  // 起動時にユーザーデータ領域へ認証DBを準備する
+  authDb = createAuthDb()
+  ensureAuthDb(authDb)
 
   // IPC登録（window が load して renderer が invoke する前に必ず登録しておく）
   registerIpc({

@@ -1,4 +1,5 @@
 import React from 'react'
+import { electronApi } from './electronApi'
 
 export type AuthUser = {
   username: string
@@ -17,8 +18,6 @@ type AuthContextValue = {
 
 const AuthContext = React.createContext<AuthContextValue | undefined>(undefined)
 
-const STORAGE_KEY = 'demo-auth-user'
-
 export function AuthProvider(props: { children: React.ReactNode }) {
   const { children } = props
 
@@ -26,32 +25,36 @@ export function AuthProvider(props: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = React.useState(true)
 
   React.useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      if (raw) {
-        const parsed = JSON.parse(raw) as AuthUser
-        if (parsed.username) {
-          setUser({ username: parsed.username })
+    let cancelled = false
+    ;(async () => {
+      try {
+        const status = await electronApi.auth.getStatus()
+        if (!cancelled) {
+          setUser(status.user)
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false)
         }
       }
-    } finally {
-      setIsLoading(false)
+    })()
+
+    return () => {
+      cancelled = true
     }
   }, [])
 
   const login = React.useCallback(
-    async (username: string, _password: string) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      const nextUser: AuthUser = { username }
-      setUser(nextUser)
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser))
+    async (username: string, password: string) => {
+      const status = await electronApi.auth.login(username, password)
+      setUser(status.user)
     },
     [],
   )
 
   const logout = React.useCallback(() => {
+    void electronApi.auth.logout()
     setUser(null)
-    localStorage.removeItem(STORAGE_KEY)
   }, [])
 
   const auth = React.useMemo<AuthState>(() => {
