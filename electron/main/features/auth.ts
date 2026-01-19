@@ -1,12 +1,7 @@
 import type { WebContents } from 'electron'
 
 import type { ApiInterface, WithWebContentsApi } from '../lib/ipc'
-import type { DataBase } from '../services/db/db'
-import {
-  getAuthStatus,
-  login as loginService,
-  logout as logoutService,
-} from '../services/auth/authService'
+import type { AuthRuntime } from '../services/auth/authRuntime'
 import type { AuthStatus } from '../services/auth/authService'
 
 // -----------------------------------------------------------------------------
@@ -16,8 +11,7 @@ export const AUTH_API_KEY = 'auth' as const
 export type AuthApiKey = typeof AUTH_API_KEY
 
 export type AuthContext = {
-  getDb: () => DataBase | null
-  setDb: (db: DataBase | null) => void
+  getRuntime: () => AuthRuntime
 }
 
 // -----------------------------------------------------------------------------
@@ -37,21 +31,15 @@ export function getAuthApi(
 ): WithWebContentsApi<AuthApi> {
   return {
     getStatus: async (webContents) => {
-      const db = getContext(webContents).getDb()
-      if (!db) throw new Error('Auth DB is not initialized')
-      return getAuthStatus(db)
+      return getContext(webContents).getRuntime().getStatus()
     },
 
     login: async (username, password, webContents) => {
-      const db = getContext(webContents).getDb()
-      if (!db) throw new Error('Auth DB is not initialized')
-      return loginService(db, username, password)
+      return getContext(webContents).getRuntime().login(username, password)
     },
 
     logout: async (webContents) => {
-      const db = getContext(webContents).getDb()
-      if (!db) throw new Error('Auth DB is not initialized')
-      logoutService(db)
+      getContext(webContents).getRuntime().logout()
     },
   }
 }

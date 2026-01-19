@@ -6,13 +6,14 @@ import path from 'node:path'
 
 import { createContextMenu } from './windows/contextMenu'
 import { registerIpc } from './ipc/register'
-import { createAuthDb, ensureAuthDb } from './services/auth/authDb'
+import { createAuthRuntime } from './services/auth/authRuntime'
 
 import type { WebContents } from 'electron'
 import type { AiAgent } from './services/ai-agent/AiAgent'
 import type { McpServer } from './services/mcp'
 import type { DataBase } from './services/db/db'
 import type { Context as AppContext } from './ipc/register'
+import type { AuthRuntime } from './services/auth/authRuntime'
 
 // const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -43,11 +44,10 @@ let win: BrowserWindow | null
 let aiAgent: AiAgent | null = null
 let mcpServer: McpServer | null = null
 let db: DataBase | null = null
-let authDb: DataBase | null = null
 const registerIpcCache = new WeakMap<WebContents, Map<string, () => void>>()
 const contextMap = new WeakMap<WebContents, AppContext>()
 
-function createWindow() {
+function createWindow(authRuntime: AuthRuntime) {
   const wind = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
@@ -86,10 +86,7 @@ function createWindow() {
       },
     },
     auth: {
-      getDb: () => authDb,
-      setDb: (newDb: DataBase | null) => {
-        authDb = newDb
-      },
+      getRuntime: () => authRuntime,
     },
   })
 
@@ -116,25 +113,22 @@ app.on('window-all-closed', () => {
   }
 })
 
-app.on('before-quit', () => {
-  authDb?.close()
-  authDb = null
-})
-
-app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
-  }
-})
-
 app.whenReady().then(() => {
   registerCustomProtocol()
 
-  // 起動時にユーザーデータ領域へ認証DBを準備する
-  authDb = createAuthDb()
-  ensureAuthDb(authDb)
+  const authRuntime = createAuthRuntime()
+
+  app.on('before-quit', () => {
+    authRuntime.dispose()
+  })
+
+  app.on('activate', () => {
+    // On OS X it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow(authRuntime)
+    }
+  })
 
   // IPC登録（window が load して renderer が invoke する前に必ず登録しておく）
   registerIpc({
@@ -147,5 +141,5 @@ app.whenReady().then(() => {
     cache: registerIpcCache,
   })
 
-  createWindow()
+  createWindow(authRuntime)
 })
