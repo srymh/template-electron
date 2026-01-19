@@ -29,9 +29,10 @@ export function registerWebSocketHandlers(
     if (entry.type === 'invoke') {
       // Register invoke handler
       transport.handleInvoke(channel, async (...args: Array<any>) => {
-        // WebSocket doesn't have WebContents, so we pass undefined
-        // The API implementation should handle this gracefully
-        // Note: getContext is available but not used in this simple example
+        // WebSocket doesn't have WebContents context
+        // TODO: Consider creating a context adapter pattern or making WebContents optional
+        // For this example, we pass undefined with type assertion
+        // In production, refactor APIs to not require WebContents or use adapter pattern
         return entry.method(...args, undefined as any)
       })
     } else {

@@ -289,6 +289,100 @@ const { api } = await createWebSocketClient('ws://localhost:9876')
 const theme = await api.theme.getTheme()
 ```
 
+## Handling WebContents in Non-IPC Contexts
+
+### The Challenge
+
+Electron's IPC APIs receive a `WebContents` parameter that identifies which renderer process made the request. Many APIs use this to:
+- Send responses back to the correct window
+- Access window-specific state
+- Emit events to specific windows
+
+Non-IPC transports (WebSocket, HTTP) don't have a `WebContents` object, creating a compatibility challenge.
+
+### Solutions
+
+#### 1. Optional WebContents Pattern (Recommended for New APIs)
+
+Define APIs with optional WebContents:
+
+```typescript
+type ThemeApi = {
+  getTheme: (webContents?: WebContents) => Promise<Theme>
+  setTheme: (options: { theme: Theme }, webContents?: WebContents) => Promise<void>
+}
+
+// Implementation checks if WebContents is available
+const getTheme = async (webContents?: WebContents) => {
+  if (webContents) {
+    // Window-specific logic
+  }
+  // General logic
+  return nativeTheme.themeSource
+}
+```
+
+#### 2. Context Adapter Pattern
+
+Create a transport-agnostic context object:
+
+```typescript
+interface TransportContext {
+  type: 'ipc' | 'websocket' | 'http'
+  webContents?: WebContents
+  clientId?: string
+  // Other context data
+}
+
+type ThemeApi = {
+  getTheme: (context: TransportContext) => Promise<Theme>
+}
+```
+
+#### 3. Separate API Definitions
+
+Create different API definitions for different transports:
+
+```typescript
+// IPC-specific APIs (need WebContents)
+type ElectronIpcApi = { ... }
+
+// Transport-agnostic APIs (don't need WebContents)
+type GeneralApi = { ... }
+
+// WebSocket server exposes only GeneralApi
+```
+
+#### 4. WebSocket Client Identification
+
+For WebSocket/HTTP, use alternative identification:
+
+```typescript
+// Assign unique client ID on connection
+const clientId = crypto.randomUUID()
+
+// APIs use client ID instead of WebContents
+const getHistory = async (clientId: string) => {
+  const session = sessions.get(clientId)
+  return session?.history
+}
+```
+
+### Current PoC Implementation
+
+The PoC examples use `null as any` or `undefined as any` as placeholders. This is acceptable for demonstration but should be addressed for production:
+
+```typescript
+// PoC (not production-ready)
+return themeApi.getTheme(null as any)
+
+// Production approach 1: Optional parameter
+return themeApi.getTheme(undefined)
+
+// Production approach 2: Context object
+return themeApi.getTheme({ type: 'websocket', clientId })
+```
+
 ## Future Enhancements
 
 1. **HTTP Transport**: REST API support

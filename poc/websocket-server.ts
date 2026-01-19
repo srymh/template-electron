@@ -23,11 +23,16 @@ export async function startWebSocketServer(port: number = 9876): Promise<WebSock
   // Register invoke handlers
   transport.handleInvoke('theme.getTheme', async () => {
     // Note: WebContents is not available in WebSocket context
-    // We would need to adapt the API or pass null/undefined
+    // In production, consider one of these approaches:
+    // 1. Create WebSocket-specific API adapters that don't require WebContents
+    // 2. Use a context object that works for both IPC and WebSocket
+    // 3. Define APIs with optional WebContents: (webContents?: WebContents)
+    // For this PoC, we pass null as a placeholder
     return themeApi.getTheme(null as any)
   })
 
   transport.handleInvoke('theme.setTheme', async (options: { theme: any }) => {
+    // TODO: Use proper Theme type instead of any
     return themeApi.setTheme(options, null as any)
   })
 

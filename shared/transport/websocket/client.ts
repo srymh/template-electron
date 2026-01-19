@@ -120,13 +120,19 @@ export class WebSocketTransport implements RpcTransport {
     }
     this.pendingRequests.clear()
 
-    // Attempt to reconnect
+    // Attempt to reconnect with exponential backoff
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++
       console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`)
+      
+      // Exponential backoff with jitter to avoid thundering herd
+      const backoff = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1)
+      const jitter = Math.random() * 1000
+      const delay = backoff + jitter
+      
       setTimeout(() => {
         this.connect().catch(console.error)
-      }, this.reconnectDelay * this.reconnectAttempts)
+      }, delay)
     }
   }
 
