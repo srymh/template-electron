@@ -19,6 +19,7 @@
     "@modelcontextprotocol/sdk": "^1.23.0",
     "@openai/agents": "^0.3.3",
     "@openai/agents-core": "^0.3.3",
+    "@radix-ui/react-dialog": "^1.1.15",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/ai": "^0.2.2",
     "@tanstack/ai-ollama": "^0.3.0",

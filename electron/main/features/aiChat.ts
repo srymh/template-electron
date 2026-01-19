@@ -1,10 +1,11 @@
-import { chat } from '@tanstack/ai'
+import { chat, toolDefinition } from '@tanstack/ai'
 import { createOllamaChat } from '@tanstack/ai-ollama'
 
 import { createResponseChannel } from '../lib/ipc'
 
 import type { ModelMessage, StreamChunk } from '@tanstack/ai'
 import type { AddListener, ApiInterface, WithWebContentsApi } from '../lib/ipc'
+import { nativeTheme } from 'electron'
 
 // -----------------------------------------------------------------------------
 // 型定義
@@ -28,6 +29,32 @@ export type AiChatApi = ApiInterface<{
 // 実装
 
 export function getAiChatApi(): WithWebContentsApi<AiChatApi> {
+  const switchThemeDarkToolDef = toolDefinition({
+    name: 'switch_theme_dark',
+    description: "Change the application's theme to dark.",
+  })
+
+  const switchThemeLightToolDef = toolDefinition({
+    name: 'switch_theme_light',
+    description: "Change the application's theme to light.",
+  })
+
+  const switchThemeDarkTool = switchThemeDarkToolDef.server(async () => {
+    nativeTheme.themeSource = 'dark'
+    console.log('theme', 'dark')
+    return {
+      content: [{ type: 'text', text: `テーマを「dark」に変更しました。` }],
+    }
+  })
+
+  const switchThemeLightTool = switchThemeLightToolDef.server(async () => {
+    nativeTheme.themeSource = 'light'
+    console.log('theme', 'light')
+    return {
+      content: [{ type: 'text', text: `テーマを「light」に変更しました。` }],
+    }
+  })
+
   return {
     chat: async (request, webContents) => {
       const { messages } = request
@@ -38,6 +65,9 @@ export function getAiChatApi(): WithWebContentsApi<AiChatApi> {
         const filteredMessages: ModelMessage<string>[] = []
         for (const msg of messages) {
           if (typeof msg.content === 'string') {
+            filteredMessages.push(msg as ModelMessage<string>)
+          } else if (msg.content === null) {
+            // tool call などで content が null の場合も許容する
             filteredMessages.push(msg as ModelMessage<string>)
           } else {
             console.warn(
@@ -53,13 +83,20 @@ export function getAiChatApi(): WithWebContentsApi<AiChatApi> {
             'http://localhost:11434',
           ),
           messages: filteredMessages,
+          tools: [switchThemeDarkTool, switchThemeLightTool],
         })
 
         // 非同期イテレータを即時実行してチャンクを送信
         ;(async () => {
           for await (const chunk of stream) {
-            console.log(`${new Date().toISOString()} AiChatApi chunk:`, chunk)
-            webContents.send(channel, { chunk })
+            try {
+              webContents.send(channel, { chunk })
+            } catch (error) {
+              console.error(
+                `${new Date().toISOString()} Error sending AiChatApi chunk:`,
+                error,
+              )
+            }
           }
 
           console.log(`${new Date().toISOString()} AiChatApi done.`)

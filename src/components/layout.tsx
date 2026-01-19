@@ -7,6 +7,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
+import { OpenChat } from '@/features/chat/components/open-chat'
 
 export function Layout(props: { children?: React.ReactNode }) {
   const { children } = props
@@ -25,6 +26,7 @@ export function Layout(props: { children?: React.ReactNode }) {
         <SiteHeader />
         <div className="w-full h-full overflow-auto">{children}</div>
       </SidebarInset>
+      <OpenChat />
     </SidebarProvider>
   )
 }
