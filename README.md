@@ -301,6 +301,114 @@ Once we've created the derived store we can use it in the `App` component just l
 
 You can find out everything you need to know on how to use TanStack Store in the [TanStack Store documentation](https://tanstack.com/store/latest).
 
+## Type-Safe RPC with Transport Abstraction
+
+This project implements a transport-agnostic, type-safe RPC system for communication between Electron's main and renderer processes. The abstraction allows you to switch between different transports (IPC, WebSocket, HTTP) while maintaining the same type-safe API interface.
+
+### Architecture
+
+The RPC system consists of:
+
+1. **Shared Transport Protocol** (`shared/transport/types.ts`)
+   - Message types for invoke requests/responses
+   - Event subscription/unsubscription messages
+   - Correlation IDs for request/response matching
+
+2. **Transport Implementations**
+   - `IpcTransport` - Uses Electron's IPC (default)
+   - `WebSocketTransport` - Uses WebSocket for browser/network communication
+   - Easily extensible to HTTP, gRPC, etc.
+
+3. **Type-Safe API Creation** (`electron/main/lib/ipc/transport/createApiWithTransport.ts`)
+   - Generates type-safe API from definitions
+   - Works with any transport implementation
+   - Maintains full TypeScript type inference
+
+### Using Different Transports
+
+#### Default: Electron IPC
+
+The default implementation uses Electron's IPC for secure, in-process communication:
+
+```typescript
+import { createElectronApi } from './electron/main/lib/ipc/browser'
+
+const api = createElectronApi(...)
+```
+
+#### WebSocket Transport
+
+For browser environments or network communication, use WebSocket transport:
+
+**Server (Main Process):**
+```typescript
+import { startWebSocketServer } from './poc/websocket-server'
+
+const wsServer = await startWebSocketServer(9876)
+```
+
+**Client (Renderer/Browser):**
+```typescript
+import { createWebSocketClient } from './poc/websocket-client'
+
+const { api, transport } = await createWebSocketClient('ws://localhost:9876')
+const theme = await api.theme.getTheme()
+```
+
+### Security Considerations
+
+When using non-IPC transports:
+
+1. **Localhost Binding**: WebSocket server binds to localhost only by default
+2. **Authentication**: Consider adding token-based authentication for production
+3. **Origin Checking**: Verify WebSocket connection origins
+4. **Method Allowlist**: Limit which APIs are exposed via each transport
+5. **Rate Limiting**: Protect against abuse, especially for expensive operations
+
+See `poc/README.md` for detailed security guidelines.
+
+### Serialization Constraints
+
+Different transports have different serialization capabilities:
+
+- **Electron IPC**: Uses Structured Clone algorithm, supports ArrayBuffer, Error, Date
+- **WebSocket/HTTP**: Uses JSON serialization
+  - ArrayBuffer requires base64 encoding
+  - Error objects lose stack traces
+  - Date objects become strings
+
+### Proof of Concept
+
+See the `poc/` directory for working examples:
+- `websocket-server.ts` - WebSocket RPC server
+- `websocket-client.ts` - WebSocket RPC client
+- `README.md` - Detailed usage and security documentation
+
+### Testing
+
+The transport abstraction makes testing easier by allowing mock transports:
+
+```typescript
+class MockTransport implements RpcTransport {
+  async invoke(channel: string, ...args: any[]) {
+    return testData[channel]
+  }
+  subscribe(channel: string, listener: (data: any) => void) {
+    return () => {}
+  }
+}
+```
+
+### Design Philosophy
+
+The transport abstraction follows these principles:
+
+1. **Type Safety First**: Full TypeScript type inference across transports
+2. **Zero Breaking Changes**: Existing IPC code works unchanged
+3. **Transport Independence**: API definitions are transport-agnostic
+4. **Easy Testing**: Mock transports for unit testing
+5. **Security by Default**: Localhost-only, with clear security guidelines
+
 # Demo files
 
 Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
