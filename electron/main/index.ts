@@ -5,14 +5,14 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 
 import { createContextMenu } from './windows/contextMenu'
-import { registerIpc } from './ipc/register'
+import { registerIpc } from './ipc/registerIpc'
 import { createAuthRuntime } from './features/auth/authRuntime'
 
 import type { WebContents } from 'electron'
 import type { AiAgent } from './features/ai-agent/AiAgent'
 import type { McpServer } from './features/mcp'
 import type { DataBase } from './features/db/db'
-import type { Context as AppContext } from './ipc/register'
+import type { Context } from './ipc/registerIpc'
 import type { AuthRuntime } from './features/auth/authRuntime'
 
 // const require = createRequire(import.meta.url)
@@ -45,7 +45,7 @@ let aiAgent: AiAgent | null = null
 let mcpServer: McpServer | null = null
 let db: DataBase | null = null
 const registerIpcCache = new WeakMap<WebContents, Map<string, () => void>>()
-const contextMap = new WeakMap<WebContents, AppContext>()
+const contextMap = new WeakMap<WebContents, Context>()
 
 function createWindow(authRuntime: AuthRuntime) {
   const wind = new BrowserWindow({
