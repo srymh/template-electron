@@ -8,7 +8,7 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar'
 import { OpenChat } from '@/features/chat/components/open-chat'
-import { useAuth } from '@/auth'
+import { useAuth } from '@/features/auth/api/auth'
 
 export function Layout(props: { children?: React.ReactNode }) {
   const { children } = props

@@ -9,7 +9,7 @@ import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
 import type { QueryClient } from '@tanstack/react-query'
 
-import type { AuthState } from '@/auth'
+import type { AuthState } from '@/features/auth/api/auth'
 import { useDevTools } from '@/components/devtools-provider'
 
 interface MyRouterContext {

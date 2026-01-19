@@ -1,5 +1,5 @@
 import React from 'react'
-import { electronApi } from './electronApi'
+import { electronApi } from '@/electronApi'
 
 export type AuthUser = {
   username: string
@@ -26,18 +26,24 @@ export function AuthProvider(props: { children: React.ReactNode }) {
 
   React.useEffect(() => {
     let cancelled = false
-    ;(async () => {
+
+    const load = async () => {
       try {
         const status = await electronApi.auth.getStatus()
-        if (!cancelled) {
-          setUser(status.user)
-        }
+        if (cancelled) return
+        setUser(status.user)
+      } catch (e) {
+        if (cancelled) return
+        console.error(e)
+        setUser(null)
       } finally {
         if (!cancelled) {
           setIsLoading(false)
         }
       }
-    })()
+    }
+
+    void load()
 
     return () => {
       cancelled = true

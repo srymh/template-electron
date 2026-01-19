@@ -27,7 +27,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar'
-import { useAuth } from '@/auth'
+import { useAuth } from '@/features/auth/api/auth'
 
 // This is sample data.
 const data = {

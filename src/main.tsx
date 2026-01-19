@@ -11,7 +11,7 @@ import { routeTree } from './routeTree.gen'
 import reportWebVitals from './reportWebVitals.ts'
 import { ThemeProvider } from '@/components/theme-provider'
 import { DevToolsProvider } from '@/components/devtools-provider.tsx'
-import { AuthProvider, useAuth } from '@/auth'
+import { AuthProvider, useAuth } from '@/features/auth/api/auth'
 
 // 生成されたルートツリーをインポート
 
