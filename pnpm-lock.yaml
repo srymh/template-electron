@@ -16,10 +16,10 @@ importers:
         version: 1.23.0(zod@4.1.13)
       '@openai/agents':
         specifier: ^0.3.3
-        version: 0.3.3(ws@8.18.3)(zod@4.1.13)
+        version: 0.3.3(ws@8.19.0)(zod@4.1.13)
       '@openai/agents-core':
         specifier: ^0.3.3
-        version: 0.3.3(ws@8.18.3)(zod@4.1.13)
+        version: 0.3.3(ws@8.19.0)(zod@4.1.13)
       '@radix-ui/react-dialog':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -34,7 +34,7 @@ importers:
         version: 0.3.0(@tanstack/ai@0.2.2)(zod@4.1.13)
       '@tanstack/ai-openai':
         specifier: ^0.2.1
-        version: 0.2.1(@tanstack/ai@0.2.2)(ws@8.18.3)(zod@4.1.13)
+        version: 0.2.1(@tanstack/ai@0.2.2)(ws@8.19.0)(zod@4.1.13)
       '@tanstack/ai-react':
         specifier: ^0.2.2
         version: 0.2.2(@tanstack/ai@0.2.2)(@types/react@19.2.7)(react@19.2.0)
@@ -82,7 +82,7 @@ importers:
         version: 0.544.0(react@19.2.0)
       openai:
         specifier: ^6.9.1
-        version: 6.9.1(ws@8.18.3)(zod@4.1.13)
+        version: 6.9.1(ws@8.19.0)(zod@4.1.13)
       radix-ui:
         specifier: ^1.4.3
         version: 1.4.3(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -104,6 +104,9 @@ importers:
       tw-animate-css:
         specifier: ^1.3.6
         version: 1.4.0
+      ws:
+        specifier: ^8.19.0
+        version: 8.19.0
       zod:
         specifier: ^4.1.13
         version: 4.1.13
@@ -135,6 +138,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.0
         version: 19.2.3(@types/react@19.2.7)
+      '@types/ws':
+        specifier: ^8.18.1
+        version: 8.18.1
       '@vitejs/plugin-react':
         specifier: ^5.0.4
         version: 5.1.1(vite@7.2.4(@types/node@22.19.1)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.6))
@@ -5037,8 +5043,8 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  ws@8.18.3:
-    resolution: {integrity: sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==}
+  ws@8.19.0:
+    resolution: {integrity: sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -5794,10 +5800,10 @@ snapshots:
       mkdirp: 1.0.4
       rimraf: 3.0.2
 
-  '@openai/agents-core@0.3.3(ws@8.18.3)(zod@4.1.13)':
+  '@openai/agents-core@0.3.3(ws@8.19.0)(zod@4.1.13)':
     dependencies:
       debug: 4.4.3
-      openai: 6.9.1(ws@8.18.3)(zod@4.1.13)
+      openai: 6.9.1(ws@8.19.0)(zod@4.1.13)
     optionalDependencies:
       '@modelcontextprotocol/sdk': 1.23.0(zod@4.1.13)
       zod: 4.1.13
@@ -5806,11 +5812,11 @@ snapshots:
       - supports-color
       - ws
 
-  '@openai/agents-openai@0.3.3(ws@8.18.3)(zod@4.1.13)':
+  '@openai/agents-openai@0.3.3(ws@8.19.0)(zod@4.1.13)':
     dependencies:
-      '@openai/agents-core': 0.3.3(ws@8.18.3)(zod@4.1.13)
+      '@openai/agents-core': 0.3.3(ws@8.19.0)(zod@4.1.13)
       debug: 4.4.3
-      openai: 6.9.1(ws@8.18.3)(zod@4.1.13)
+      openai: 6.9.1(ws@8.19.0)(zod@4.1.13)
       zod: 4.1.13
     transitivePeerDependencies:
       - '@cfworker/json-schema'
@@ -5819,10 +5825,10 @@ snapshots:
 
   '@openai/agents-realtime@0.3.3(zod@4.1.13)':
     dependencies:
-      '@openai/agents-core': 0.3.3(ws@8.18.3)(zod@4.1.13)
+      '@openai/agents-core': 0.3.3(ws@8.19.0)(zod@4.1.13)
       '@types/ws': 8.18.1
       debug: 4.4.3
-      ws: 8.18.3
+      ws: 8.19.0
       zod: 4.1.13
     transitivePeerDependencies:
       - '@cfworker/json-schema'
@@ -5830,13 +5836,13 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@openai/agents@0.3.3(ws@8.18.3)(zod@4.1.13)':
+  '@openai/agents@0.3.3(ws@8.19.0)(zod@4.1.13)':
     dependencies:
-      '@openai/agents-core': 0.3.3(ws@8.18.3)(zod@4.1.13)
-      '@openai/agents-openai': 0.3.3(ws@8.18.3)(zod@4.1.13)
+      '@openai/agents-core': 0.3.3(ws@8.19.0)(zod@4.1.13)
+      '@openai/agents-openai': 0.3.3(ws@8.19.0)(zod@4.1.13)
       '@openai/agents-realtime': 0.3.3(zod@4.1.13)
       debug: 4.4.3
-      openai: 6.9.1(ws@8.18.3)(zod@4.1.13)
+      openai: 6.9.1(ws@8.19.0)(zod@4.1.13)
       zod: 4.1.13
     transitivePeerDependencies:
       - '@cfworker/json-schema'
@@ -6805,10 +6811,10 @@ snapshots:
       ollama: 0.6.3
       zod: 4.1.13
 
-  '@tanstack/ai-openai@0.2.1(@tanstack/ai@0.2.2)(ws@8.18.3)(zod@4.1.13)':
+  '@tanstack/ai-openai@0.2.1(@tanstack/ai@0.2.2)(ws@8.19.0)(zod@4.1.13)':
     dependencies:
       '@tanstack/ai': 0.2.2
-      openai: 6.9.1(ws@8.18.3)(zod@4.1.13)
+      openai: 6.9.1(ws@8.19.0)(zod@4.1.13)
       zod: 4.1.13
     transitivePeerDependencies:
       - ws
@@ -6835,7 +6841,7 @@ snapshots:
 
   '@tanstack/devtools-event-bus@0.3.3':
     dependencies:
-      ws: 8.18.3
+      ws: 8.19.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -9014,7 +9020,7 @@ snapshots:
       whatwg-encoding: 3.1.1
       whatwg-mimetype: 4.0.0
       whatwg-url: 15.1.0
-      ws: 8.18.3
+      ws: 8.19.0
       xml-name-validator: 5.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -9614,9 +9620,9 @@ snapshots:
     dependencies:
       mimic-fn: 2.1.0
 
-  openai@6.9.1(ws@8.18.3)(zod@4.1.13):
+  openai@6.9.1(ws@8.19.0)(zod@4.1.13):
     optionalDependencies:
-      ws: 8.18.3
+      ws: 8.19.0
       zod: 4.1.13
 
   optionator@0.9.4:
@@ -10749,7 +10755,7 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  ws@8.18.3: {}
+  ws@8.19.0: {}
 
   xml-name-validator@5.0.0: {}
 
