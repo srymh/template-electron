@@ -1,7 +1,7 @@
 import React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { electronApi } from '@/electronApi'
+import { api } from '@/api'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
@@ -52,7 +52,7 @@ function ShowOpenFileDialogRow() {
     isSuccess,
     isError,
   } = useMutation({
-    mutationFn: electronApi.fs.showOpenDialog,
+    mutationFn: api.fs.showOpenDialog,
   })
   const [files, setFiles] = React.useState<Array<string>>([])
 
@@ -119,7 +119,7 @@ function ShowOpenFileDialogAndReadAsTextRow() {
     isSuccess,
     isError,
   } = useMutation({
-    mutationFn: electronApi.fs.showOpenDialog,
+    mutationFn: api.fs.showOpenDialog,
   })
   const [filePath, setFilePath] = React.useState<string>('')
   const [content, setContent] = React.useState<string>('')
@@ -132,7 +132,7 @@ function ShowOpenFileDialogAndReadAsTextRow() {
     isSuccess: isSuccessOpenFile,
     isError: isErrorOpenFile,
   } = useMutation({
-    mutationFn: electronApi.fs.readFileAsText,
+    mutationFn: api.fs.readFileAsText,
     onSuccess: (data) => {
       setContent(data)
     },
@@ -224,13 +224,13 @@ function ShowOpenFileDialogAndReadAsImageRow() {
     isSuccess,
     isError,
   } = useMutation({
-    mutationFn: electronApi.fs.showOpenDialog,
+    mutationFn: api.fs.showOpenDialog,
   })
   const [filePath, setFilePath] = React.useState<string>('')
   const [content, setContent] = React.useState<ArrayBuffer | null>(null)
 
   const { mutate: readFileAsArrayBuffer } = useMutation({
-    mutationFn: electronApi.fs.readFileAsArrayBuffer,
+    mutationFn: api.fs.readFileAsArrayBuffer,
     onSuccess: (data) => {
       setContent(data)
     },
@@ -326,7 +326,7 @@ function ShowSaveDialogRow() {
     isSuccess,
     isError,
   } = useMutation({
-    mutationFn: electronApi.fs.showSaveDialog,
+    mutationFn: api.fs.showSaveDialog,
   })
   const [file, setFile] = React.useState<string>('')
   const handleClickAction = () => {
@@ -394,7 +394,7 @@ function ShowSaveDialogAndWriteAsTextRow() {
     isSuccess,
     isError,
   } = useMutation({
-    mutationFn: electronApi.fs.showSaveDialog,
+    mutationFn: api.fs.showSaveDialog,
   })
   const [file, setFile] = React.useState<string>('')
 
@@ -403,7 +403,7 @@ function ShowSaveDialogAndWriteAsTextRow() {
     isSuccess: isWriteSuccess,
     isError: isWriteError,
   } = useMutation({
-    mutationFn: electronApi.fs.writeFileAsText,
+    mutationFn: api.fs.writeFileAsText,
   })
 
   const handleClickAction = () => {
@@ -489,7 +489,7 @@ function ShowSaveDialogAndWriteAsArrayBufferRow() {
     isSuccess,
     isError,
   } = useMutation({
-    mutationFn: electronApi.fs.showSaveDialog,
+    mutationFn: api.fs.showSaveDialog,
   })
   const [file, setFile] = React.useState<string>('')
 
@@ -498,7 +498,7 @@ function ShowSaveDialogAndWriteAsArrayBufferRow() {
     isSuccess: isWriteSuccess,
     isError: isWriteError,
   } = useMutation({
-    mutationFn: electronApi.fs.writeFileAsArrayBuffer,
+    mutationFn: api.fs.writeFileAsArrayBuffer,
   })
 
   const handleClickAction = () => {
@@ -599,7 +599,7 @@ function ShowOpenFolderDialogRow() {
     isSuccess,
     isError,
   } = useMutation({
-    mutationFn: electronApi.fs.showOpenDialog,
+    mutationFn: api.fs.showOpenDialog,
   })
   const [folder, setFolder] = React.useState<string>('')
   const handleClickAction = () => {
@@ -662,19 +662,19 @@ function ShowOpenFolderDialogAndReadDirectoryRow() {
     isSuccess,
     isError,
   } = useMutation({
-    mutationFn: electronApi.fs.showOpenDialog,
+    mutationFn: api.fs.showOpenDialog,
   })
   const [folder, setFolder] = React.useState<string>('')
 
   const [entries, setEntries] = React.useState<
-    Awaited<ReturnType<typeof electronApi.fs.readDirectory>>
+    Awaited<ReturnType<typeof api.fs.readDirectory>>
   >([])
   const {
     mutate: readDirectory,
     isSuccess: isReadSuccess,
     isError: isReadError,
   } = useMutation({
-    mutationFn: electronApi.fs.readDirectory,
+    mutationFn: api.fs.readDirectory,
   })
 
   const handleClickAction = () => {
@@ -768,7 +768,7 @@ function GetPathForFileRow() {
   }
   const handleClickAction = async () => {
     if (file) {
-      const filePath = await window.electronApi.fs.getPathForFile({ file })
+      const filePath = await api.fs.getPathForFile({ file })
       setPath(filePath)
     }
   }
@@ -854,9 +854,7 @@ function FolderTree({
   depth?: number
   onSelectFile?: (path: string) => void
 }) {
-  type DirectoryEntry = Awaited<
-    ReturnType<typeof electronApi.fs.readDirectory>
-  >[number]
+  type DirectoryEntry = Awaited<ReturnType<typeof api.fs.readDirectory>>[number]
 
   type DirectoryEntryEx = DirectoryEntry & {
     isOpen: boolean
@@ -866,7 +864,7 @@ function FolderTree({
 
   const { data, isLoading, isFetching, isError, isSuccess } = useQuery({
     queryKey: ['readDirectory', folder],
-    queryFn: () => electronApi.fs.readDirectory({ path: folder }),
+    queryFn: () => api.fs.readDirectory({ path: folder }),
   })
 
   React.useEffect(() => {
@@ -985,7 +983,7 @@ function FileExplorer() {
     isError,
   } = useMutation({
     mutationFn: () =>
-      electronApi.fs.showOpenDialog({
+      api.fs.showOpenDialog({
         properties: ['openDirectory'],
       }),
     onSuccess: (result) => {
@@ -1097,7 +1095,7 @@ function FileDetails({ filePath }: { filePath: string }) {
     isSuccess,
     isError,
   } = useMutation({
-    mutationFn: electronApi.fs.readFileAsText,
+    mutationFn: api.fs.readFileAsText,
     onSuccess: (data) => {
       setTextContent(data)
     },
@@ -1128,7 +1126,7 @@ function FileDetails({ filePath }: { filePath: string }) {
       <div className="mt-2"></div>
       <button
         type="button"
-        onClick={() => electronApi.fs.openFileByDefaultApp({ path: filePath })}
+        onClick={() => api.fs.openFileByDefaultApp({ path: filePath })}
         disabled={isPending}
         className="bg-blue-500 text-white px-2 py-1 rounded-xs hover:bg-blue-600 disabled:opacity-50"
       >

@@ -2,7 +2,7 @@ import { createAppDataBase } from '../features/db/db'
 
 import type { WebContents } from 'electron'
 import type { DataBase } from '../features/db/db'
-import type { ApiInterface, WithWebContentsApi } from '../lib/ipc'
+import type { ApiInterface, WithWebContentsApi } from '#/shared/lib/ipc'
 
 // -----------------------------------------------------------------------------
 // 型定義

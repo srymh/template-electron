@@ -1,6 +1,6 @@
 import type { WebContents } from 'electron'
 
-import type { ApiInterface, WithWebContentsApi } from '../lib/ipc'
+import type { ApiInterface, WithWebContentsApi } from '#/shared/lib/ipc'
 import type { AuthRuntime } from '../features/auth/authRuntime'
 import type { AuthStatus } from '../features/auth/authService'
 

@@ -1,6 +1,6 @@
 import crypto from 'node:crypto'
 
-import { createResponseChannel } from '../lib/ipc'
+import { createResponseChannel } from '#/shared/lib/ipc'
 import { AiAgent } from '../features/ai-agent/AiAgent'
 
 import type { WebContents } from 'electron'
@@ -9,7 +9,7 @@ import type {
   AddListener,
   WithWebContents,
   WithWebContentsApi,
-} from '../lib/ipc'
+} from '#/shared/lib/ipc'
 
 // -----------------------------------------------------------------------------
 // 型定義

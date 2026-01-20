@@ -61,6 +61,11 @@ export default defineConfig(({ command }) => {
                 ),
               },
             },
+            resolve: {
+              alias: {
+                '#': fileURLToPath(new URL('./electron', import.meta.url)),
+              },
+            },
           },
         },
         preload: {
@@ -76,6 +81,11 @@ export default defineConfig(({ command }) => {
                 external: Object.keys(
                   'dependencies' in pkg ? pkg.dependencies : {},
                 ),
+              },
+            },
+            resolve: {
+              alias: {
+                '#': fileURLToPath(new URL('./electron', import.meta.url)),
               },
             },
           },

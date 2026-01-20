@@ -1,10 +1,10 @@
-const isElectron = (window.electronApi as unknown) !== undefined
+export type ElectronApi = typeof window.api
 
-export type ElectronApi = typeof window.electronApi
+export const api: ElectronApi = (() => {
+  const isElectron = (window.api as unknown) !== undefined
 
-export const electronApi: ElectronApi = (() => {
   if (isElectron) {
-    return window.electronApi
+    return window.api
   } else {
     let mockUser: { username: string } | null = null
 

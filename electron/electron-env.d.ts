@@ -25,5 +25,5 @@ declare namespace NodeJS {
 
 // Used in Renderer process, expose in `preload/index.ts`
 interface Window {
-  electronApi: import('./main/ipc/electronApi').ElectronApi
+  api: import('#/main/ipc/electronApi').ElectronApi
 }

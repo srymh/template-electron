@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { electronApi } from '@/electronApi'
+import { api } from '@/api'
 
 type Theme = 'dark' | 'light' | 'system'
 
@@ -33,7 +33,7 @@ export function ThemeProvider({
   })
 
   useEffect(() => {
-    const unsubscribe = electronApi.theme.on.updated((newTheme) => {
+    const unsubscribe = api.theme.on.updated((newTheme) => {
       console.log('Theme updated:', newTheme)
       setTheme(newTheme)
     })
@@ -64,7 +64,7 @@ export function ThemeProvider({
     setTheme: async (currentTheme: Theme) => {
       // 本当は localStorage ではなく、メインプロセスで保持するべき
       localStorage.setItem(storageKey, currentTheme)
-      await electronApi.theme.setTheme({ theme: currentTheme })
+      await api.theme.setTheme({ theme: currentTheme })
       setTheme(currentTheme)
     },
   }
