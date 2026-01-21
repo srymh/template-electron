@@ -1,145 +1,93 @@
-import { app, BrowserWindow } from 'electron'
-import { registerCustomProtocol } from './infra/registerCustomProtocol'
-// import { createRequire } from 'node:module'
+import { BrowserWindow } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
-
-import { createContextMenu } from './windows/contextMenu'
-import { registerIpc } from './ipc/registerIpc'
+import { createWindow } from './windows/createWindow'
 import { createAuthRuntime } from './features/auth/authRuntime'
-
-import type { WebContents } from 'electron'
-import type { AiAgent } from './features/ai-agent/AiAgent'
-import type { McpServer } from './features/mcp'
-import type { DataBase } from './features/db/db'
 import type { Context } from './ipc/registerIpc'
-import type { AuthRuntime } from './features/auth/authRuntime'
+import { startApp, type AppContext } from './app/startApp'
+import { resolveMainPaths } from './infra/paths'
 
-// const require = createRequire(import.meta.url)
+/** __dirname の代替 */
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-// The built directory structure
-//
-// ├─┬─┬ dist
-// │ │ └── index.html
-// │ │
-// │ ├─┬ dist-electron
-// │ │ ├─┬ main
-// │ │ │ └── index.js
-// │ │ └─┬ preload
-// │ │   └── index.mjs
-// │
-process.env.APP_ROOT = path.join(__dirname, '..', '..')
+/** 開発時の Vite dev server URL */
+const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL
 
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
-export const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
-export const MAIN_DIST = path.join(process.env.APP_ROOT, 'dist-electron')
-export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
+startApp({
+  openMainWindow,
+  paths: resolveMainPaths({
+    dirname: __dirname,
+    viteDevServerUrl: VITE_DEV_SERVER_URL,
+  }),
+})
 
-process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
-  ? path.join(process.env.APP_ROOT, 'public')
-  : RENDERER_DIST
-
-let win: BrowserWindow | null
-let aiAgent: AiAgent | null = null
-let mcpServer: McpServer | null = null
-let db: DataBase | null = null
-const registerIpcCache = new WeakMap<WebContents, Map<string, () => void>>()
-const contextMap = new WeakMap<WebContents, Context>()
-
-function createWindow(authRuntime: AuthRuntime) {
-  const wind = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
-    webPreferences: {
-      preload: path.join(__dirname, '..', 'preload', 'index.mjs'),
+async function openMainWindow(ctx: AppContext) {
+  await createWindow(
+    async (win) => {
+      if (VITE_DEV_SERVER_URL) {
+        await win.loadURL(VITE_DEV_SERVER_URL)
+      } else {
+        await win.loadFile(ctx.paths.indexHtmlPath)
+      }
     },
-  })
-  win = wind
+    {
+      browserWindowOptions: {
+        icon: ctx.paths.iconPath,
+        webPreferences: {
+          preload: ctx.paths.preloadPath,
+        },
+      },
+      onCreated: (win) => {
+        const windowContext = createWindowContext(ctx, win)
+        ctx.windowContextMap.set(win.webContents, windowContext)
+        ctx.windowsById.set(win.id, win)
+      },
+      onClose: (win) => {
+        ctx.windowsById.delete(win.id)
+        ctx.windowContextMap.delete(win.webContents)
+      },
+      onClosed: () => {
+        // 何もしない
+      },
+    },
+  )
+}
 
-  win.webContents.on('context-menu', (_, params) => {
-    if (win == null) return
-    const menu = createContextMenu(win.webContents)
-    menu.popup({
-      window: win,
-      x: params.x,
-      y: params.y,
-    })
-  })
+function createWindowContext(ctx: AppContext, win: BrowserWindow): Context {
+  // もし window 固有の情報を管理したい場合はここで追加する
+  void win
 
-  contextMap.set(wind.webContents, {
+  return {
     mcp: {
-      getMcpServer: () => mcpServer,
+      getMcpServer: () => ctx.mcpServer,
       setMcpServer: (server) => {
-        mcpServer = server
+        ctx.mcpServer = server
       },
     },
     aiAgent: {
-      getAiAgent: () => aiAgent,
+      getAiAgent: () => ctx.aiAgent,
       setAiAgent: (agent) => {
-        aiAgent = agent
+        ctx.aiAgent = agent
       },
     },
     kakeibo: {
-      getDb: () => db,
+      getDb: () => ctx.db,
       setDb: (newDb) => {
-        db = newDb
+        ctx.db = newDb
       },
     },
     auth: {
-      getRuntime: () => authRuntime,
+      getRuntime: () => {
+        const runtime = ctx.authRuntime
+        if (runtime) {
+          return runtime
+        }
+
+        const newRuntime = createAuthRuntime()
+        ctx.authRuntime = newRuntime
+        ctx.disposeSet.add(() => newRuntime.dispose())
+        return newRuntime
+      },
     },
-  })
-
-  // Test active push message to Renderer-process.
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', new Date().toLocaleString())
-  })
-
-  if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL)
-  } else {
-    // win.loadFile('dist/index.html')
-    win.loadFile(path.join(RENDERER_DIST, 'index.html'))
   }
 }
-
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-    win = null
-  }
-})
-
-app.whenReady().then(() => {
-  registerCustomProtocol()
-
-  const authRuntime = createAuthRuntime()
-
-  app.on('before-quit', () => {
-    authRuntime.dispose()
-  })
-
-  app.on('activate', () => {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow(authRuntime)
-    }
-  })
-
-  // IPC登録（window が load して renderer が invoke する前に必ず登録しておく）
-  registerIpc({
-    getContext: (webContents: WebContents) => {
-      if (!contextMap.has(webContents)) {
-        throw new Error('Context is not found')
-      }
-      return contextMap.get(webContents)!
-    },
-    cache: registerIpcCache,
-  })
-
-  createWindow(authRuntime)
-})
