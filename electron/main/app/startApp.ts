@@ -1,59 +1,39 @@
 import { app, BrowserWindow } from 'electron'
-import { registerCustomProtocol } from '#/main/infra/registerCustomProtocol'
-import { registerIpc } from '#/main/ipc/registerIpc'
 
-import type { WebContents } from 'electron'
-import type { MainPaths } from '#/main/infra/paths'
-import type { AiAgent } from '#/main/features/ai-agent/AiAgent'
-import type { McpServer } from '#/main/features/mcp'
-import type { DataBase } from '#/main/features/db/db'
-import type { AuthRuntime } from '#/main/features/auth/authRuntime'
-import type { Context } from '#/main/ipc/registerIpc'
-
-/**
- * アプリケーション全体のコンテキスト。
- */
-export type AppContext = {
-  windowsById: Map<number, BrowserWindow>
-  windowContextMap: WeakMap<WebContents, Context>
-
-  aiAgent: AiAgent | null
-  mcpServer: McpServer | null
-  db: DataBase | null
-  authRuntime: AuthRuntime | null
-
-  registerIpcCache: WeakMap<WebContents, Map<string, () => void>>
-  paths: MainPaths
-
-  /** before-quit で呼ばれる破棄処理（同期/非同期混在可） */
-  disposeSet: Set<(() => void) | (() => Promise<void>)>
-  isDisposed: boolean
+export interface AppRuntime {
+  // 破棄処理を追加する
+  addDispose(dispose: () => void | Promise<void>): void
 }
 
-export function startApp(options: {
-  openMainWindow: (appContext: AppContext) => Promise<void>
-  paths: MainPaths
+export async function startApp<TAppContext>(options: {
+  onAppReady: ({
+    appRuntime,
+    appContext,
+  }: {
+    appRuntime: AppRuntime
+    appContext: TAppContext
+  }) => void | Promise<void>
+  openMainWindow: ({
+    appRuntime,
+    appContext,
+  }: {
+    appRuntime: AppRuntime
+    appContext: TAppContext
+  }) => void
+  createAppContext: () => Promise<TAppContext>
 }) {
-  const { openMainWindow, paths } = options
+  const { onAppReady, openMainWindow, createAppContext } = options
 
-  /** --------------------------------------------------------------------------
-   *
-   * app コンテキスト作成
-   *
-   * ------------------------------------------------------------------------ */
+  const appContext: TAppContext = await createAppContext()
 
-  const appContext: AppContext = {
-    // TODO: BrowserWindow.getAllWindows() で代替できるか検討
-    windowsById: new Map(),
-    windowContextMap: new WeakMap(),
-    aiAgent: null,
-    mcpServer: null,
-    db: null,
-    authRuntime: null,
-    registerIpcCache: new WeakMap(),
-    paths,
-    disposeSet: new Set(),
-    isDisposed: false,
+  /** before-quit で呼ばれる破棄処理（同期/非同期混在可） */
+  const disposeSet: Set<(() => void) | (() => Promise<void>)> = new Set()
+  let isDisposing = false
+
+  const appRuntime: AppRuntime = {
+    addDispose(dispose) {
+      disposeSet.add(dispose)
+    },
   }
 
   /** --------------------------------------------------------------------------
@@ -85,7 +65,7 @@ export function startApp(options: {
     // macOS では、ドックアイコンがクリックされ、他に開いているウィンドウがない場合に
     // アプリ内でウィンドウを再作成するのが一般的です。
     if (BrowserWindow.getAllWindows().length === 0) {
-      openMainWindow(appContext)
+      openMainWindow({ appRuntime, appContext })
     }
   })
 
@@ -95,18 +75,19 @@ export function startApp(options: {
    * https://www.electronjs.org/ja/docs/latest/api/app#%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88-before-quit
    */
   app.on('before-quit', (event) => {
-    if (appContext.isDisposed) {
+    if (isDisposing) {
+      event.preventDefault()
       return
     }
+    isDisposing = true
 
     // Node の EventEmitter は async handler を await しないため、
     // preventDefault して破棄処理完了後に quit を再実行する。
     event.preventDefault()
-    appContext.isDisposed = true
 
     void (async () => {
-      const disposers = Array.from(appContext.disposeSet)
-      appContext.disposeSet.clear()
+      const disposers = Array.from(disposeSet)
+      disposeSet.clear()
 
       const results = await Promise.allSettled(
         disposers.map(async (dispose) => {
@@ -130,22 +111,12 @@ export function startApp(options: {
    *
    * ------------------------------------------------------------------------ */
 
-  app.whenReady().then(() => {
-    registerCustomProtocol()
+  // app が準備完了するまで待機
+  await app.whenReady()
 
-    // IPC登録（window が load して renderer が invoke する前に必ず登録しておく）
-    registerIpc({
-      getContext: (webContents: WebContents) => {
-        if (!appContext.windowContextMap.has(webContents)) {
-          throw new Error('Context is not found')
-        }
-        return appContext.windowContextMap.get(webContents)!
-      },
-      cache: appContext.registerIpcCache,
-    })
+  // app が準備完了した後の処理
+  await onAppReady({ appRuntime, appContext })
 
-    openMainWindow(appContext).catch((err) => {
-      console.error('ウィンドウの作成に失敗しました:', err)
-    })
-  })
+  // メインウィンドウを開く
+  openMainWindow({ appRuntime, appContext })
 }
