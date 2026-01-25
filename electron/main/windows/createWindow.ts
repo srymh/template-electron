@@ -1,5 +1,23 @@
-import { BrowserWindow, type BrowserWindowConstructorOptions } from 'electron'
+import {
+  BrowserWindow,
+  shell,
+  type BrowserWindowConstructorOptions,
+} from 'electron'
 import { createContextMenu } from './createContextMenu'
+
+/**
+ * セキュリティ推奨設定。
+ */
+export const recommendedSecureOptions = {
+  contextIsolation: true,
+  nodeIntegration: false,
+  nodeIntegrationInWorker: false,
+  nodeIntegrationInSubFrames: false,
+  sandbox: true,
+  webviewTag: false,
+  spellcheck: false,
+  navigateOnDragDrop: false,
+}
 
 export async function createWindow(
   loadRenderer: (win: BrowserWindow) => Promise<void>,
@@ -103,6 +121,33 @@ export async function createWindow(
     win.webContents.send('main-process-message', new Date().toLocaleString())
   })
 
+  win.webContents.on('will-navigate', (event, url) => {
+    if (isAllowedExternalUrl(url)) {
+      // 外部URLはアプリ内で開かず、OS既定ブラウザへ委譲
+      event.preventDefault()
+      void shell.openExternal(url)
+      return
+    }
+  })
+
+  win.webContents.on('will-redirect', (event, url) => {
+    if (isAllowedExternalUrl(url)) {
+      // リダイレクト先が外部URLならOSで開く
+      event.preventDefault()
+      void shell.openExternal(url)
+      return
+    }
+  })
+
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    // window.open は常に拒否。
+    // ただし安全な外部URLならOS既定ブラウザで開く。
+    if (isAllowedExternalUrl(url)) {
+      void shell.openExternal(url)
+    }
+    return { action: 'deny' }
+  })
+
   /** --------------------------------------------------------------------------
    *
    * Renderer ロード処理
@@ -110,4 +155,21 @@ export async function createWindow(
    * ------------------------------------------------------------------------ */
 
   await loadRenderer(win)
+}
+
+/**
+ * 許可されたナビゲーション URL かどうかを判定する。
+ * アプリ内で遷移を許可する URL をここで指定する。
+ */
+const isAllowedExternalUrl = (urlString: string) => {
+  try {
+    const url = new URL(urlString)
+    return (
+      url.protocol === 'https:' ||
+      url.protocol === 'http:' ||
+      url.protocol === 'mailto:'
+    )
+  } catch {
+    return false
+  }
 }

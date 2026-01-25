@@ -11,7 +11,7 @@ import { startApp, type AppRuntime } from './app/startApp'
 import { createAuthRuntime } from './features/auth/authRuntime'
 import { resolveMainPaths, type MainPaths } from './infra/paths'
 import { registerCustomProtocol } from './infra/registerCustomProtocol'
-import { createWindow } from './windows/createWindow'
+import { createWindow, recommendedSecureOptions } from './windows/createWindow'
 
 /** __dirname の代替 */
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -70,9 +70,14 @@ startApp<AppContext>({
         }
       },
       {
+        /** --------------------------------------------------------------------
+         * BrowserWindow のオプション設定
+         * ------------------------------------------------------------------ */
         browserWindowOptions: {
           icon: appContext.paths.iconPath,
+          autoHideMenuBar: true,
           webPreferences: {
+            ...recommendedSecureOptions,
             preload: appContext.paths.preloadPath,
           },
         },
