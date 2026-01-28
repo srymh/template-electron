@@ -6,7 +6,7 @@ import type {
   AddListener,
   WithWebContents,
   WithWebContentsApi,
-} from '../lib/ipc'
+} from '#/shared/lib/ipc'
 
 // -----------------------------------------------------------------------------
 // 型定義

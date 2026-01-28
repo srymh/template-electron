@@ -1,10 +1,14 @@
 import { chat, toolDefinition } from '@tanstack/ai'
 import { createOllamaChat } from '@tanstack/ai-ollama'
 
-import { createResponseChannel } from '../lib/ipc'
+import { createResponseChannel } from '#/shared/lib/ipc'
 
 import type { ModelMessage, StreamChunk } from '@tanstack/ai'
-import type { AddListener, ApiInterface, WithWebContentsApi } from '../lib/ipc'
+import type {
+  AddListener,
+  ApiInterface,
+  WithWebContentsApi,
+} from '#/shared/lib/ipc'
 import { nativeTheme } from 'electron'
 
 // -----------------------------------------------------------------------------

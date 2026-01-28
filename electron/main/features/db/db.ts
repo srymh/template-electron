@@ -14,10 +14,6 @@
  *   制約のもと、利用側からファイル名を受け取って解決します。
  */
 import BetterSqlite3 from 'better-sqlite3'
-import path from 'node:path'
-import { existsSync } from 'node:fs'
-import { app } from 'electron'
-import { fileURLToPath } from 'node:url'
 
 import type { Database as BetterSqlite3Database, Options } from 'better-sqlite3'
 
@@ -100,53 +96,12 @@ export class DataBase {
 }
 
 /**
- * 開発時/パッケージ後で異なる DB パスを解決するヘルパー。
- * - 開発時: プロジェクト直下の `data/your-database.db`
- * - 本番(パッケージ後):
- *   - extraResources を使う場合: `${process.resourcesPath}/data/your-database.db`
- *   - asarUnpack を使う場合: `${process.resourcesPath}/app.asar.unpacked/data/your-database.db`
- */
-export function resolveDatabasePath(filename: string): string {
-  // 開発（未パッケージ）: いくつかの候補を順にチェック
-  if (!app.isPackaged) {
-    // __dirname が未定義な（ESM）環境でも動作するようにモジュールディレクトリを解決
-    const moduleDir =
-      typeof __dirname !== 'undefined'
-        ? __dirname
-        : path.dirname(fileURLToPath(import.meta.url))
-    const devCandidates = [
-      path.join(process.cwd(), 'data', filename),
-      path.join(moduleDir, '../data', filename),
-      path.join(moduleDir, '../../data', filename),
-    ]
-    for (const p of devCandidates) {
-      if (existsSync(p)) return p
-    }
-    // 最後のフォールバック
-    return path.join(process.cwd(), 'data', filename)
-  }
-
-  // 本番（パッケージ後）: extraResources と asarUnpack の両方に対応
-  const inExtraResources = path.join(process.resourcesPath, 'data', filename)
-  if (existsSync(inExtraResources)) return inExtraResources
-
-  const inAsarUnpacked = path.join(
-    process.resourcesPath,
-    'app.asar.unpacked',
-    'data',
-    filename,
-  )
-  return inAsarUnpacked
-}
-
-/**
  * 既定の場所から DB を開くファクトリ。
  * @param options better-sqlite3 のオプション（readonly 推奨）
  */
 export function createAppDataBase(
-  filename: string,
+  filePath: string,
   options?: Options,
 ): DataBase {
-  const dbPath = resolveDatabasePath(filename)
-  return new DataBase(dbPath, options)
+  return new DataBase(filePath, options)
 }
