@@ -6,11 +6,31 @@
   productName: 'YourAppName',
   directories: {
     output: 'release/${version}',
+    buildResources: 'dist',
   },
   files: ['dist', 'dist-electron', 'node_modules/**', 'data/**'],
-  // 例: better-sqlite3 は asar アーカイブ内のファイルを直接開けないため、
-  // data/**.db のようなファイルを展開対象にしておく必要がある。
-  asarUnpack: ['**/*.node', 'data/**'],
+
+  // better-sqlite3 は asar アーカイブ内のファイルを直接開けないため、
+  // data/**.db のようなファイルを明示的にリソースとしてコピーする指示が必要。
+  // また、.node ファイルも asar アーカイブ外に展開する必要がある。
+  //
+  // 1) asarUnpack に指定したフォルダは asar の有効/無効によって以下のように配置される
+  // フォルダが異なる。
+  //
+  // - resources/app.asar.unpacked/data (asar: true)
+  // - resources/app/data               (asar: false)
+  //
+  // 2) 一方 extraResources に指定したフォルダは asar に関わらず次の場所にコピーされる。
+  // - resources/data
+  //
+  // プログラム実行時、asar が true なのか false なのかを判別するのは難しいため、
+  // data/**.db に関しては asar に関わらず同じ場所に存在する extraResources で
+  // コピーするのが無難。
+  // .node ファイルは import や require が自動的にパスを解決してくれるため
+  // asarUnpack で展開するのが良い。
+  asarUnpack: ['**/*.node'],
+  extraResources: ['data/**'],
+
   mac: {
     target: ['dmg'],
     artifactName: '${productName}-Mac-${version}-Installer.${ext}',
@@ -23,8 +43,12 @@
       },
     ],
     artifactName: '${productName}-Windows-${version}-Setup.${ext}',
+    icon: 'dist/app.ico',
   },
   nsis: {
+    installerIcon: 'dist/app.ico',
+    uninstallerIcon: 'dist/app.ico',
+    installerHeaderIcon: 'dist/app.ico',
     oneClick: false,
     perMachine: false,
     allowToChangeInstallationDirectory: true,

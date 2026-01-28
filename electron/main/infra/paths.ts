@@ -1,8 +1,93 @@
 import path from 'node:path'
 
 /**
- * @todo DEV時のディレクトリ構成
- * @todo PROD時のディレクトリ構成
+ *
+ * -----------------------------------------------------------------------------
+ * DEV時のディレクトリ構成
+ *
+ * ```
+ * $root/
+ * ├─ package.json
+ * ├─ dist-electron/
+ * │   ├─ main/
+ * │   │   └─ index.js
+ * │   └─ preload/
+ * │       └─ index.mjs
+ * ├─ public/
+ * └─ data/
+ * ```
+ *
+ * ※ dist は参照しない
+ *
+ * ```
+ * {
+ *   appRoot:       '$root',
+ *   mainDist:      '$root/dist-electron',
+ *   rendererDist:  '',
+ *   vitePublic:    '$root/public',
+ *   preloadPath:   '$root/dist-electron/preload/index.mjs',
+ *   indexHtmlPath: '',
+ *   dataPath:      '$root/data'
+ * }
+ * ```
+ *
+ * -----------------------------------------------------------------------------
+ * PROD時のディレクトリ構成(asar有効の場合)
+ *
+ * ```
+ * $root/
+ * └─ resources/
+ *    ├─ app.asar
+ *    │    ├─ dist-electron/
+ *    │    │   ├─ main/
+ *    │    │   │   └─ index.js
+ *    │    │   └─ preload/
+ *    │    │       └─ index.mjs
+ *    │    └─ dist/
+ *    │        └─ index.html
+ *    └─ data/
+ * ```
+ *
+ * ```
+ * {
+ *   appRoot:       '$root/resources/app.asar',
+ *   mainDist:      '$root/resources/app.asar/dist-electron',
+ *   rendererDist:  '$root/resources/app.asar/dist',
+ *   vitePublic:    '$root/resources/app.asar/dist',
+ *   preloadPath:   '$root/resources/app.asar/dist-electron/preload/index.mjs',
+ *   indexHtmlPath: '$root/resources/app.asar/dist/index.html',
+ *   dataPath:      '$root/resources/data'
+ * }
+ * ```
+ *
+ * -----------------------------------------------------------------------------
+ * PROD時のディレクトリ構成(asar無効の場合)
+ *
+ * ```
+ * $root/
+ * └─ resources/
+ *    ├─ app/
+ *    │    ├─ dist-electron/
+ *    │    │   ├─ main/
+ *    │    │   │   └─ index.js
+ *    │    │   └─ preload/
+ *    │    │       └─ index.mjs
+ *    │    └─ dist/
+ *    │        └─ index.html
+ *    └─ data/
+ * ```
+ *
+ * ```
+ * {
+ *   appRoot:       '$root/resources/app',
+ *   mainDist:      '$root/resources/app/dist-electron',
+ *   rendererDist:  '$root/resources/app/dist',
+ *   vitePublic:    '$root/resources/app/dist',
+ *   preloadPath:   '$root/resources/app/dist-electron/preload/index.mjs',
+ *   indexHtmlPath: '$root/resources/app/dist/index.html',
+ *   dataPath:      '$root/resources/data'
+ * }
+ * ```
  */
 
 /**
@@ -22,12 +107,10 @@ export type MainPaths = {
   vitePublic: string
   /** preload スクリプトのパス（例: `dist-electron/preload/index.mjs`） */
   preloadPath: string
-  /** ウィンドウアイコンのパス */
-  iconPath: string
   /** Renderer のエントリ HTML のパス（例: `dist/index.html`） */
   indexHtmlPath: string
-
-  /** @todo Dataフォルダのパス */
+  /** data */
+  dataPath: string
 }
 
 /**
@@ -42,25 +125,39 @@ export type MainPaths = {
  * @returns main/renderer/preload 等で利用するパス一式
  */
 export function resolveMainPaths(args: {
+  isPackaged: boolean
   /** Equivalent to `path.dirname(fileURLToPath(import.meta.url))` in `electron/main/index.ts` */
   dirname: string
-  viteDevServerUrl: string | undefined
 }): MainPaths {
-  const appRoot = path.join(args.dirname, '..', '..')
-  const mainDist = path.join(appRoot, 'dist-electron')
-  const rendererDist = path.join(appRoot, 'dist')
+  const { isPackaged: isProd, dirname } = args
 
-  const vitePublic = args.viteDevServerUrl
-    ? path.join(appRoot, 'public')
-    : rendererDist
+  const appRoot = path.join(dirname, '..', '..')
+
+  const mainDist = path.join(appRoot, 'dist-electron')
+  const preloadPath = path.join(mainDist, 'preload', 'index.mjs')
+
+  const rendererDist = isProd
+    ? path.join(appRoot, 'dist')
+    : // DEV時には使用しない
+      ''
+
+  const vitePublic = isProd ? rendererDist : path.join(appRoot, 'public')
+  const indexHtmlPath = isProd
+    ? path.join(rendererDist, 'index.html')
+    : // DEV時には使用しない
+      ''
+
+  const dataPath = isProd
+    ? path.join(process.resourcesPath, 'data')
+    : path.join(appRoot, 'data')
 
   return {
     appRoot,
     mainDist,
     rendererDist,
     vitePublic,
-    preloadPath: path.join(args.dirname, '..', 'preload', 'index.mjs'),
-    iconPath: path.join(vitePublic, 'favicon.ico'),
-    indexHtmlPath: path.join(rendererDist, 'index.html'),
+    preloadPath,
+    indexHtmlPath,
+    dataPath,
   }
 }

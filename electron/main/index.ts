@@ -1,10 +1,10 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { BrowserWindow, type WebContents } from 'electron'
+import { app, BrowserWindow, type WebContents } from 'electron'
 
 import type { AiAgent } from './features/ai-agent/AiAgent'
 import type { AuthRuntime } from './features/auth/authRuntime'
-import type { DataBase } from './features/db/db'
+import { createAppDataBase, type DataBase } from './features/db/db'
 import type { McpServer } from './features/mcp'
 import { registerIpc, type Context } from './ipc/registerIpc'
 import { startApp, type AppRuntime } from './app/startApp'
@@ -74,7 +74,7 @@ startApp<AppContext>({
          * BrowserWindow のオプション設定
          * ------------------------------------------------------------------ */
         browserWindowOptions: {
-          icon: appContext.paths.iconPath,
+          icon: path.join(appContext.paths.vitePublic, 'app.ico'),
           autoHideMenuBar: true,
           webPreferences: {
             ...recommendedSecureOptions,
@@ -112,8 +112,8 @@ startApp<AppContext>({
       authRuntime: null,
       registerIpcCache: new WeakMap(),
       paths: resolveMainPaths({
+        isPackaged: app.isPackaged,
         dirname: __dirname,
-        viteDevServerUrl: VITE_DEV_SERVER_URL,
       }),
     }
   },
@@ -146,9 +146,24 @@ function createWindowContext(
       },
     },
     kakeibo: {
-      getDb: () => appContext.db,
-      setDb: (newDb) => {
-        appContext.db = newDb
+      getDb: () => {
+        if (!appContext.db) {
+          try {
+            const db = createAppDataBase(
+              path.join(appContext.paths.dataPath, 'kakeibo.db'),
+              {
+                readonly: false,
+                fileMustExist: false,
+              },
+            )
+            appContext.db = db
+            console.log(`[DB] Database opened successfully at kakeibo.db`)
+          } catch (error) {
+            console.error('[DB] Failed to open database:', error)
+            throw error
+          }
+        }
+        return appContext.db
       },
     },
     auth: {
