@@ -1,6 +1,6 @@
 import React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { electronApi } from '@/electronApi'
+import { web } from '@/api'
 
 import {
   ContextMenu,
@@ -18,10 +18,10 @@ const useBlurState = () => {
   const [isBlurred, setIsBlurred] = React.useState(false)
 
   React.useEffect(() => {
-    const unsubscribeBlur = electronApi.web.on.blur(() => {
+    const unsubscribeBlur = web.on.blur(() => {
       setIsBlurred(true)
     })
-    const unsubscribeFocus = electronApi.web.on.focus(() => {
+    const unsubscribeFocus = web.on.focus(() => {
       setIsBlurred(false)
     })
 
@@ -55,7 +55,7 @@ const useBlurStateByBrowser = () => {
 
 const useFoundInPage = () => {
   React.useEffect(() => {
-    const unsubscribeFoundInPage = electronApi.web.on.foundInPage((result) => {
+    const unsubscribeFoundInPage = web.on.foundInPage((result) => {
       console.log('Found in page:', result)
     })
 
@@ -122,7 +122,7 @@ function RouteComponent() {
           <button
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             onClick={() => {
-              electronApi.web.findInPage({ text: 'Electron' })
+              web.findInPage({ text: 'Electron' })
             }}
           >
             Find in Page
@@ -144,7 +144,7 @@ function ContextMenuWrapper({ children }: { children: React.ReactNode }) {
           onSelect={() => {
             const text = window.getSelection()?.toString() || ''
             if (text) {
-              electronApi.web.findInPage({ text })
+              web.findInPage({ text })
             }
           }}
         >
@@ -152,7 +152,7 @@ function ContextMenuWrapper({ children }: { children: React.ReactNode }) {
         </ContextMenuItem>
         <ContextMenuItem
           onSelect={() => {
-            electronApi.web.stopFindInPage({ action: 'clearSelection' })
+            web.stopFindInPage({ action: 'clearSelection' })
           }}
         >
           探すのをやめる

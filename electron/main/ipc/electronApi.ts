@@ -1,18 +1,18 @@
 import { webUtils } from 'electron'
-import { createElectronApi } from '../lib/ipc/browser'
+import { createElectronApi } from '#/shared/lib/ipc/browser'
 
 import type {
   FileSystemApi,
   FileSystemRendererApi,
   FS_API_KEY,
-} from '../features/fs'
-import type { ThemeApi, THEME_API_KEY } from '../features/theme'
-import type { WebApi, WEB_API_KEY } from '../features/web'
-import type { McpApi, MCP_API_KEY } from '../features/mcp'
-import type { AiAgentApi, AI_AGENT_API_KEY } from '../features/aiAgent'
-import type { AiChatApi, AI_CHAT_API_KEY } from '../features/aiChat'
-import type { KakeiboApi, Kakeibo_API_KEY } from '../features/kakeibo'
-import type { AuthApi, AUTH_API_KEY } from '../features/auth'
+} from '#/main/api/fs'
+import type { ThemeApi, THEME_API_KEY } from '#/main/api/theme'
+import type { WebApi, WEB_API_KEY } from '#/main/api/web'
+import type { McpApi, MCP_API_KEY } from '#/main/api/mcp'
+import type { AiAgentApi, AI_AGENT_API_KEY } from '#/main/api/aiAgent'
+import type { AiChatApi, AI_CHAT_API_KEY } from '#/main/api/aiChat'
+import type { KakeiboApi, Kakeibo_API_KEY } from '#/main/api/kakeibo'
+import type { AuthApi, AUTH_API_KEY } from '#/main/api/auth'
 
 type ElectronRendererApi = {
   [FS_API_KEY]: FileSystemRendererApi

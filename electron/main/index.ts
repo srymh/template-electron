@@ -1,145 +1,217 @@
-import { app, BrowserWindow } from 'electron'
-import { registerCustomProtocol } from './infra/registerCustomProtocol'
-// import { createRequire } from 'node:module'
-import { fileURLToPath } from 'node:url'
 import path from 'node:path'
+import { fileURLToPath, pathToFileURL } from 'node:url'
+import { app, BrowserWindow, type WebContents } from 'electron'
 
-import { createContextMenu } from './windows/contextMenu'
-import { registerIpc } from './ipc/register'
-import { createAuthRuntime } from './services/auth/authRuntime'
+import type { AiAgent } from './features/ai-agent/AiAgent'
+import type { AuthRuntime } from './features/auth/authRuntime'
+import { createAppDataBase, type DataBase } from './features/db/db'
+import type { McpServer } from './features/mcp'
+import { registerIpc, type Context } from './ipc/registerIpc'
+import { startApp, type AppRuntime } from './app/startApp'
+import { createAuthRuntime } from './features/auth/authRuntime'
+import { resolveMainPaths, type MainPaths } from './infra/paths'
+import { registerCustomProtocol } from './infra/registerCustomProtocol'
+import { createWindow, recommendedSecureOptions } from './windows/createWindow'
 
-import type { WebContents } from 'electron'
-import type { AiAgent } from './services/ai-agent/AiAgent'
-import type { McpServer } from './services/mcp'
-import type { DataBase } from './services/db/db'
-import type { Context as AppContext } from './ipc/register'
-import type { AuthRuntime } from './services/auth/authRuntime'
-
-// const require = createRequire(import.meta.url)
+/** __dirname の代替 */
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-// The built directory structure
-//
-// ├─┬─┬ dist
-// │ │ └── index.html
-// │ │
-// │ ├─┬ dist-electron
-// │ │ ├─┬ main
-// │ │ │ └── index.js
-// │ │ └─┬ preload
-// │ │   └── index.mjs
-// │
-process.env.APP_ROOT = path.join(__dirname, '..', '..')
+/** 開発時の Vite dev server URL */
+const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL
 
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
-export const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
-export const MAIN_DIST = path.join(process.env.APP_ROOT, 'dist-electron')
-export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
+/**
+ * アプリケーション全体のコンテキスト。
+ */
+type AppContext = {
+  windowsById: Map<number, BrowserWindow>
+  windowContextMap: WeakMap<WebContents, Context>
 
-process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
-  ? path.join(process.env.APP_ROOT, 'public')
-  : RENDERER_DIST
+  aiAgent: AiAgent | null
+  mcpServer: McpServer | null
+  db: DataBase | null
+  authRuntime: AuthRuntime | null
 
-let win: BrowserWindow | null
-let aiAgent: AiAgent | null = null
-let mcpServer: McpServer | null = null
-let db: DataBase | null = null
-const registerIpcCache = new WeakMap<WebContents, Map<string, () => void>>()
-const contextMap = new WeakMap<WebContents, AppContext>()
+  registerIpcCache: WeakMap<WebContents, Map<string, () => void>>
+  paths: MainPaths
+}
 
-function createWindow(authRuntime: AuthRuntime) {
-  const wind = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
-    webPreferences: {
-      preload: path.join(__dirname, '..', 'preload', 'index.mjs'),
-    },
-  })
-  win = wind
+startApp<AppContext>({
+  /** --------------------------------------------------------------------------
+   *
+   * app 準備完了後の処理
+   *
+   * ------------------------------------------------------------------------ */
+  onAppReady: async ({ appContext }) => {
+    registerCustomProtocol()
 
-  win.webContents.on('context-menu', (_, params) => {
-    if (win == null) return
-    const menu = createContextMenu(win.webContents)
-    menu.popup({
-      window: win,
-      x: params.x,
-      y: params.y,
+    // IPC登録（window が load して renderer が invoke する前に必ず登録しておく）
+    registerIpc({
+      getContext: (webContents) => {
+        if (!appContext.windowContextMap.has(webContents)) {
+          throw new Error('Context is not found')
+        }
+        return appContext.windowContextMap.get(webContents)!
+      },
+      cache: appContext.registerIpcCache,
     })
-  })
+  },
+  /** --------------------------------------------------------------------------
+   *
+   * メインウィンドウを開く
+   *
+   * ------------------------------------------------------------------------ */
+  openMainWindow: ({ appRuntime, appContext }) => {
+    const allowedDevOrigin = (() => {
+      if (!VITE_DEV_SERVER_URL) return null
+      try {
+        return new URL(VITE_DEV_SERVER_URL).origin
+      } catch {
+        return null
+      }
+    })()
 
-  contextMap.set(wind.webContents, {
+    /**
+     * file://... のパスに必ず末尾セパレータをつける関数
+     * 例: input: file:///path/to/dist -> output: file:///path/to/dist/
+     * @param p パス
+     * @returns 末尾セパレータ付きのパス
+     */
+    const ensureTrailingSeparator = (p: string) =>
+      p.endsWith(path.sep) ? p : p + path.sep
+
+    const rendererRootUrl = appContext.paths.rendererDist
+      ? pathToFileURL(
+          ensureTrailingSeparator(appContext.paths.rendererDist),
+        ).toString()
+      : null
+
+    createWindow(
+      async (win) => {
+        if (VITE_DEV_SERVER_URL) {
+          await win.loadURL(VITE_DEV_SERVER_URL)
+        } else {
+          await win.loadFile(appContext.paths.indexHtmlPath)
+        }
+      },
+      {
+        /** --------------------------------------------------------------------
+         * BrowserWindow のオプション設定
+         * ------------------------------------------------------------------ */
+        browserWindowOptions: {
+          icon: path.join(appContext.paths.vitePublic, 'app.ico'),
+          autoHideMenuBar: true,
+          webPreferences: {
+            ...recommendedSecureOptions,
+            preload: appContext.paths.preloadPath,
+          },
+        },
+        /** --------------------------------------------------------------------
+         * ナビゲーションポリシー設定
+         * ------------------------------------------------------------------ */
+        navigation: {
+          allowedDevOrigin,
+          rendererRootUrl,
+        },
+        /** --------------------------------------------------------------------
+         * ライフサイクルフック
+         * ------------------------------------------------------------------ */
+        onCreated: (win) => {
+          const windowContext = createWindowContext(win, {
+            appRuntime,
+            appContext,
+          })
+          appContext.windowContextMap.set(win.webContents, windowContext)
+          appContext.windowsById.set(win.id, win)
+        },
+        onClose: (win) => {
+          appContext.windowsById.delete(win.id)
+          appContext.windowContextMap.delete(win.webContents)
+        },
+        onClosed: () => {
+          // 何もしない
+        },
+      },
+    ).catch((err) => {
+      console.error(`Failed to create main window: ${String(err)}`)
+    })
+  },
+  createAppContext: async () => {
+    return {
+      // TODO: BrowserWindow.getAllWindows() で代替できるか検討
+      windowsById: new Map(),
+      windowContextMap: new WeakMap(),
+      aiAgent: null,
+      mcpServer: null,
+      db: null,
+      authRuntime: null,
+      registerIpcCache: new WeakMap(),
+      paths: resolveMainPaths({
+        isPackaged: app.isPackaged,
+        dirname: __dirname,
+      }),
+    }
+  },
+})
+
+function createWindowContext(
+  win: BrowserWindow,
+  {
+    appRuntime,
+    appContext,
+  }: {
+    appRuntime: AppRuntime
+    appContext: AppContext
+  },
+): Context {
+  // もし window 固有の情報を管理したい場合はここで追加する
+  void win
+
+  return {
     mcp: {
-      getMcpServer: () => mcpServer,
+      getMcpServer: () => appContext.mcpServer,
       setMcpServer: (server) => {
-        mcpServer = server
+        appContext.mcpServer = server
       },
     },
     aiAgent: {
-      getAiAgent: () => aiAgent,
+      getAiAgent: () => appContext.aiAgent,
       setAiAgent: (agent) => {
-        aiAgent = agent
+        appContext.aiAgent = agent
       },
     },
     kakeibo: {
-      getDb: () => db,
-      setDb: (newDb) => {
-        db = newDb
+      getDb: () => {
+        if (!appContext.db) {
+          try {
+            const db = createAppDataBase(
+              path.join(appContext.paths.dataPath, 'kakeibo.db'),
+              {
+                readonly: false,
+                fileMustExist: false,
+              },
+            )
+            appContext.db = db
+            console.log(`[DB] Database opened successfully at kakeibo.db`)
+          } catch (error) {
+            console.error('[DB] Failed to open database:', error)
+            throw error
+          }
+        }
+        return appContext.db
       },
     },
     auth: {
-      getRuntime: () => authRuntime,
+      getRuntime: () => {
+        const runtime = appContext.authRuntime
+        if (runtime) {
+          return runtime
+        }
+
+        const newRuntime = createAuthRuntime()
+        appContext.authRuntime = newRuntime
+        appRuntime.addDispose(() => newRuntime.dispose())
+        return newRuntime
+      },
     },
-  })
-
-  // Test active push message to Renderer-process.
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', new Date().toLocaleString())
-  })
-
-  if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL)
-  } else {
-    // win.loadFile('dist/index.html')
-    win.loadFile(path.join(RENDERER_DIST, 'index.html'))
   }
 }
-
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-    win = null
-  }
-})
-
-app.whenReady().then(() => {
-  registerCustomProtocol()
-
-  const authRuntime = createAuthRuntime()
-
-  app.on('before-quit', () => {
-    authRuntime.dispose()
-  })
-
-  app.on('activate', () => {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow(authRuntime)
-    }
-  })
-
-  // IPC登録（window が load して renderer が invoke する前に必ず登録しておく）
-  registerIpc({
-    getContext: (webContents: WebContents) => {
-      if (!contextMap.has(webContents)) {
-        throw new Error('Context is not found')
-      }
-      return contextMap.get(webContents)!
-    },
-    cache: registerIpcCache,
-  })
-
-  createWindow(authRuntime)
-})

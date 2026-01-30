@@ -2,7 +2,7 @@ import { convertMessagesToModelMessages } from '@tanstack/ai'
 import type { ConnectionAdapter } from '@tanstack/ai-react'
 import type { StreamChunk } from '@tanstack/ai'
 
-import { electronApi } from '@/electronApi'
+import { aiChat } from '@/api'
 
 /**
  * https://tanstack.com/ai/latest/docs/guides/connection-adapters#custom-adapters
@@ -15,14 +15,14 @@ export function fetchIpcEvents() {
       const queue = createAsyncQueue<StreamChunk>()
 
       // IPC イベントリスナーを登録
-      const removeListener = electronApi.aiChat.on.chunk(({ chunk }) => {
+      const removeListener = aiChat.on.chunk(({ chunk }) => {
         // ここでは yield できないのでキューに追加する
         queue.push(chunk)
       })
 
       // IPC 経由でチャットを開始
       // 次の for を実行したいので、ここでは await しない
-      electronApi.aiChat
+      aiChat
         .chat({
           messages: modelMessages,
           data,

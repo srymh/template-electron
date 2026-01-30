@@ -1,5 +1,9 @@
 import type { Event, Result } from 'electron'
-import type { ApiInterface, AddListener, WithWebContentsApi } from '../lib/ipc'
+import type {
+  ApiInterface,
+  AddListener,
+  WithWebContentsApi,
+} from '#/shared/lib/ipc'
 
 // -----------------------------------------------------------------------------
 // 型定義
