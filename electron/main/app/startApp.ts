@@ -5,6 +5,9 @@ export interface AppRuntime {
   addDispose(dispose: () => void | Promise<void>): void
 }
 
+/** 破棄処理のデフォルトタイムアウト時間（ミリ秒） */
+const DEFAULT_DISPOSE_TIMEOUT_MS = 5_000
+
 export async function startApp<TAppContext>(options: {
   onAppReady: ({
     appRuntime,
@@ -85,24 +88,10 @@ export async function startApp<TAppContext>(options: {
     // preventDefault して破棄処理完了後に quit を再実行する。
     event.preventDefault()
 
-    void (async () => {
-      const disposers = Array.from(disposeSet)
-      disposeSet.clear()
-
-      const results = await Promise.allSettled(
-        disposers.map(async (dispose) => {
-          await dispose()
-        }),
-      )
-
-      const rejected = results.filter((r) => r.status === 'rejected')
-      if (rejected.length > 0) {
-        console.error('[app:before-quit] dispose failed:', rejected)
-      }
-
-      // app.quit() だと before-quit が再度走る可能性があるため exit を使う
-      app.exit(0)
-    })()
+    // 破棄処理の実行
+    const disposers = Array.from(disposeSet)
+    disposeSet.clear()
+    void disposeAndExit(disposers, DEFAULT_DISPOSE_TIMEOUT_MS)
   })
 
   /** --------------------------------------------------------------------------
@@ -119,4 +108,64 @@ export async function startApp<TAppContext>(options: {
 
   // メインウィンドウを開く
   openMainWindow({ appRuntime, appContext })
+}
+
+const sleep = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms))
+
+/**
+ * 破棄処理をタイムアウト付きで実行する
+ * @param disposers 破棄処理の配列
+ * @param timeoutMs タイムアウト時間（ミリ秒）
+ */
+async function runDisposeWithTimeout(
+  disposers: Array<() => void | Promise<void>>,
+  timeoutMs: number,
+): Promise<void> {
+  // 破棄処理を実行する Promise
+  const disposePromise = (async () => {
+    // どれか1つ失敗しても他の破棄処理を続行するために Promise.allSettled を使用
+    const results = await Promise.allSettled(
+      disposers.map(async (dispose) => {
+        await dispose()
+      }),
+    )
+
+    // 失敗した破棄処理があればログに出力
+    const rejected = results.filter((r) => r.status === 'rejected')
+    if (rejected.length > 0) {
+      console.error('[app:before-quit] dispose failed:', rejected)
+    }
+  })()
+
+  // タイムアウト用の Promise
+  const timeoutPromise = sleep(timeoutMs).then(() => {
+    throw new Error(`dispose timeout after ${timeoutMs}ms`)
+  })
+
+  // 破棄処理か、タイムアウトのいずれか早い方を待機
+  await Promise.race([disposePromise, timeoutPromise])
+}
+
+/**
+ * 破棄処理を実行してからアプリを終了する
+ * @param disposers 破棄処理の配列
+ * @param timeoutMs タイムアウト時間（ミリ秒）
+ */
+async function disposeAndExit(
+  disposers: Array<() => void | Promise<void>>,
+  timeoutMs: number,
+): Promise<void> {
+  try {
+    // タイムアウト付きで破棄処理を実行
+    await runDisposeWithTimeout(disposers, timeoutMs)
+  } catch (err) {
+    console.error(
+      '[app:before-quit] dispose did not finish; force exiting:',
+      err,
+    )
+  } finally {
+    // app.quit() だと before-quit が再度走る可能性があるため exit を使う
+    app.exit(0)
+  }
 }
