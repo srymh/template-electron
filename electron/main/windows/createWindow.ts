@@ -5,6 +5,13 @@ import {
 } from 'electron'
 import { createContextMenu } from './createContextMenu'
 
+type NavigationPolicy = {
+  /** 開発環境: 許可された Vite dev server のオリジン (例: http://localhost:5173) */
+  allowedDevOrigin: string | null
+  /** 本番環境: dist ディレクトリの file://.../dist/ パス（末尾セパレータ必須） */
+  rendererRootUrl: string | null
+}
+
 /**
  * セキュリティ推奨設定。
  */
@@ -24,6 +31,11 @@ export async function createWindow(
   options: {
     browserWindowOptions?: BrowserWindowConstructorOptions
     /**
+     * ナビゲーションポリシー
+     * アプリ内で遷移を許可する URL を指定する
+     */
+    navigation?: NavigationPolicy
+    /**
      * ライフサイクルフック: ウィンドウ作成後の処理
      * @param win 作成されたウィンドウ
      */
@@ -39,7 +51,15 @@ export async function createWindow(
     onClosed?: () => void
   } = {},
 ) {
-  const { browserWindowOptions, onCreated, onClose, onClosed } = options
+  const { browserWindowOptions, navigation, onCreated, onClose, onClosed } =
+    options
+
+  const isAllowedNavigation = createIsAllowedNavigation(
+    navigation ?? {
+      allowedDevOrigin: null,
+      rendererRootUrl: null,
+    },
+  )
 
   /** --------------------------------------------------------------------------
    *
@@ -122,27 +142,36 @@ export async function createWindow(
   })
 
   win.webContents.on('will-navigate', (event, url) => {
+    if (isAllowedNavigation(url)) return
+
     if (isAllowedExternalUrl(url)) {
       // 外部URLはアプリ内で開かず、OS既定ブラウザへ委譲
       event.preventDefault()
       void shell.openExternal(url)
       return
     }
+
+    // 予期しない遷移（別オリジン等）はブロック
+    event.preventDefault()
   })
 
   win.webContents.on('will-redirect', (event, url) => {
+    if (isAllowedNavigation(url)) return
+
     if (isAllowedExternalUrl(url)) {
       // リダイレクト先が外部URLならOSで開く
       event.preventDefault()
       void shell.openExternal(url)
       return
     }
+
+    event.preventDefault()
   })
 
   win.webContents.setWindowOpenHandler(({ url }) => {
     // window.open は常に拒否。
     // ただし安全な外部URLならOS既定ブラウザで開く。
-    if (isAllowedExternalUrl(url)) {
+    if (!isAllowedNavigation(url) && isAllowedExternalUrl(url)) {
       void shell.openExternal(url)
     }
     return { action: 'deny' }
@@ -171,5 +200,31 @@ const isAllowedExternalUrl = (urlString: string) => {
     )
   } catch {
     return false
+  }
+}
+
+/**
+ * ナビゲーションポリシーからナビゲーション許可判定関数を作成する。
+ * @param policy ナビゲーションポリシー
+ * @returns ナビゲーション許可判定関数
+ */
+const createIsAllowedNavigation = (policy: NavigationPolicy) => {
+  return (targetUrl: string) => {
+    // 開発環境の許可されたオリジンが設定されている場合はそちらを優先
+    if (policy.allowedDevOrigin) {
+      try {
+        return new URL(targetUrl).origin === policy.allowedDevOrigin
+      } catch {
+        return false
+      }
+    }
+
+    // 本番環境の rendererRootUrl が設定されている場合はそちらを判定
+
+    if (!policy.rendererRootUrl) {
+      return false
+    }
+
+    return targetUrl.startsWith(policy.rendererRootUrl)
   }
 }

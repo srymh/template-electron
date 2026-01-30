@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { app, BrowserWindow, type WebContents } from 'electron'
 
 import type { AiAgent } from './features/ai-agent/AiAgent'
@@ -61,6 +61,30 @@ startApp<AppContext>({
    *
    * ------------------------------------------------------------------------ */
   openMainWindow: ({ appRuntime, appContext }) => {
+    const allowedDevOrigin = (() => {
+      if (!VITE_DEV_SERVER_URL) return null
+      try {
+        return new URL(VITE_DEV_SERVER_URL).origin
+      } catch {
+        return null
+      }
+    })()
+
+    /**
+     * file://... のパスに必ず末尾セパレータをつける関数
+     * 例: input: file:///path/to/dist -> output: file:///path/to/dist/
+     * @param p パス
+     * @returns 末尾セパレータ付きのパス
+     */
+    const ensureTrailingSeparator = (p: string) =>
+      p.endsWith(path.sep) ? p : p + path.sep
+
+    const rendererRootUrl = appContext.paths.rendererDist
+      ? pathToFileURL(
+          ensureTrailingSeparator(appContext.paths.rendererDist),
+        ).toString()
+      : null
+
     createWindow(
       async (win) => {
         if (VITE_DEV_SERVER_URL) {
@@ -81,6 +105,16 @@ startApp<AppContext>({
             preload: appContext.paths.preloadPath,
           },
         },
+        /** --------------------------------------------------------------------
+         * ナビゲーションポリシー設定
+         * ------------------------------------------------------------------ */
+        navigation: {
+          allowedDevOrigin,
+          rendererRootUrl,
+        },
+        /** --------------------------------------------------------------------
+         * ライフサイクルフック
+         * ------------------------------------------------------------------ */
         onCreated: (win) => {
           const windowContext = createWindowContext(win, {
             appRuntime,
