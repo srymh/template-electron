@@ -1,5 +1,5 @@
 import React from 'react'
-import { api } from '@/api'
+import { auth as authApi } from '@/api'
 
 export type AuthUser = {
   username: string
@@ -29,7 +29,7 @@ export function AuthProvider(props: { children: React.ReactNode }) {
 
     const load = async () => {
       try {
-        const status = await api.auth.getStatus()
+        const status = await authApi.getStatus()
         if (cancelled) return
         setUser(status.user)
       } catch (e) {
@@ -52,14 +52,14 @@ export function AuthProvider(props: { children: React.ReactNode }) {
 
   const login = React.useCallback(
     async (username: string, password: string) => {
-      const status = await api.auth.login(username, password)
+      const status = await authApi.login(username, password)
       setUser(status.user)
     },
     [],
   )
 
   const logout = React.useCallback(() => {
-    void api.auth.logout()
+    void authApi.logout()
     setUser(null)
   }, [])
 

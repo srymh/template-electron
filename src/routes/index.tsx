@@ -2,13 +2,13 @@ import React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 import logo from '../logo.svg'
-import { api } from '@/api'
+import { theme as themeApi } from '@/api'
 import { useTheme } from '@/components/theme-provider'
 
 const getAccentColorQueryOptions = queryOptions({
   queryKey: ['accentColor'],
   queryFn: async () => {
-    const color = await api.theme.getAccentColor()
+    const color = await themeApi.getAccentColor()
     return `#${color}`
   },
   staleTime: 0,
@@ -29,7 +29,7 @@ const useAccentColor = () => {
   const [accentColor, setAccentColor] = React.useState<string>(initialColor)
 
   React.useEffect(() => {
-    const unsubscribe = api.theme.on.accentColorChanged((newColor) => {
+    const unsubscribe = themeApi.on.accentColorChanged((newColor) => {
       console.log('Accent color changed:', newColor)
       setAccentColor('#' + newColor)
     })
@@ -82,7 +82,7 @@ function App() {
         <button
           className="text-(--accent-color) hover:underline"
           onClick={async () => {
-            const theme = await api.theme.getTheme()
+            const theme = await themeApi.getTheme()
             alert(`Current theme: ${theme}`)
           }}
         >

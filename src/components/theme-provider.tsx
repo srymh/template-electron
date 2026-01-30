@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { api } from '@/api'
+import { theme as themeApi } from '@/api'
 
 type Theme = 'dark' | 'light' | 'system'
 
@@ -33,7 +33,7 @@ export function ThemeProvider({
   })
 
   useEffect(() => {
-    const unsubscribe = api.theme.on.updated((newTheme) => {
+    const unsubscribe = themeApi.on.updated((newTheme) => {
       console.log('Theme updated:', newTheme)
       setTheme(newTheme)
     })
@@ -64,7 +64,7 @@ export function ThemeProvider({
     setTheme: async (currentTheme: Theme) => {
       // 本当は localStorage ではなく、メインプロセスで保持するべき
       localStorage.setItem(storageKey, currentTheme)
-      await api.theme.setTheme({ theme: currentTheme })
+      await themeApi.setTheme({ theme: currentTheme })
       setTheme(currentTheme)
     },
   }

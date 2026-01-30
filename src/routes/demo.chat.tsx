@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import ReactMarkdown from 'react-markdown'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { api } from '@/api'
+import { aiAgent, mcp } from '@/api'
 
 export const Route = createFileRoute('/demo/chat')({
   component: RouteComponent,
@@ -34,21 +34,21 @@ const useAiAgent = () => {
         ...prev,
         { role: 'user', content: message, isError: false },
       ])
-      api.aiAgent.send({ message })
+      aiAgent.send({ message })
     },
     [setIsLoading, setMessages],
   )
 
   React.useEffect(() => {
-    api.mcp
+    mcp
       .getServerStatus()
       .then((status) => {
         if (!status.isRunning) {
-          api.mcp.startServer({})
+          mcp.startServer({})
         }
 
         // AIエージェントの初期化
-        api.aiAgent
+        aiAgent
           .setup({
             instructions: '日本語で話してください。',
             modelName: MODEL_NAME,
@@ -73,7 +73,7 @@ const useAiAgent = () => {
    * リスナーの登録
    */
   React.useEffect(() => {
-    const offChunk = api.aiAgent.on.chunk(({ answer }) => {
+    const offChunk = aiAgent.on.chunk(({ answer }) => {
       setMessages((prev) => {
         setIsChunking(true)
         setChunkingMessage(answer)
@@ -81,7 +81,7 @@ const useAiAgent = () => {
       })
     })
 
-    const offDone = api.aiAgent.on.done(({ answer }) => {
+    const offDone = aiAgent.on.done(({ answer }) => {
       setIsChunking(false)
       setIsLoading(false)
       setMessages((prev) => [
@@ -91,7 +91,7 @@ const useAiAgent = () => {
       setChunkingMessage('')
     })
 
-    const offError = api.aiAgent.on.error(({ error }) => {
+    const offError = aiAgent.on.error(({ error }) => {
       setIsChunking(false)
       setIsLoading(false)
       setMessages((prev) => [
@@ -116,7 +116,7 @@ const useAiAgent = () => {
   React.useEffect(() => {
     if (!initialized) return
 
-    api.aiAgent.getHistory().then((history) => {
+    aiAgent.getHistory().then((history) => {
       // 既にメッセージがある場合は履歴を設定しない
       if (messages.length > 0) return
       setMessages((prev) => [...prev, ...history])

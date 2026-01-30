@@ -17,9 +17,9 @@ import type { Table as TanStackTable } from '@tanstack/react-table'
 import { BasicTable } from '@/components/table/basic-table'
 import { fuzzyFilter } from '@/components/table/tableUtils'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { api } from '@/api'
+import { kakeibo } from '@/api'
 
-export type Entry = Awaited<ReturnType<typeof api.kakeibo.entries>>[number]
+export type Entry = Awaited<ReturnType<typeof kakeibo.entries>>[number]
 
 export const Route = createFileRoute('/demo/kakeibo')({
   component: RouteComponent,
@@ -30,7 +30,7 @@ function RouteComponent() {
   const { data, refetch } = useQuery({
     queryKey: ['kakeibo', 'entries'],
     queryFn: async (): Promise<Array<Entry>> => {
-      const result = await api.kakeibo.entries()
+      const result = await kakeibo.entries()
       return result
     },
   })
