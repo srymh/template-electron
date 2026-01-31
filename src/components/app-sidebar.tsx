@@ -10,6 +10,7 @@ import {
   Pickaxe,
   PieChart,
   SquareTerminal,
+  ToggleLeftIcon,
 } from 'lucide-react'
 import { Link, useLocation } from '@tanstack/react-router'
 
@@ -92,6 +93,17 @@ const data = {
         {
           title: 'Chat(TanStack AI)',
           url: '/demo/chat-t',
+        },
+      ],
+    },
+    {
+      title: 'UI',
+      url: '/ui/',
+      icon: ToggleLeftIcon,
+      items: [
+        {
+          title: 'Button',
+          url: '/ui/button',
         },
       ],
     },
