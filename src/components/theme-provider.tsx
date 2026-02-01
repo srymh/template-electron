@@ -40,6 +40,8 @@ export function ThemeProvider({
 
     const root = window.document.documentElement
 
+    root.classList.add('style-nova')
+
     root.classList.remove('light', 'dark')
 
     if (theme === 'system') {

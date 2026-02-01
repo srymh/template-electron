@@ -9,3 +9,8 @@ prettier.config.js
 README.md
 tsconfig.json
 src/components/ui/**
+src/components/ui-ex/**
+src/hooks/use-mobile.ts
+src/lib/utils.ts
+src/styles/**
+src/styles.css

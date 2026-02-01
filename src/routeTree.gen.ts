@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as UiIndexRouteImport } from './routes/ui/index'
 import { Route as DemoIndexRouteImport } from './routes/demo.index'
 import { Route as UiButtonRouteImport } from './routes/ui/button'
+import { Route as UiAccordionRouteImport } from './routes/ui/accordion'
 import { Route as DemoWebRouteImport } from './routes/demo.web'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo.tanstack-query'
 import { Route as DemoTableRouteImport } from './routes/demo.table'
@@ -57,6 +58,11 @@ const DemoIndexRoute = DemoIndexRouteImport.update({
 const UiButtonRoute = UiButtonRouteImport.update({
   id: '/button',
   path: '/button',
+  getParentRoute: () => UiRouteRoute,
+} as any)
+const UiAccordionRoute = UiAccordionRouteImport.update({
+  id: '/accordion',
+  path: '/accordion',
   getParentRoute: () => UiRouteRoute,
 } as any)
 const DemoWebRoute = DemoWebRouteImport.update({
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/demo/web': typeof DemoWebRoute
+  '/ui/accordion': typeof UiAccordionRoute
   '/ui/button': typeof UiButtonRoute
   '/demo/': typeof DemoIndexRoute
   '/ui/': typeof UiIndexRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByTo {
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/demo/web': typeof DemoWebRoute
+  '/ui/accordion': typeof UiAccordionRoute
   '/ui/button': typeof UiButtonRoute
   '/demo': typeof DemoIndexRoute
   '/ui': typeof UiIndexRoute
@@ -138,6 +146,7 @@ export interface FileRoutesById {
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/demo/web': typeof DemoWebRoute
+  '/ui/accordion': typeof UiAccordionRoute
   '/ui/button': typeof UiButtonRoute
   '/demo/': typeof DemoIndexRoute
   '/ui/': typeof UiIndexRoute
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/web'
+    | '/ui/accordion'
     | '/ui/button'
     | '/demo/'
     | '/ui/'
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/web'
+    | '/ui/accordion'
     | '/ui/button'
     | '/demo'
     | '/ui'
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/web'
+    | '/ui/accordion'
     | '/ui/button'
     | '/demo/'
     | '/ui/'
@@ -247,6 +259,13 @@ declare module '@tanstack/react-router' {
       path: '/button'
       fullPath: '/ui/button'
       preLoaderRoute: typeof UiButtonRouteImport
+      parentRoute: typeof UiRouteRoute
+    }
+    '/ui/accordion': {
+      id: '/ui/accordion'
+      path: '/accordion'
+      fullPath: '/ui/accordion'
+      preLoaderRoute: typeof UiAccordionRouteImport
       parentRoute: typeof UiRouteRoute
     }
     '/demo/web': {
@@ -328,11 +347,13 @@ const DemoRouteRouteWithChildren = DemoRouteRoute._addFileChildren(
 )
 
 interface UiRouteRouteChildren {
+  UiAccordionRoute: typeof UiAccordionRoute
   UiButtonRoute: typeof UiButtonRoute
   UiIndexRoute: typeof UiIndexRoute
 }
 
 const UiRouteRouteChildren: UiRouteRouteChildren = {
+  UiAccordionRoute: UiAccordionRoute,
   UiButtonRoute: UiButtonRoute,
   UiIndexRoute: UiIndexRoute,
 }

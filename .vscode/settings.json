@@ -8,8 +8,10 @@
   "files.readonlyInclude": {
     "**/routeTree.gen.ts": true,
     "**/src/components/ui/**": true,
+    "**/src/components/ui-ex/**": true,
     "**/src/hooks/use-mobile.ts": true,
     "**/src/lib/utils.ts": true,
-    "**/src/styles.css": true
+    "**/src/styles.css": true,
+    "**/src/styles/*.css": true
   }
 }

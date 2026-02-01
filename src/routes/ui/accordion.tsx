@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { z } from 'zod'
 
-import Example from '@/features/ui-demo/components/button-example'
+import Example from '@/features/ui-demo/components/accordion-example'
 import { FullscreenWrapper } from '@/components/fullscreen-wrapper'
 import { ThemeSwitcher } from '@/components/theme-switcher'
 
@@ -9,9 +9,9 @@ const demoConfigSchema = z.object({
   fullscreen: z.boolean().default(false).optional(),
 })
 
-export const Route = createFileRoute('/ui/button')({
+export const Route = createFileRoute('/ui/accordion')({
   component: RouteComponent,
-  loader: () => ({ crumb: 'Button' }),
+  loader: () => ({ crumb: 'Accordion' }),
   validateSearch: (search) => demoConfigSchema.parse(search),
 })
 
@@ -20,7 +20,6 @@ function RouteComponent() {
   return (
     <FullscreenWrapper fullscreen={fullscreen}>
       <ThemeSwitcher />
-
       <Example />
     </FullscreenWrapper>
   )

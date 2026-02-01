@@ -36,6 +36,28 @@ function RouteComponent() {
           </Button>
         </CardFooter>
       </Card>
+
+      <Card className="h-max w-max">
+        <CardHeader>
+          <CardTitle>Accordion</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <iframe
+            src="#/ui/accordion?fullscreen=true"
+            width={600}
+            height={400}
+            className="border rounded-xl"
+          />
+        </CardContent>
+        <CardFooter>
+          <Button
+            variant="link"
+            onClick={() => navigate({ to: '/ui/accordion' })}
+          >
+            詳細
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
   )
 }

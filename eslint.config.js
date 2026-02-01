@@ -20,6 +20,7 @@ export default [
       'prettier.config.js',
       'dist-electron/**',
       'src/components/ui/**',
+      'src/components/ui-ex/**',
       'src/lib/utils.ts',
       'electron/**',
     ],

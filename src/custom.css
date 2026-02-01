@@ -1,9 +1,15 @@
-/**
- * styles.cssはshadcn/uiが自動生成するので変更したくない。
- * そのためcustom.cssを作ることでグローバルに適用するカスタムスタイルを作成している。
- */
+/*******************************************************************************
+
+カスタマイズ
+
+以下を設定しておかないとダークテーマのときに <Button variant="ghost"/> の文字色が黒のままになる。どうやら bg-background と text-foreground を前提にしているらしい。
+
+*******************************************************************************/
+
+@reference "./styles.css";
+
 @layer base {
   body {
-    @apply overflow-hidden;
+    @apply overflow-hidden bg-background text-foreground;
   }
 }
