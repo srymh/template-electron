@@ -8,8 +8,8 @@ package.json
 prettier.config.js
 README.md
 tsconfig.json
+src/features/ui-demo/**
 src/components/ui/**
-src/components/ui-ex/**
 src/hooks/use-mobile.ts
 src/lib/utils.ts
 src/styles/**

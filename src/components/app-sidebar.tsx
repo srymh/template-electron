@@ -29,6 +29,7 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import { useAuth } from '@/features/auth/api/auth'
+import { components } from '@/features/ui-demo/constants'
 
 // This is sample data.
 const data = {
@@ -100,12 +101,10 @@ const data = {
       title: 'UI',
       url: '/ui/',
       icon: ToggleLeftIcon,
-      items: [
-        {
-          title: 'Button',
-          url: '/ui/button',
-        },
-      ],
+      items: components.map((component) => ({
+        title: component,
+        url: `/ui/${component}`,
+      })),
     },
     {
       title: 'Documentation',

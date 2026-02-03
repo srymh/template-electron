@@ -15,8 +15,7 @@ import { Route as DemoRouteRouteImport } from './routes/demo.route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UiIndexRouteImport } from './routes/ui/index'
 import { Route as DemoIndexRouteImport } from './routes/demo.index'
-import { Route as UiButtonRouteImport } from './routes/ui/button'
-import { Route as UiAccordionRouteImport } from './routes/ui/accordion'
+import { Route as UiComponentRouteImport } from './routes/ui/$component'
 import { Route as DemoWebRouteImport } from './routes/demo.web'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo.tanstack-query'
 import { Route as DemoTableRouteImport } from './routes/demo.table'
@@ -55,14 +54,9 @@ const DemoIndexRoute = DemoIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DemoRouteRoute,
 } as any)
-const UiButtonRoute = UiButtonRouteImport.update({
-  id: '/button',
-  path: '/button',
-  getParentRoute: () => UiRouteRoute,
-} as any)
-const UiAccordionRoute = UiAccordionRouteImport.update({
-  id: '/accordion',
-  path: '/accordion',
+const UiComponentRoute = UiComponentRouteImport.update({
+  id: '/$component',
+  path: '/$component',
   getParentRoute: () => UiRouteRoute,
 } as any)
 const DemoWebRoute = DemoWebRouteImport.update({
@@ -113,8 +107,7 @@ export interface FileRoutesByFullPath {
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/demo/web': typeof DemoWebRoute
-  '/ui/accordion': typeof UiAccordionRoute
-  '/ui/button': typeof UiButtonRoute
+  '/ui/$component': typeof UiComponentRoute
   '/demo/': typeof DemoIndexRoute
   '/ui/': typeof UiIndexRoute
 }
@@ -128,8 +121,7 @@ export interface FileRoutesByTo {
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/demo/web': typeof DemoWebRoute
-  '/ui/accordion': typeof UiAccordionRoute
-  '/ui/button': typeof UiButtonRoute
+  '/ui/$component': typeof UiComponentRoute
   '/demo': typeof DemoIndexRoute
   '/ui': typeof UiIndexRoute
 }
@@ -146,8 +138,7 @@ export interface FileRoutesById {
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/demo/web': typeof DemoWebRoute
-  '/ui/accordion': typeof UiAccordionRoute
-  '/ui/button': typeof UiButtonRoute
+  '/ui/$component': typeof UiComponentRoute
   '/demo/': typeof DemoIndexRoute
   '/ui/': typeof UiIndexRoute
 }
@@ -165,8 +156,7 @@ export interface FileRouteTypes {
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/web'
-    | '/ui/accordion'
-    | '/ui/button'
+    | '/ui/$component'
     | '/demo/'
     | '/ui/'
   fileRoutesByTo: FileRoutesByTo
@@ -180,8 +170,7 @@ export interface FileRouteTypes {
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/web'
-    | '/ui/accordion'
-    | '/ui/button'
+    | '/ui/$component'
     | '/demo'
     | '/ui'
   id:
@@ -197,8 +186,7 @@ export interface FileRouteTypes {
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/web'
-    | '/ui/accordion'
-    | '/ui/button'
+    | '/ui/$component'
     | '/demo/'
     | '/ui/'
   fileRoutesById: FileRoutesById
@@ -254,18 +242,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoIndexRouteImport
       parentRoute: typeof DemoRouteRoute
     }
-    '/ui/button': {
-      id: '/ui/button'
-      path: '/button'
-      fullPath: '/ui/button'
-      preLoaderRoute: typeof UiButtonRouteImport
-      parentRoute: typeof UiRouteRoute
-    }
-    '/ui/accordion': {
-      id: '/ui/accordion'
-      path: '/accordion'
-      fullPath: '/ui/accordion'
-      preLoaderRoute: typeof UiAccordionRouteImport
+    '/ui/$component': {
+      id: '/ui/$component'
+      path: '/$component'
+      fullPath: '/ui/$component'
+      preLoaderRoute: typeof UiComponentRouteImport
       parentRoute: typeof UiRouteRoute
     }
     '/demo/web': {
@@ -347,14 +328,12 @@ const DemoRouteRouteWithChildren = DemoRouteRoute._addFileChildren(
 )
 
 interface UiRouteRouteChildren {
-  UiAccordionRoute: typeof UiAccordionRoute
-  UiButtonRoute: typeof UiButtonRoute
+  UiComponentRoute: typeof UiComponentRoute
   UiIndexRoute: typeof UiIndexRoute
 }
 
 const UiRouteRouteChildren: UiRouteRouteChildren = {
-  UiAccordionRoute: UiAccordionRoute,
-  UiButtonRoute: UiButtonRoute,
+  UiComponentRoute: UiComponentRoute,
   UiIndexRoute: UiIndexRoute,
 }
 

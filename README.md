@@ -41,16 +41,48 @@ pnpm format
 pnpm check
 ```
 
-
 ## Shadcn
 
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
+shadcn create のデザインを反映するために [https://github.com/shadcn-ui/ui](https://github.com/shadcn-ui/ui) を手動でコピー・調整しました。
+それに伴い `components.json` ファイルが陳腐化したため削除しました。
 
-```bash
-pnpx shadcn@latest add button
+Commit Hash: `9676c8f4ee4499da5714c4d1f9e630950b9192fa`
+
+- `apps/v4/styles/globals.css` -> `src/styles.css`
+- `apps/v4/styles/legacy-themes.css` -> `src/styles/legacy-themes.css`
+- `apps/v4/registry/bases/radix/ui/*.tsx` -> `src/components/ui/*.tsx`
+- `apps/v4/registry/bases/radix/examples/*-example.tsx` -> `src/features/ui-demo/*-example.tsx`
+- `apps/v4/registry/styles/style-vega.css` -> `src/styles/style-vega.css`
+- `apps/v4/registry/styles/style-nova.css` -> `src/styles/style-nova.css`
+- `apps/v4/registry/styles/style-lyra.css` -> `src/styles/style-lyra.css`
+- `apps/v4/registry/styles/style-maia.css` -> `src/styles/style-maia.css`
+- `apps/v4/registry/styles/style-mira.css` -> `src/styles/style-mira.css`
+- `packages/shadcn/src/tailwind.css` -> `src/styles/tailwind.css`
+- など
+
+```plain
+MIT License
+
+Copyright (c) 2023 shadcn
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 ```
-
-
 
 ## Routing
 This project uses [TanStack Router](https://tanstack.com/router). The initial setup is a file based router. Which means that the routes are managed as files in `src/routes`.
