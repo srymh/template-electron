@@ -1,19 +1,11 @@
 import * as React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { z } from 'zod'
 
 import { FullscreenWrapper } from '@/components/fullscreen-wrapper'
-import { ThemeSwitcher } from '@/components/theme-switcher'
-import { StyleSwitcher } from '@/features/style/components/style-switcher'
-
-const demoConfigSchema = z.object({
-  fullscreen: z.boolean().default(false).optional(),
-})
 
 export const Route = createFileRoute('/ui/$component')({
   component: RouteComponent,
   loader: ({ params: { component } }) => ({ crumb: component }),
-  validateSearch: (search) => demoConfigSchema.parse(search),
 })
 
 // glob はモジュールスコープで1回
@@ -53,14 +45,9 @@ export function ComponentLoader({ name }: { name: string }) {
 
 function RouteComponent() {
   const { component } = Route.useParams()
-  const { fullscreen } = Route.useSearch()
 
   return (
-    <FullscreenWrapper fullscreen={fullscreen}>
-      <div className="flex gap-2">
-        <ThemeSwitcher />
-        <StyleSwitcher />
-      </div>
+    <FullscreenWrapper fullscreen>
       <ComponentLoader name={component} />
     </FullscreenWrapper>
   )

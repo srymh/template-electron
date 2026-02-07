@@ -30,6 +30,7 @@ import {
 } from '@/components/ui/sidebar'
 import { useAuth } from '@/features/auth/api/auth'
 import { components } from '@/features/ui-demo/constants'
+import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
 
 // This is sample data.
 const data = {
@@ -102,7 +103,7 @@ const data = {
       url: '/ui/',
       icon: ToggleLeftIcon,
       items: components.map((component) => ({
-        title: component,
+        title: formatKebabAsTitle(component),
         url: `/ui/${component}`,
       })),
     },

@@ -27,28 +27,19 @@ export function StyleProvider(props: StyleProviderProps) {
     storageKey = 'vite-ui-style',
   } = props
 
-  // style を適用する関数
-  const applyStyle = (style: Style) => {
-    const root = window.document.documentElement
-    // 一度すべてのスタイルを削除
-    STYLES.forEach((s) => {
-      root.classList.remove(`style-${s}`)
-    })
-    // 新しいスタイルを追加
-    root.classList.add(`style-${style}`)
-  }
+  const root = window.document.documentElement
 
   const [style, setStyle] = useState<Style>(() => {
     const storedStyle = localStorage.getItem(storageKey) as Style | null
     const initialStyle = storedStyle ?? defaultStyle
-    applyStyle(initialStyle)
+    applyStyle(root, initialStyle)
     return initialStyle
   })
 
   const value = {
     style,
     setStyle: (newStyle: Style) => {
-      applyStyle(newStyle)
+      applyStyle(root, newStyle)
       localStorage.setItem(storageKey, newStyle)
       setStyle(newStyle)
     },
@@ -59,4 +50,14 @@ export function StyleProvider(props: StyleProviderProps) {
       {children}
     </StyleProviderContext.Provider>
   )
+}
+
+/**
+ * style を適用する関数
+ */
+function applyStyle(el: HTMLElement, style: Style) {
+  STYLES.forEach((s) => {
+    el.classList.remove(`style-${s}`)
+  })
+  el.classList.add(`style-${style}`)
 }

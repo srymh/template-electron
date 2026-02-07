@@ -1,18 +1,32 @@
-import { MoonIcon, SunIcon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { LaptopIcon, MoonIcon, SunIcon } from 'lucide-react'
+
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useTheme } from '@/components/theme-provider'
 
-export function ThemeSwitcher() {
-  const { setTheme } = useTheme()
+export function ThemeSwitcher({ className }: { className?: string }) {
+  const { theme, setTheme } = useTheme()
 
   return (
-    <div className="flex gap-2 bg-background w-max p-2 rounded border border-border">
-      <Button variant="outline" size="icon" onClick={() => setTheme('light')}>
+    <ToggleGroup
+      className={className}
+      type="single"
+      variant="outline"
+      value={theme}
+      onValueChange={(value) => {
+        if (value === theme) return
+        if (value == '') return
+        setTheme(value as 'light' | 'dark' | 'system')
+      }}
+    >
+      <ToggleGroupItem value="light">
         <SunIcon />
-      </Button>
-      <Button variant="outline" size="icon" onClick={() => setTheme('dark')}>
+      </ToggleGroupItem>
+      <ToggleGroupItem value="dark">
         <MoonIcon />
-      </Button>
-    </div>
+      </ToggleGroupItem>
+      <ToggleGroupItem value="system">
+        <LaptopIcon />
+      </ToggleGroupItem>
+    </ToggleGroup>
   )
 }
