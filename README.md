@@ -50,6 +50,7 @@ Commit Hash: `9676c8f4ee4499da5714c4d1f9e630950b9192fa`
 
 - `apps/v4/styles/globals.css` -> `src/styles.css`
 - `apps/v4/styles/legacy-themes.css` -> `src/styles/legacy-themes.css`
+- `apps/v4/registry/themes.ts` -> `src/features/style/components/themes.ts`
 - `apps/v4/registry/bases/radix/ui/*.tsx` -> `src/components/ui/*.tsx`
 - `apps/v4/registry/bases/radix/examples/*-example.tsx` -> `src/features/ui-demo/*-example.tsx`
 - `apps/v4/registry/styles/style-vega.css` -> `src/styles/style-vega.css`

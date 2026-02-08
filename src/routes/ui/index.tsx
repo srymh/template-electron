@@ -1,11 +1,13 @@
 import * as React from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { MoonIcon, SunIcon } from 'lucide-react'
 import { z } from 'zod'
 
-import { MoonIcon, SunIcon } from 'lucide-react'
-import type { Theme } from '#/main/api/theme'
+import type { Theme as AppearanceMode } from '#/main/api/theme'
+
 import type { Style } from '@/features/style/components/style-provider'
-import { useTheme } from '@/components/theme-provider'
+import { useTheme as useAppearanceMode } from '@/components/theme-provider'
+import { ThemeSwitcher as ModeSwitcher } from '@/components/theme-switcher'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -14,7 +16,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card'
+import { Item } from '@/components/ui/item'
+import { Label } from '@/components/ui/label'
 import {
   Pagination,
   PaginationContent,
@@ -24,20 +32,29 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
-import { getPaginationItems } from '@/lib/pagination'
-import { useStyle } from '@/features/style/api/useStyle'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+
+import { useTheme } from '@/features/style/api/use-theme'
+import { useStyle } from '@/features/style/api/use-style'
 import { STYLES } from '@/features/style/components/style-provider'
+import { StyleSwitcher } from '@/features/style/components/style-switcher'
+import { ThemeSwitcher } from '@/features/style/components/theme-switcher'
 import { components } from '@/features/ui-demo/constants'
+
 import { useIframeMessage } from '@/hooks/use-iframe-message'
 import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
-import { ThemeSwitcher } from '@/components/theme-switcher'
-import { StyleSwitcher } from '@/features/style/components/style-switcher'
+import { getPaginationItems } from '@/lib/pagination'
 import { cn } from '@/lib/utils'
+import { THEMES } from '@/features/style/components/themes'
+import { applyTheme } from '@/features/style/components/theme-provider'
 import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card'
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 
 const SearchSchema = z.object({
   page: z.number().default(0).optional(),
@@ -78,13 +95,6 @@ function RouteComponent() {
     setPage(page + 1)
   }
 
-  const filteredComponents = components.filter((_, index) => {
-    return (
-      index >= page * componentsPerPage &&
-      index < (page + 1) * componentsPerPage
-    )
-  })
-
   const paginationItems = React.useMemo(
     () =>
       getPaginationItems({
@@ -96,81 +106,42 @@ function RouteComponent() {
     [page, totalPages],
   )
 
+  const filteredComponents = components.filter((_, index) => {
+    return (
+      index >= page * componentsPerPage &&
+      index < (page + 1) * componentsPerPage
+    )
+  })
+
   return (
     <div className="p-2 flex gap-2 flex-col bg-accent h-full overflow-auto">
-      <div className="p-2 bg-background flex flex-wrap gap-2 items-center justify-between">
-        <Pagination className="w-max mx-0">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationHoverPreview
-                title="前のページの内容"
-                pageIndex={page - 1}
-                componentsPerPage={componentsPerPage}
-                componentNames={components}
-              >
-                <PaginationPrevious
-                  onClick={handleClickPrevious}
-                  text="前"
-                  aria-disabled={page === 0}
-                  tabIndex={page === 0 ? -1 : 0}
-                  className={cn({
-                    'opacity-50': page === 0,
-                  })}
-                />
-              </PaginationHoverPreview>
-            </PaginationItem>
-            {paginationItems.map((item, index) => {
-              if (item === 'ellipsis') {
-                return (
-                  <PaginationItem key={`ellipsis-${index}`}>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                )
-              }
-
-              return (
-                <PaginationItem key={item}>
-                  <PaginationHoverPreview
-                    title={`${item + 1}ページの内容`}
-                    pageIndex={item}
-                    componentsPerPage={componentsPerPage}
-                    componentNames={components}
-                  >
-                    <PaginationLink
-                      onClick={() => setPage(item)}
-                      isActive={item === page}
-                    >
-                      {item + 1}
-                    </PaginationLink>
-                  </PaginationHoverPreview>
-                </PaginationItem>
-              )
-            })}
-            <PaginationItem>
-              <PaginationHoverPreview
-                title="次のページの内容"
-                pageIndex={page + 1}
-                componentsPerPage={componentsPerPage}
-                componentNames={components}
-              >
-                <PaginationNext
-                  onClick={handleClickNext}
-                  text="次"
-                  aria-disabled={page === lastPageIndex}
-                  tabIndex={page === lastPageIndex ? -1 : 0}
-                  className={cn({
-                    'opacity-50': page === lastPageIndex,
-                  })}
-                />
-              </PaginationHoverPreview>
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-        <div className="flex flex-wrap gap-2">
-          <ThemeSwitcher />
+      <div className="p-2 bg-background flex flex-wrap gap-2 items-center justify-start border border-border">
+        <Item
+          size="xs"
+          variant="outline"
+          className="flex-col w-fit items-start"
+        >
+          <Label className="text-muted-foreground text-xs">モード</Label>
+          <ModeSwitcher />
+        </Item>
+        <Item
+          size="xs"
+          variant="outline"
+          className="flex-col w-fit items-start"
+        >
+          <Label className="text-muted-foreground text-xs">スタイル</Label>
           <StyleSwitcher />
-        </div>
+        </Item>
+        <Item
+          size="xs"
+          variant="outline"
+          className="flex-col w-fit items-start"
+        >
+          <Label className="text-muted-foreground text-xs">テーマ</Label>
+          <ThemeSwitcher className="text-xs" />
+        </Item>
       </div>
+
       <div className="flex gap-2 flex-wrap h-full overflow-auto">
         {filteredComponents.map((component) => {
           return (
@@ -183,6 +154,74 @@ function RouteComponent() {
           )
         })}
       </div>
+
+      <Pagination className="bg-background border border-border">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationHoverPreview
+              title="前のページの内容"
+              pageIndex={page - 1}
+              componentsPerPage={componentsPerPage}
+              componentNames={components}
+            >
+              <PaginationPrevious
+                onClick={handleClickPrevious}
+                text="前"
+                aria-disabled={page === 0}
+                tabIndex={page === 0 ? -1 : 0}
+                className={cn({
+                  'opacity-50': page === 0,
+                })}
+              />
+            </PaginationHoverPreview>
+          </PaginationItem>
+          {paginationItems.map((item, index) => {
+            if (item === 'ellipsis') {
+              return (
+                <PaginationItem key={`ellipsis-${index}`}>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              )
+            }
+
+            return (
+              <PaginationItem key={item}>
+                <PaginationHoverPreview
+                  title={`${item + 1}ページの内容`}
+                  pageIndex={item}
+                  componentsPerPage={componentsPerPage}
+                  componentNames={components}
+                >
+                  <PaginationLink
+                    onClick={() => setPage(item)}
+                    isActive={item === page}
+                  >
+                    {item + 1}
+                  </PaginationLink>
+                </PaginationHoverPreview>
+              </PaginationItem>
+            )
+          })}
+          <PaginationItem>
+            <PaginationHoverPreview
+              title="次のページの内容"
+              pageIndex={page + 1}
+              componentsPerPage={componentsPerPage}
+              componentNames={components}
+            >
+              <PaginationNext
+                onClick={handleClickNext}
+                text="次"
+                aria-disabled={page === lastPageIndex}
+                tabIndex={page === lastPageIndex ? -1 : 0}
+                className={cn({
+                  'opacity-50': page === lastPageIndex,
+                })}
+              />
+            </PaginationHoverPreview>
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   )
 }
@@ -211,7 +250,7 @@ function PaginationHoverPreview({
   return (
     <HoverCard>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
-      <HoverCardContent side="bottom">
+      <HoverCardContent side="top">
         <div className="style-lyra:gap-1 style-nova:gap-1.5 style-vega:gap-2 style-maia:gap-2 style-mira:gap-1 flex flex-col">
           <h4 className="font-medium">{title}</h4>
           {pageComponents.length > 0 ? (
@@ -237,13 +276,21 @@ function Content({
   to: string
 }) {
   const navigate = useNavigate()
+
+  const { theme: currentMode } = useAppearanceMode()
+  const [mode, setMode] = React.useState<AppearanceMode>(currentMode)
+
   const { theme: currentTheme } = useTheme()
-  const [theme, setTheme] = React.useState<Theme>(currentTheme)
+  const [theme, setTheme] = React.useState<string>(currentTheme)
+
   const { style: currentStyle } = useStyle()
   const [style, setStyle] = React.useState<Style>(currentStyle)
 
   const handleMessage = React.useCallback(
-    (window: Window, data: { theme?: Theme; style?: Style }) => {
+    (
+      window: Window,
+      data: { mode?: AppearanceMode; theme?: string; style?: Style },
+    ) => {
       const html = window.document.documentElement
 
       if (data.style) {
@@ -251,7 +298,11 @@ function Content({
       }
 
       if (data.theme) {
-        applyTheme(html, data.theme)
+        applyTheme(window.document, data.theme)
+      }
+
+      if (data.mode) {
+        applyMode(html, data.mode)
       }
     },
     [],
@@ -259,8 +310,16 @@ function Content({
 
   const { ref, sendToIframe } = useIframeMessage(handleMessage)
 
+  const handleModeChange = React.useCallback(
+    (value: AppearanceMode) => {
+      setMode(value)
+      sendToIframe({ mode: value })
+    },
+    [sendToIframe],
+  )
+
   const handleThemeChange = React.useCallback(
-    (value: Theme) => {
+    (value: string) => {
       setTheme(value)
       sendToIframe({ theme: value })
     },
@@ -278,16 +337,17 @@ function Content({
   return (
     <Card className="h-max w-max">
       <CardHeader>
-        <CardTitle className="flex flex-wrap items-center justify-between gap-2">
-          <div>{title}</div>
+        <CardTitle className="flex flex-col gap-2">
+          <div className="text-lg font-semibold">{title}</div>
           <div className="flex gap-2">
-            <DemoThemeSwitcher
-              value={theme}
-              onValueChange={handleThemeChange}
-            />
+            <DemoModeSwitcher value={mode} onValueChange={handleModeChange} />
             <DemoStyleSwitcher
               value={style}
               onValueChange={handleStyleChange}
+            />
+            <DemoThemeSwitcher
+              value={theme}
+              onValueChange={handleThemeChange}
             />
           </div>
         </CardTitle>
@@ -297,7 +357,7 @@ function Content({
           ref={ref}
           src={src}
           width={550}
-          height={400}
+          height={550}
           className="border rounded-xl"
         />
       </CardContent>
@@ -310,14 +370,14 @@ function Content({
   )
 }
 
-function DemoThemeSwitcher({
+function DemoModeSwitcher({
   className = '',
   value = 'light',
   onValueChange = () => {},
 }: {
   className?: string
-  value?: Theme
-  onValueChange?: (value: Theme) => void
+  value?: AppearanceMode
+  onValueChange?: (value: AppearanceMode) => void
 }) {
   return (
     <ToggleGroup
@@ -328,7 +388,7 @@ function DemoThemeSwitcher({
       onValueChange={(val) => {
         if (val === value) return
         if (val == '') return
-        onValueChange(val as Theme)
+        onValueChange(val as AppearanceMode)
       }}
     >
       <ToggleGroupItem value="light">
@@ -338,6 +398,71 @@ function DemoThemeSwitcher({
         <MoonIcon />
       </ToggleGroupItem>
     </ToggleGroup>
+  )
+}
+
+function DemoThemeSwitcher({
+  className = '',
+  value = 'neutral',
+  onValueChange = () => {},
+}: {
+  className?: string
+  value?: string
+  onValueChange?: (value: string) => void
+}) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          className={cn(className, 'min-w-20 flex items-center')}
+        >
+          {formatKebabAsTitle(value)}
+          <div
+            className="size-4 rounded-full"
+            style={{
+              backgroundColor: THEMES.find((t) => t.name === value)?.cssVars[
+                'light'
+              ]['primary'],
+            }}
+          ></div>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-fit">
+        <PopoverHeader>
+          <PopoverTitle>テーマを選択</PopoverTitle>
+          <PopoverDescription>テーマを選択してください</PopoverDescription>
+          <ToggleGroup
+            className="overflow-auto max-h-60 min-w-32"
+            type="single"
+            variant="outline"
+            orientation="vertical"
+            value={value}
+            onValueChange={(val) => {
+              if (val === value) return
+              if (val == '') return
+              onValueChange(val)
+            }}
+          >
+            {THEMES.map((theme) => (
+              <ToggleGroupItem
+                key={theme.name}
+                value={theme.name}
+                className="flex justify-between items-center"
+              >
+                {theme.title}
+                <div
+                  className="size-4 rounded-full"
+                  style={{
+                    backgroundColor: theme.cssVars['light']['primary'],
+                  }}
+                ></div>
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+        </PopoverHeader>
+      </PopoverContent>
+    </Popover>
   )
 }
 
@@ -371,14 +496,14 @@ function DemoStyleSwitcher({
   )
 }
 
-/** theme を適用する */
-function applyTheme(el: HTMLElement, theme: Theme) {
-  const themes = ['light', 'dark', 'system'] as const
-  themes.forEach((t) => {
-    el.classList.remove(t)
+/** mode を適用する */
+function applyMode(el: HTMLElement, mode: AppearanceMode) {
+  const modes = ['light', 'dark', 'system'] as const
+  modes.forEach((m) => {
+    el.classList.remove(m)
   })
 
-  el.classList.add(theme)
+  el.classList.add(mode)
 }
 
 /** style を適用する */

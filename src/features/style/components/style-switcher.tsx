@@ -1,4 +1,4 @@
-import { useStyle } from '../api/useStyle'
+import { useStyle } from '../api/use-style'
 import { STYLES } from './style-provider'
 import type { Style } from './style-provider'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
