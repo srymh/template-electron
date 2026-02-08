@@ -10,6 +10,7 @@ import {
   Pickaxe,
   PieChart,
   SquareTerminal,
+  ToggleLeftIcon,
 } from 'lucide-react'
 import { Link, useLocation } from '@tanstack/react-router'
 
@@ -28,6 +29,8 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import { useAuth } from '@/features/auth/api/auth'
+import { components } from '@/features/ui-demo/constants'
+import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
 
 // This is sample data.
 const data = {
@@ -94,6 +97,15 @@ const data = {
           url: '/demo/chat-t',
         },
       ],
+    },
+    {
+      title: 'UI',
+      url: '/ui/',
+      icon: ToggleLeftIcon,
+      items: components.map((component) => ({
+        title: formatKebabAsTitle(component),
+        url: `/ui/${component}`,
+      })),
     },
     {
       title: 'Documentation',

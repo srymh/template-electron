@@ -12,6 +12,8 @@ import reportWebVitals from './reportWebVitals.ts'
 import { ThemeProvider } from '@/components/theme-provider'
 import { DevToolsProvider } from '@/components/devtools-provider.tsx'
 import { AuthProvider, useAuth } from '@/features/auth/api/auth'
+import { DesignProvider } from '@/features/style/components/design-provider'
+import { Toaster } from '@/components/ui/sonner'
 
 // 生成されたルートツリーをインポート
 
@@ -87,13 +89,16 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <ThemeProvider>
-        <DevToolsProvider defaultHidden={false}>
-          <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
-            <AuthProvider>
-              <InnerApp />
-            </AuthProvider>
-          </TanStackQueryProvider.Provider>
-        </DevToolsProvider>
+        <DesignProvider>
+          <DevToolsProvider defaultHidden={false}>
+            <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
+              <AuthProvider>
+                <InnerApp />
+              </AuthProvider>
+            </TanStackQueryProvider.Provider>
+          </DevToolsProvider>
+          <Toaster />
+        </DesignProvider>
       </ThemeProvider>
     </StrictMode>,
   )
