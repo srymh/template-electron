@@ -21,6 +21,7 @@ export default [
       'dist-electron/**',
       'src/components/ui/**',
       'src/lib/utils.ts',
+      'src/features/ui-demo/**',
       'electron/**',
     ],
   },

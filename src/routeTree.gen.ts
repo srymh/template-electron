@@ -10,9 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as UiRouteRouteImport } from './routes/ui/route'
 import { Route as DemoRouteRouteImport } from './routes/demo.route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UiIndexRouteImport } from './routes/ui/index'
 import { Route as DemoIndexRouteImport } from './routes/demo.index'
+import { Route as UiComponentRouteImport } from './routes/ui/$component'
 import { Route as DemoWebRouteImport } from './routes/demo.web'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo.tanstack-query'
 import { Route as DemoTableRouteImport } from './routes/demo.table'
@@ -26,6 +29,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UiRouteRoute = UiRouteRouteImport.update({
+  id: '/ui',
+  path: '/ui',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DemoRouteRoute = DemoRouteRouteImport.update({
   id: '/demo',
   path: '/demo',
@@ -36,10 +44,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UiIndexRoute = UiIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => UiRouteRoute,
+} as any)
 const DemoIndexRoute = DemoIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DemoRouteRoute,
+} as any)
+const UiComponentRoute = UiComponentRouteImport.update({
+  id: '/$component',
+  path: '/$component',
+  getParentRoute: () => UiRouteRoute,
 } as any)
 const DemoWebRoute = DemoWebRouteImport.update({
   id: '/web',
@@ -80,6 +98,7 @@ const DemoChatRoute = DemoChatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/demo': typeof DemoRouteRouteWithChildren
+  '/ui': typeof UiRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/demo/chat': typeof DemoChatRoute
   '/demo/chat-t': typeof DemoChatTRoute
@@ -88,7 +107,9 @@ export interface FileRoutesByFullPath {
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/demo/web': typeof DemoWebRoute
+  '/ui/$component': typeof UiComponentRoute
   '/demo/': typeof DemoIndexRoute
+  '/ui/': typeof UiIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -100,12 +121,15 @@ export interface FileRoutesByTo {
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/demo/web': typeof DemoWebRoute
+  '/ui/$component': typeof UiComponentRoute
   '/demo': typeof DemoIndexRoute
+  '/ui': typeof UiIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/demo': typeof DemoRouteRouteWithChildren
+  '/ui': typeof UiRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/demo/chat': typeof DemoChatRoute
   '/demo/chat-t': typeof DemoChatTRoute
@@ -114,13 +138,16 @@ export interface FileRoutesById {
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/demo/web': typeof DemoWebRoute
+  '/ui/$component': typeof UiComponentRoute
   '/demo/': typeof DemoIndexRoute
+  '/ui/': typeof UiIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/demo'
+    | '/ui'
     | '/login'
     | '/demo/chat'
     | '/demo/chat-t'
@@ -129,7 +156,9 @@ export interface FileRouteTypes {
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/web'
+    | '/ui/$component'
     | '/demo/'
+    | '/ui/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -141,11 +170,14 @@ export interface FileRouteTypes {
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/web'
+    | '/ui/$component'
     | '/demo'
+    | '/ui'
   id:
     | '__root__'
     | '/'
     | '/demo'
+    | '/ui'
     | '/login'
     | '/demo/chat'
     | '/demo/chat-t'
@@ -154,12 +186,15 @@ export interface FileRouteTypes {
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/web'
+    | '/ui/$component'
     | '/demo/'
+    | '/ui/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DemoRouteRoute: typeof DemoRouteRouteWithChildren
+  UiRouteRoute: typeof UiRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
 }
 
@@ -170,6 +205,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ui': {
+      id: '/ui'
+      path: '/ui'
+      fullPath: '/ui'
+      preLoaderRoute: typeof UiRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo': {
@@ -186,12 +228,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ui/': {
+      id: '/ui/'
+      path: '/'
+      fullPath: '/ui/'
+      preLoaderRoute: typeof UiIndexRouteImport
+      parentRoute: typeof UiRouteRoute
+    }
     '/demo/': {
       id: '/demo/'
       path: '/'
       fullPath: '/demo/'
       preLoaderRoute: typeof DemoIndexRouteImport
       parentRoute: typeof DemoRouteRoute
+    }
+    '/ui/$component': {
+      id: '/ui/$component'
+      path: '/$component'
+      fullPath: '/ui/$component'
+      preLoaderRoute: typeof UiComponentRouteImport
+      parentRoute: typeof UiRouteRoute
     }
     '/demo/web': {
       id: '/demo/web'
@@ -271,9 +327,23 @@ const DemoRouteRouteWithChildren = DemoRouteRoute._addFileChildren(
   DemoRouteRouteChildren,
 )
 
+interface UiRouteRouteChildren {
+  UiComponentRoute: typeof UiComponentRoute
+  UiIndexRoute: typeof UiIndexRoute
+}
+
+const UiRouteRouteChildren: UiRouteRouteChildren = {
+  UiComponentRoute: UiComponentRoute,
+  UiIndexRoute: UiIndexRoute,
+}
+
+const UiRouteRouteWithChildren =
+  UiRouteRoute._addFileChildren(UiRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DemoRouteRoute: DemoRouteRouteWithChildren,
+  UiRouteRoute: UiRouteRouteWithChildren,
   LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
