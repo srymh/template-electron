@@ -1,118 +1,26 @@
-import React from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
-import logo from '../logo.svg'
-import { theme as themeApi } from '@/api'
-import { useTheme } from '@/components/theme-provider'
-
-const getAccentColorQueryOptions = queryOptions({
-  queryKey: ['accentColor'],
-  queryFn: async () => {
-    const color = await themeApi.getAccentColor()
-    return `#${color}`
-  },
-  staleTime: 0,
-  gcTime: 0,
-  refetchOnMount: true,
-})
+import logo from './logo.svg'
 
 export const Route = createFileRoute('/')({
   component: App,
-  loader: ({ context: { queryClient } }) => {
-    queryClient.ensureQueryData(getAccentColorQueryOptions)
-    return { crumb: 'Home' }
-  },
+  loader: () => ({ crumb: 'Home' }),
 })
 
-const useAccentColor = () => {
-  const { data: initialColor } = useSuspenseQuery(getAccentColorQueryOptions)
-  const [accentColor, setAccentColor] = React.useState<string>(initialColor)
-
-  React.useEffect(() => {
-    const unsubscribe = themeApi.on.accentColorChanged((newColor) => {
-      console.log('Accent color changed:', newColor)
-      setAccentColor('#' + newColor)
-    })
-    return () => {
-      unsubscribe()
-    }
-  }, [])
-
-  return accentColor
-}
-
 function App() {
-  const accentColor = useAccentColor()
-  const { setTheme } = useTheme()
-
   return (
-    <div
-      className="text-center h-full"
-      style={
-        {
-          '--accent-color': accentColor,
-        } as React.CSSProperties
-      }
-    >
-      <header className="h-full flex flex-col items-center justify-center bg-[#282c34] text-white text-[calc(10px+2vmin)]">
+    <div className="text-center h-full">
+      <header className="h-full bg-background text-foreground text-[calc(10px+2vmin)] grid place-items-center overflow-hidden">
         <img
           src={logo}
-          className="h-[40vmin] pointer-events-none animate-[spin_20s_linear_infinite]"
-          alt="logo"
+          alt=""
+          aria-hidden="true"
+          className="col-start-1 row-start-1 h-[70lvh] w-[70lvw] animate-[spin_20s_linear_infinite] pointer-events-none select-none"
         />
-        <p>
-          Edit <code>src/routes/index.tsx</code> and save to reload.
-        </p>
-        <a
-          className="text-(--accent-color) hover:underline"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <a
-          className="text-(--accent-color) hover:underline"
-          href="https://tanstack.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn TanStack
-        </a>
-        <button
-          className="text-(--accent-color) hover:underline"
-          onClick={async () => {
-            const theme = await themeApi.getTheme()
-            alert(`Current theme: ${theme}`)
-          }}
-        >
-          Get Current Theme
-        </button>
-        <div className="flex gap-2">
-          <button
-            className="text-xs size-16 rounded bg-(--accent-color) text-black hover:bg-[#21a1f1]"
-            onClick={() => {
-              setTheme('dark')
-            }}
-          >
-            Set Theme to Dark
-          </button>
-          <button
-            className="text-xs size-16 rounded bg-(--accent-color) text-black hover:bg-[#21a1f1]"
-            onClick={() => {
-              setTheme('light')
-            }}
-          >
-            Set Theme to Light
-          </button>
-          <button
-            className="text-xs size-16 rounded bg-(--accent-color) text-black hover:bg-[#21a1f1]"
-            onClick={() => {
-              setTheme('system')
-            }}
-          >
-            Set Theme to System
-          </button>
+        <div className="col-start-1 row-start-1 z-10 flex flex-col items-center justify-center max-w-3xl px-6 bg-background/30 rounded-lg py-4 shadow-lg backdrop-blur-sm">
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eaque iste
+          blanditiis incidunt cupiditate provident quaerat ipsum repudiandae ex.
+          Ipsa repellat provident eligendi placeat iste nisi deserunt tempore
+          vel veniam. Non!
         </div>
       </header>
     </div>
