@@ -6,12 +6,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
-import { OpenChat } from '@/features/chat/components/open-chat'
-import { useAuth } from '@/features/auth/api/auth'
 
 export function Layout(props: { children?: React.ReactNode }) {
   const { children } = props
-  const { auth } = useAuth()
 
   return (
     <SidebarProvider>
@@ -27,7 +24,6 @@ export function Layout(props: { children?: React.ReactNode }) {
         <SiteHeader />
         <div className="w-full h-full overflow-auto">{children}</div>
       </SidebarInset>
-      {auth.isAuthenticated && <OpenChat />}
     </SidebarProvider>
   )
 }

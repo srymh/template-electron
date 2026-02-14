@@ -29,6 +29,7 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import { useAuth } from '@/features/auth/api/auth'
+import { OpenChat } from '@/features/chat/components/open-chat'
 import { components } from '@/features/ui-demo/constants'
 import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
 
@@ -166,26 +167,31 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
+
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
       </SidebarContent>
+
       <SidebarFooter>
         {isAuthenticated ? (
-          <NavUser
-            user={{
-              name: user?.username || 'Unknown',
-              email: `${user?.username || 'unknown@example.com'}`,
-              avatar: '',
-            }}
-            logout={logout}
-          />
+          <>
+            <OpenChat />
+            <NavUser
+              user={{
+                name: user?.username || 'Unknown',
+                email: `${user?.username || 'unknown@example.com'}`,
+                avatar: '',
+              }}
+              logout={logout}
+            />
+          </>
         ) : (
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
                 <Link
-                  className="bg-sidebar-accent text-sidebar-accent-foreground flex w-full items-center rounded-lg px-3 py-2 text-sm font-medium hover:bg-sidebar-accent/80"
+                  className="bg-sidebar-accent text-sidebar-accent-foreground flex w-full items-center  px-3 py-2 text-sm font-medium hover:bg-sidebar-accent/80"
                   to="/login"
                   search={{
                     redirect: location.href,
