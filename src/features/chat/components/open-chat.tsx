@@ -20,7 +20,7 @@ export function OpenChat() {
           <DialogTrigger asChild>
             <SidebarMenuButton
               variant="outline"
-              className="bg-primary text-primary-foreground font-medium hover:bg-primary/90"
+              className="bg-sidebar text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             >
               <BotIcon />
               <span>AIチャット</span>

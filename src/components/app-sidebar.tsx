@@ -1,23 +1,18 @@
 import * as React from 'react'
 import {
-  AudioWaveform,
   BookOpen,
-  Command,
   Frame,
-  GalleryVerticalEnd,
+  HomeIcon,
   LogInIcon,
   Map,
   Pickaxe,
   PieChart,
-  SquareTerminal,
   ToggleLeftIcon,
 } from 'lucide-react'
 import { Link, useLocation } from '@tanstack/react-router'
 
 import { NavMain } from '@/components/nav-main'
-import { NavProjects } from '@/components/nav-projects'
 import { NavUser } from '@/components/nav-user'
-import { TeamSwitcher } from '@/components/team-switcher'
 import {
   Sidebar,
   SidebarContent,
@@ -27,41 +22,22 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  SidebarSeparator,
 } from '@/components/ui/sidebar'
 import { useAuth } from '@/features/auth/api/auth'
 import { OpenChat } from '@/features/chat/components/open-chat'
 import { components } from '@/features/ui-demo/constants'
 import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
 
+import logo from '@/assets/logo.svg'
+
 // This is sample data.
 const data = {
-  user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
-  teams: [
-    {
-      name: 'Acme Inc',
-      logo: GalleryVerticalEnd,
-      plan: 'Enterprise',
-    },
-    {
-      name: 'Acme Corp.',
-      logo: AudioWaveform,
-      plan: 'Startup',
-    },
-    {
-      name: 'Evil Corp.',
-      logo: Command,
-      plan: 'Free',
-    },
-  ],
   navMain: [
     {
       title: 'Home',
       url: '/',
-      icon: SquareTerminal,
+      icon: HomeIcon,
     },
     {
       title: 'Demo',
@@ -165,13 +141,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild>
+              <Link to="/">
+                <div className="size-8 aspect-square flex items-center justify-center rounded p-0.5">
+                  <img src={logo} alt="Logo" />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">Your App Name</span>
+                  <span className="truncate text-xs">template-electron</span>
+                </div>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
+
+      <SidebarSeparator className="data-[orientation=horizontal]:w-[95%] mx-auto" />
 
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
       </SidebarContent>
+
+      <SidebarSeparator className="data-[orientation=horizontal]:w-[95%] mx-auto" />
 
       <SidebarFooter>
         {isAuthenticated ? (
