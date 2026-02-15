@@ -28,7 +28,7 @@ export function OpenChat() {
           </DialogTrigger>
 
           <DialogContent
-            className="top-2 left-auto right-4 max-h-[calc(100vh-5rem)] translate-x-0 translate-y-0 overflow-hidden flex flex-col sm:max-w-md"
+            className="top-[calc(var(--header-height)+var(--spacing,0.25rem)*2)] left-auto right-4 max-h-[calc(100vh-5rem)] translate-x-0 translate-y-0 overflow-hidden flex flex-col sm:max-w-md"
             // ダイアログ外クリックで閉じないようにする
             onInteractOutside={(e) => e.preventDefault()}
             // ダイアログ外クリックで閉じないようにする

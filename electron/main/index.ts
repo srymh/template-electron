@@ -1,7 +1,8 @@
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { app, BrowserWindow, type WebContents } from 'electron'
+import { app, BrowserWindow } from 'electron'
 
+import type { WebContents } from 'electron'
 import type { AiAgent } from './features/ai-agent/AiAgent'
 import type { AuthRuntime } from './features/auth/authRuntime'
 import { createAppDataBase, type DataBase } from './features/db/db'
@@ -100,6 +101,13 @@ startApp<AppContext>({
         browserWindowOptions: {
           icon: path.join(appContext.paths.vitePublic, 'app.ico'),
           autoHideMenuBar: true,
+          // タイトルバーを完全に消す
+          titleBarStyle: 'hidden',
+          // macOS 以外は titleBarOverlay を有効にしてタイトルバーとコンテンツを重ねる
+          // https://www.electronjs.org/ja/docs/latest/tutorial/custom-title-bar#%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E3%81%AE%E3%82%A6%E3%82%A4%E3%83%B3%E3%83%89%E3%82%A6%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%AB%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B-windows-linux
+          ...(process.platform !== 'darwin'
+            ? { titleBarOverlay: createTitleBarOverlay() }
+            : {}),
           webPreferences: {
             ...recommendedSecureOptions,
             preload: appContext.paths.preloadPath,
@@ -163,10 +171,10 @@ function createWindowContext(
     appContext: AppContext
   },
 ): Context {
-  // もし window 固有の情報を管理したい場合はここで追加する
-  void win
-
   return {
+    theme: {
+      setTileBarOverlay: (options) => win.setTitleBarOverlay(options),
+    },
     mcp: {
       getMcpServer: () => appContext.mcpServer,
       setMcpServer: (server) => {
@@ -213,5 +221,17 @@ function createWindowContext(
         return newRuntime
       },
     },
+  }
+}
+
+function createTitleBarOverlay() {
+  // 起動時 nativeTheme には OS の設定が反映されており、
+  // レンダラーで保持されたテーマとは異なる可能性がある。
+  // そのため、起動時には透明なオーバーレイを設定しておき、
+  // レンダラーからテーマが送られてきたタイミングで色を更新する。
+  return {
+    color: '#00000000', // 背景
+    symbolColor: '#00000000', // シンボル
+    height: 29,
   }
 }

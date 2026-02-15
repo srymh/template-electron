@@ -29,6 +29,8 @@ export function ThemeProvider({
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
     const storedTheme = localStorage.getItem(storageKey) as Theme | null
+    // アプリ起動時にストレージからテーマを読み込み、メインプロセスにも反映させる
+    themeApi.setTheme({ theme: storedTheme || defaultTheme })
     return storedTheme || defaultTheme
   })
 

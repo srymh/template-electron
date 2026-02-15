@@ -13,3 +13,9 @@
     @apply overflow-hidden bg-background text-foreground;
   }
 }
+
+:root {
+  --header-height: 30px;
+  /* タイトルオーバーレイの幅 */
+  --title-bar-overlay-width: 137px;
+}
