@@ -58,25 +58,19 @@ if (rootElement && !rootElement.innerHTML) {
       const wasAuthenticated = prevIsAuthenticated.current
       prevIsAuthenticated.current = auth.isAuthenticated
 
-      // 明示的なログアウト (true -> false) にのみ反応する
-      if (wasAuthenticated === true && auth.isAuthenticated === false) {
-        const { pathname, href } = router.state.location
-
-        // ユーザーが保護されたエリアにいる場合、/login に強制的に移動する
-        // (beforeLoad などのガードはナビゲーション時に実行される。ログアウトだけでは再実行されない)
-        if (pathname.startsWith('/demo')) {
-          router.navigate({
-            to: '/login',
-            search: {
-              redirect: href,
-            },
-          })
-        }
+      // TanStack Router はマッチやローダーをキャッシュします。認証状態が変わったとき、
+      // 次のナビゲーションでガードを再評価するために強制的にキャッシュを無効化します。
+      if (
+        wasAuthenticated !== null &&
+        wasAuthenticated !== auth.isAuthenticated
+      ) {
+        router.invalidate()
       }
     }, [auth.isAuthenticated])
 
     return (
       <RouterProvider
+        // key={auth.isAuthenticated ? 'auth:in' : 'auth:out'}
         router={router}
         context={{
           ...TanStackQueryProviderContext,

@@ -186,9 +186,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <Link
                   className="bg-sidebar-accent text-sidebar-accent-foreground flex w-full items-center  px-3 py-2 text-sm font-medium hover:bg-sidebar-accent/80"
                   to="/login"
-                  search={{
-                    redirect: location.href,
-                  }}
+                  search={{ redirect: location.href }}
                   disabled={location.pathname === '/login'}
                 >
                   <LogInIcon className="mr-2 h-4 w-4" />
