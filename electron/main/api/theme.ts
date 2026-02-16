@@ -17,7 +17,7 @@ export type ThemeApiKey = typeof THEME_API_KEY
 export type Theme = typeof nativeTheme.themeSource
 
 export type ThemeContext = {
-  setTileBarOverlay: (options: TitleBarOverlayOptions) => void
+  setTitleBarOverlay: (options: TitleBarOverlayOptions) => void
 }
 
 // -----------------------------------------------------------------------------
@@ -44,14 +44,14 @@ const createSetTheme = (
   getContext: (wc: WebContents) => ThemeContext,
 ): WithWebContents<ThemeApi['setTheme']> => {
   return async ({ theme }, wc) => {
-    const { setTileBarOverlay } = getContext(wc)
+    const { setTitleBarOverlay } = getContext(wc)
     let symbolColor = theme === 'dark' ? '#FFFFFF' : '#000000'
     // もしテーマが system なら OS のダークモード設定に応じてシンボルカラーを決定する
     if (theme === 'system') {
       const shouldUseDarkColors = nativeTheme.shouldUseDarkColors
       symbolColor = shouldUseDarkColors ? '#FFFFFF' : '#000000'
     }
-    setTileBarOverlay({ symbolColor })
+    setTitleBarOverlay({ symbolColor })
     nativeTheme.themeSource = theme
   }
 }

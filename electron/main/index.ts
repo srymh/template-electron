@@ -173,7 +173,7 @@ function createWindowContext(
 ): Context {
   return {
     theme: {
-      setTileBarOverlay: (options) => win.setTitleBarOverlay(options),
+      setTitleBarOverlay: (options) => win.setTitleBarOverlay(options),
     },
     mcp: {
       getMcpServer: () => appContext.mcpServer,
