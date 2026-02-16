@@ -1,11 +1,4 @@
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Settings2Icon,
-} from 'lucide-react'
+import { ChevronsUpDown, LogOut, Settings2Icon } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
