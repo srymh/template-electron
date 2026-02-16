@@ -30,25 +30,6 @@ function registerAuthFrameRpcResponder() {
         user: mockUser,
       }
     },
-    AUTH_LOGIN: async (params) => {
-      const p = params as { username: string; password: string }
-      if ((window.api as unknown) !== undefined) {
-        return await window.api.auth.login(p.username, p.password)
-      }
-      mockUser = { username: p.username }
-      return {
-        isAuthenticated: true,
-        user: mockUser,
-      }
-    },
-    AUTH_LOGOUT: async () => {
-      if ((window.api as unknown) !== undefined) {
-        await window.api.auth.logout()
-        return null
-      }
-      mockUser = null
-      return null
-    },
   })
 }
 
