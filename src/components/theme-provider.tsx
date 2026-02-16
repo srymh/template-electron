@@ -29,14 +29,21 @@ export function ThemeProvider({
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
     const storedTheme = localStorage.getItem(storageKey) as Theme | null
-    // アプリ起動時にストレージからテーマを読み込み、メインプロセスにも反映させる
-    themeApi.setTheme({ theme: storedTheme || defaultTheme })
     return storedTheme || defaultTheme
   })
 
   useEffect(() => {
+    // 初期化フラグを設定
+    let initializing = true
+
+    // 初期テーマをメインプロセスに通知
+    themeApi.setTheme({ theme }).finally(() => {
+      initializing = false
+    })
+
     const unsubscribe = themeApi.on.updated((newTheme) => {
-      console.log('Theme updated:', newTheme)
+      // 初期化中はメインプロセスからのテーマ更新を無視
+      if (initializing) return
       setTheme(newTheme)
     })
 
