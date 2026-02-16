@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { aiAgent, mcp } from '@/api'
 
-export const Route = createFileRoute('/demo/chat')({
+export const Route = createFileRoute('/(app)/demo/chat')({
   component: RouteComponent,
   loader: () => ({ crumb: 'AIチャット' }),
 })
