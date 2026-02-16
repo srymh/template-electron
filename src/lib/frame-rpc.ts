@@ -1,15 +1,13 @@
-type FrameRpcEnvelopeBase = {
-  __frameRpc: 'v1'
+type AuthStatusRpcEnvelopeBase = {
+  __authStatusRpc: 'v1'
   id: string
 }
 
-export type FrameRpcRequest = FrameRpcEnvelopeBase & {
+export type AuthStatusRpcRequest = AuthStatusRpcEnvelopeBase & {
   kind: 'request'
-  method: string
-  params?: unknown
 }
 
-export type FrameRpcResponse = FrameRpcEnvelopeBase &
+export type AuthStatusRpcResponse = AuthStatusRpcEnvelopeBase &
   (
     | {
         kind: 'response'
@@ -22,11 +20,6 @@ export type FrameRpcResponse = FrameRpcEnvelopeBase &
         error: string
       }
   )
-
-type FrameRpcHandler = (
-  params: unknown,
-  event: MessageEvent,
-) => unknown | Promise<unknown>
 
 function isSameOrigin(eventOrigin: string): boolean {
   const currentOrigin = window.location.origin
@@ -47,26 +40,24 @@ function randomId(): string {
   }
 }
 
-export function requestToParent<T>(
-  method: string,
-  params?: unknown,
-  options?: { timeoutMs?: number },
-): Promise<T> {
+export function requestAuthStatusFromParent<T>(options?: {
+  timeoutMs?: number
+}): Promise<T> {
   const timeoutMs = options?.timeoutMs ?? 2000
 
   if (window.self === window.top) {
     return Promise.reject(
-      new Error('[frame-rpc] requestToParent must be called from an iframe'),
+      new Error(
+        '[auth-status-rpc] requestAuthStatusFromParent must be called from an iframe',
+      ),
     )
   }
 
   const id = randomId()
-  const message: FrameRpcRequest = {
-    __frameRpc: 'v1',
+  const message: AuthStatusRpcRequest = {
+    __authStatusRpc: 'v1',
     kind: 'request',
     id,
-    method,
-    params,
   }
 
   const targetOrigin =
@@ -75,7 +66,7 @@ export function requestToParent<T>(
   return new Promise<T>((resolve, reject) => {
     const timeout = window.setTimeout(() => {
       cleanup()
-      reject(new Error(`[frame-rpc] timeout (${timeoutMs}ms): ${method}`))
+      reject(new Error(`[auth-status-rpc] timeout (${timeoutMs}ms)`))
     }, timeoutMs)
 
     function onMessage(event: MessageEvent) {
@@ -83,26 +74,30 @@ export function requestToParent<T>(
       if (!isSameOrigin(event.origin)) return
       if (!data || typeof data !== 'object') return
 
-      const maybe = data as Partial<FrameRpcResponse>
-      if (maybe.__frameRpc !== 'v1') return
+      const maybe = data as Partial<AuthStatusRpcResponse>
+      if (maybe.__authStatusRpc !== 'v1') return
       if (maybe.kind !== 'response') return
       if (maybe.id !== id) return
 
       cleanup()
 
       if (maybe.ok === true) {
-        resolve((maybe as Extract<FrameRpcResponse, { ok: true }>).result as T)
+        resolve(
+          (maybe as Extract<AuthStatusRpcResponse, { ok: true }>).result as T,
+        )
         return
       }
 
       if (maybe.ok === false) {
         reject(
-          new Error((maybe as Extract<FrameRpcResponse, { ok: false }>).error),
+          new Error(
+            (maybe as Extract<AuthStatusRpcResponse, { ok: false }>).error,
+          ),
         )
         return
       }
 
-      reject(new Error('[frame-rpc] invalid response'))
+      reject(new Error('[auth-status-rpc] invalid response'))
     }
 
     function cleanup() {
@@ -112,7 +107,6 @@ export function requestToParent<T>(
 
     window.addEventListener('message', onMessage)
 
-    // If posting fails, treat as immediate failure
     try {
       window.parent.postMessage(message, targetOrigin)
     } catch (e) {
@@ -122,31 +116,26 @@ export function requestToParent<T>(
   })
 }
 
-export function registerFrameRpcHandlers(
-  handlers: Partial<Record<string, FrameRpcHandler>>,
+export function registerAuthStatusResponder(
+  handler: () => unknown | Promise<unknown>,
 ): () => void {
   function onMessage(event: MessageEvent) {
     const data = event.data as unknown
     if (!isSameOrigin(event.origin)) return
     if (!data || typeof data !== 'object') return
 
-    const maybe = data as Partial<FrameRpcRequest>
-    if (maybe.__frameRpc !== 'v1') return
+    const maybe = data as Partial<AuthStatusRpcRequest>
+    if (maybe.__authStatusRpc !== 'v1') return
     if (maybe.kind !== 'request') return
     if (typeof maybe.id !== 'string') return
-    if (typeof maybe.method !== 'string') return
 
     const requestId = maybe.id
-    const method = maybe.method
-
-    const handler = handlers[method]
-    if (!handler) return
 
     const reply = async () => {
       try {
-        const result = await handler(maybe.params, event)
-        const response: FrameRpcResponse = {
-          __frameRpc: 'v1',
+        const result = await handler()
+        const response: AuthStatusRpcResponse = {
+          __authStatusRpc: 'v1',
           kind: 'response',
           id: requestId,
           ok: true,
@@ -158,8 +147,8 @@ export function registerFrameRpcHandlers(
           window.location.origin === 'null' ? '*' : window.location.origin,
         )
       } catch (e) {
-        const response: FrameRpcResponse = {
-          __frameRpc: 'v1',
+        const response: AuthStatusRpcResponse = {
+          __authStatusRpc: 'v1',
           kind: 'response',
           id: requestId,
           ok: false,

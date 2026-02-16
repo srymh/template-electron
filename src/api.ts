@@ -1,4 +1,7 @@
-import { registerFrameRpcHandlers, requestToParent } from '@/lib/frame-rpc'
+import {
+  registerAuthStatusResponder,
+  requestAuthStatusFromParent,
+} from '@/lib/frame-rpc'
 
 export type Api = typeof window.api
 export type AiAgentApi = Api['aiAgent']
@@ -20,16 +23,14 @@ function registerAuthFrameRpcResponder() {
   if (w.__authFrameRpcResponder) return
   w.__authFrameRpcResponder = true
 
-  registerFrameRpcHandlers({
-    AUTH_GET_STATUS: async () => {
-      if ((window.api as unknown) !== undefined) {
-        return await window.api.auth.getStatus()
-      }
-      return {
-        isAuthenticated: Boolean(mockUser),
-        user: mockUser,
-      }
-    },
+  registerAuthStatusResponder(async () => {
+    if ((window.api as unknown) !== undefined) {
+      return await window.api.auth.getStatus()
+    }
+    return {
+      isAuthenticated: Boolean(mockUser),
+      user: mockUser,
+    }
   })
 }
 
@@ -89,26 +90,19 @@ const api: Api = (() => {
     auth: isIframe
       ? {
           getStatus: async () =>
-            await requestToParent<Awaited<ReturnType<AuthApi['getStatus']>>>(
-              'AUTH_GET_STATUS',
-              undefined,
-              {
-                timeoutMs: 3000,
-              },
-            ),
-          login: async (username: string, password: string) =>
-            await requestToParent<Awaited<ReturnType<AuthApi['login']>>>(
-              'AUTH_LOGIN',
-              { username, password },
-              { timeoutMs: 3000 },
-            ),
-          logout: async () => {
-            await requestToParent<Awaited<ReturnType<AuthApi['logout']>>>(
-              'AUTH_LOGOUT',
-              undefined,
-              {
-                timeoutMs: 3000,
-              },
+            await requestAuthStatusFromParent<
+              Awaited<ReturnType<AuthApi['getStatus']>>
+            >({
+              timeoutMs: 3000,
+            }),
+          login: () => {
+            throw new Error(
+              '[auth] iframe からの login はサポートされていません（親画面で操作してください）',
+            )
+          },
+          logout: () => {
+            throw new Error(
+              '[auth] iframe からの logout はサポートされていません（親画面で操作してください）',
             )
           },
         }
