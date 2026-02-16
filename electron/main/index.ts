@@ -173,7 +173,10 @@ function createWindowContext(
 ): Context {
   return {
     theme: {
-      setTitleBarOverlay: (options) => win.setTitleBarOverlay(options),
+      setTitleBarOverlay: (options) => {
+        if (process.platform === 'darwin') return
+        win.setTitleBarOverlay(options)
+      },
     },
     mcp: {
       getMcpServer: () => appContext.mcpServer,

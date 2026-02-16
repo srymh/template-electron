@@ -16,6 +16,10 @@
 
 :root {
   --header-height: 30px;
-  /* タイトルオーバーレイの幅 */
+  /* タイトルバーオーバーレイの幅 */
   --title-bar-overlay-width: 137px;
+}
+
+[data-custom-title-bar] {
+  app-region: drag;
 }

@@ -28,10 +28,7 @@ function SiteHeader() {
         <SidebarTrigger className="-ml-1" />
         <Breadcrumbs />
         <div
-          style={{
-            // @ts-ignore カスタムウィンドウコントロール
-            appRegion: 'drag',
-          }}
+          data-custom-title-bar
           className="h-[calc(var(--header-height)-1px)] -mt-px flex-1 min-w-0 flex items-center justify-center"
         ></div>
       </div>
