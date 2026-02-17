@@ -1,6 +1,6 @@
 import { createRegisterIpc } from '#/shared/lib/ipc/main'
 import { getFileSystemApi } from '#/main/api/fs'
-import { getThemeApi } from '#/main/api/theme'
+import { THEME_API_KEY, getThemeApi } from '#/main/api/theme'
 import { getWebApi } from '#/main/api/web'
 import { MCP_API_KEY, getMcpApi } from '#/main/api/mcp'
 import { AI_AGENT_API_KEY, getAiAgentApi } from '#/main/api/aiAgent'
@@ -9,6 +9,7 @@ import { Kakeibo_API_KEY, getKakeiboApi } from '#/main/api/kakeibo'
 import { AUTH_API_KEY, getAuthApi } from '#/main/api/auth'
 
 import type { WebContents } from 'electron'
+import type { ThemeContext } from '#/main/api/theme'
 import type { McpApiContext } from '#/main/api/mcp'
 import type { AiAgentContext } from '#/main/api/aiAgent'
 import type { KakeiboContext } from '#/main/api/kakeibo'
@@ -16,6 +17,7 @@ import type { AuthContext } from '#/main/api/auth'
 import type { ElectronMainApi } from './electronApi'
 
 export type Context = {
+  [THEME_API_KEY]: ThemeContext
   [MCP_API_KEY]: McpApiContext
   [AI_AGENT_API_KEY]: AiAgentContext
   [Kakeibo_API_KEY]: KakeiboContext
@@ -25,21 +27,19 @@ export type Context = {
 export const registerIpc = createRegisterIpc<ElectronMainApi, Context>(
   ({ getContext, defineHelper }) => {
     const fs = getFileSystemApi()
-    const theme = getThemeApi()
-    const web = getWebApi()
-    const mcp = getMcpApi(
-      (webContents: WebContents) => getContext(webContents)[MCP_API_KEY],
+    const theme = getThemeApi(
+      (wc: WebContents) => getContext(wc)[THEME_API_KEY],
     )
+    const web = getWebApi()
+    const mcp = getMcpApi((wc: WebContents) => getContext(wc)[MCP_API_KEY])
     const aiAgent = getAiAgentApi(
-      (webContents: WebContents) => getContext(webContents)[AI_AGENT_API_KEY],
+      (wc: WebContents) => getContext(wc)[AI_AGENT_API_KEY],
     )
     const aiChat = getAiChatApi()
     const kakeibo = getKakeiboApi(
-      (webContents: WebContents) => getContext(webContents)[Kakeibo_API_KEY],
+      (wc: WebContents) => getContext(wc)[Kakeibo_API_KEY],
     )
-    const auth = getAuthApi(
-      (webContents: WebContents) => getContext(webContents)[AUTH_API_KEY],
-    )
+    const auth = getAuthApi((wc: WebContents) => getContext(wc)[AUTH_API_KEY])
 
     return defineHelper({
       // 'this.should.cause.a.type.error': { type: 'invoke', method: () => {} },

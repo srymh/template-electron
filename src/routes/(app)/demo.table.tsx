@@ -9,13 +9,13 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 
-import { makeData } from '../data/demo-table-data'
 import type { ColumnFiltersState } from '@tanstack/react-table'
-import type { Person } from '../data/demo-table-data'
+import type { Person } from '@/data/demo-table-data'
+import { makeData } from '@/data/demo-table-data'
 import { BasicTable } from '@/components/table/basic-table'
 import { fuzzyFilter, fuzzySort } from '@/components/table/tableUtils'
 
-export const Route = createFileRoute('/demo/table')({
+export const Route = createFileRoute('/(app)/demo/table')({
   component: TableDemo,
   loader: () => ({ crumb: 'Table' }),
 })

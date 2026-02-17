@@ -1,6 +1,6 @@
 import { nativeTheme, systemPreferences } from 'electron'
 
-import type { Event } from 'electron'
+import type { Event, WebContents, TitleBarOverlayOptions } from 'electron'
 import type {
   ApiInterface,
   AddListener,
@@ -15,6 +15,10 @@ export const THEME_API_KEY = 'theme' as const
 export type ThemeApiKey = typeof THEME_API_KEY
 
 export type Theme = typeof nativeTheme.themeSource
+
+export type ThemeContext = {
+  setTitleBarOverlay: (options: TitleBarOverlayOptions) => void
+}
 
 // -----------------------------------------------------------------------------
 // インターフェイス定義
@@ -36,8 +40,20 @@ const getTheme: WithWebContents<ThemeApi['getTheme']> = async () => {
   return nativeTheme.themeSource
 }
 
-const setTheme: WithWebContents<ThemeApi['setTheme']> = async ({ theme }) => {
-  nativeTheme.themeSource = theme
+const createSetTheme = (
+  getContext: (wc: WebContents) => ThemeContext,
+): WithWebContents<ThemeApi['setTheme']> => {
+  return async ({ theme }, wc) => {
+    const { setTitleBarOverlay } = getContext(wc)
+    let symbolColor = theme === 'dark' ? '#FFFFFF' : '#000000'
+    // もしテーマが system なら OS のダークモード設定に応じてシンボルカラーを決定する
+    if (theme === 'system') {
+      const shouldUseDarkColors = nativeTheme.shouldUseDarkColors
+      symbolColor = shouldUseDarkColors ? '#FFFFFF' : '#000000'
+    }
+    setTitleBarOverlay({ symbolColor })
+    nativeTheme.themeSource = theme
+  }
 }
 
 const getAccentColor: WithWebContents<
@@ -86,10 +102,12 @@ const onUpdated: WithWebContents<ThemeApi['on']['updated']> = (listener) => {
   }
 }
 
-export function getThemeApi(): WithWebContentsApi<ThemeApi> {
+export function getThemeApi(
+  getContext: (webContents: WebContents) => ThemeContext,
+): WithWebContentsApi<ThemeApi> {
   return {
     getTheme,
-    setTheme,
+    setTheme: createSetTheme(getContext),
     getAccentColor,
     on: {
       accentColorChanged: onAccentColorChanged,

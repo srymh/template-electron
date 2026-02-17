@@ -62,7 +62,12 @@ export const Breadcrumbs = () => {
                 <BreadcrumbPage>{match.loaderData?.crumb}</BreadcrumbPage>
               ) : (
                 <BreadcrumbLink asChild>
-                  <Link to={match.routeId}>{match.loaderData?.crumb}</Link>
+                  {/* TODO: より良い方法 */}
+                  {match.fullPath === '/demo/' ? (
+                    <></>
+                  ) : (
+                    <Link to={match.fullPath}>{match.loaderData?.crumb}</Link>
+                  )}
                 </BreadcrumbLink>
               )}
             </BreadcrumbItem>

@@ -12,6 +12,8 @@ import type { QueryClient } from '@tanstack/react-query'
 import type { AuthState } from '@/features/auth/api/auth'
 import { useDevTools } from '@/components/devtools-provider'
 
+const isDev = import.meta.env.DEV
+
 interface MyRouterContext {
   queryClient: QueryClient
   auth: AuthState
@@ -22,7 +24,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 })
 
 function Component() {
-  const { hidden } = useDevTools()
+  const { hidden: devToolsHidden } = useDevTools()
+  const isIframe = window.self !== window.top
+
+  const hidden = !isDev || devToolsHidden || isIframe
 
   return (
     <>

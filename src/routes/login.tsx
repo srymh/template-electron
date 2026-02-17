@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 
 type LoginSearch = {
   redirect?: string
@@ -7,11 +7,11 @@ type LoginSearch = {
 
 export const Route = createFileRoute('/login')({
   validateSearch: (search: LoginSearch) => ({
-    redirect: typeof search.redirect === 'string' ? search.redirect : '/',
+    redirect: normalizeRedirectHref(search.redirect),
   }),
   beforeLoad: ({ context, search }) => {
     if (context.auth.isAuthenticated) {
-      throw redirect({ to: search.redirect })
+      throw redirect({ href: search.redirect })
     }
   },
   component: LoginRouteComponent,
@@ -20,7 +20,7 @@ export const Route = createFileRoute('/login')({
 function LoginRouteComponent() {
   const { auth } = Route.useRouteContext()
   const { redirect: redirectTo } = Route.useSearch()
-  const navigate = useNavigate()
+  const router = useRouter()
 
   const [username, setUsername] = React.useState('demo')
   const [password, setPassword] = React.useState('')
@@ -38,7 +38,7 @@ function LoginRouteComponent() {
 
           try {
             await auth.login(username, password)
-            await navigate({ to: redirectTo })
+            router.history.push(redirectTo)
           } catch {
             setError('ログインに失敗しました')
           } finally {
@@ -92,4 +92,46 @@ function LoginRouteComponent() {
       </form>
     </div>
   )
+}
+
+function normalizeRedirectHref(targetHref: unknown): string {
+  // まずは文字列であることを確認
+  if (typeof targetHref !== 'string') return '/'
+
+  // 空白だけの文字列はルートにリダイレクト
+  const trimmed = targetHref.trim()
+  if (!trimmed) return '/'
+
+  // 危険なスキームをブロック: javascript: や data: は許可しない
+  const lower = trimmed.toLowerCase()
+  if (lower.startsWith('javascript:') || lower.startsWith('data:')) return '/'
+
+  // HashHistory でも扱いやすいように許可
+  if (trimmed.startsWith('/')) return trimmed
+  if (trimmed.startsWith('#/')) return trimmed
+
+  // 完全な href が来ても、同一オリジン/同一ファイルに限定して許可
+
+  // URL パースして、同一オリジンかつ同一ファイルへのリダイレクトのみ許可
+  try {
+    const current = new URL(window.location.href)
+    const target = new URL(trimmed, current)
+
+    if (current.protocol === 'file:') {
+      // file:// の場合は「同じ index.html への戻り」だけ許可
+      if (target.protocol !== 'file:') return '/'
+      // パスが同じでない場合はルートにリダイレクト
+      if (target.pathname !== current.pathname) return '/'
+      // 同じファイルへのリダイレクトは許可
+      return target.href
+    }
+
+    // 通常の http(s) の場合は同一オリジンのみ許可
+    if (target.origin !== current.origin) return '/'
+    // 同一オリジンであれば、パスがどうであれ許可
+    return target.href
+  } catch {
+    // URL パースに失敗した場合は安全のためルートにリダイレクト
+    return '/'
+  }
 }
