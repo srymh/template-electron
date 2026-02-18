@@ -1176,12 +1176,13 @@ function FileDetails({ filePath }: { filePath: string }) {
         </button>
       ) : (
         /* displayMode === 'video' */
-        (<button
+        <button
           type="button"
           onClick={() => setIsMountVideo(true)}
           className="bg-blue-500 text-white px-2 py-1 rounded-xs hover:bg-blue-600 disabled:opacity-50"
-        >動画としてファイルを開く
-                  </button>)
+        >
+          動画としてファイルを開く
+        </button>
       )}
       <div className="mt-2">
         {displayMode === 'text' && isIdle ? (
@@ -1206,7 +1207,7 @@ function FileDetails({ filePath }: { filePath: string }) {
           <span className="text-red-500">エラーが発生しました</span>
         ) : null}
         {displayMode === 'image' && isMountImg ? (
-          <img src={'app:///' + filePath} alt='ファイルの内容' />
+          <img src={'app:///' + filePath} alt="ファイルの内容" />
         ) : null}
         {displayMode === 'video' && isMountVideo ? (
           <>
