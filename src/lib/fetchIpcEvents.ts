@@ -12,10 +12,16 @@ export function fetchIpcEvents() {
   const connection: ConnectionAdapter = {
     async *connect(messages, data, abortSignal) {
       const modelMessages = convertMessagesToModelMessages(messages)
-      const queue = createAsyncQueue<StreamChunk>()
+      const queue = createAsyncQueue<
+        | {
+            type: 'chunk'
+            chunk: StreamChunk
+          }
+        | { type: 'done' }
+      >()
 
       // IPC イベントリスナーを登録
-      const removeListener = aiChat.on.chunk(({ chunk }) => {
+      const removeListener = aiChat.on.chunk((chunk) => {
         // ここでは yield できないのでキューに追加する
         queue.push(chunk)
       })
@@ -44,7 +50,7 @@ export function fetchIpcEvents() {
           const chunk = await queue.shift()
           if (chunk == null) break
           if (chunk.type === 'done') break
-          yield chunk
+          yield chunk.chunk
         }
       } finally {
         removeListener()

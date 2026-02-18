@@ -23,21 +23,24 @@ importers:
       '@openai/agents-core':
         specifier: ^0.3.9
         version: 0.3.9(ws@8.19.0)(zod@4.3.6)
+      '@standard-schema/spec':
+        specifier: ^1.1.0
+        version: 1.1.0
       '@tailwindcss/vite':
         specifier: ^4.1.18
         version: 4.1.18(vite@7.3.1(@types/node@22.19.11)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0))
       '@tanstack/ai':
-        specifier: ^0.2.2
-        version: 0.2.2
+        specifier: ^0.5.1
+        version: 0.5.1
       '@tanstack/ai-ollama':
-        specifier: ^0.3.0
-        version: 0.3.0(@tanstack/ai@0.2.2)(zod@4.3.6)
+        specifier: ^0.5.0
+        version: 0.5.0(@tanstack/ai@0.5.1)
       '@tanstack/ai-openai':
         specifier: ^0.2.1
-        version: 0.2.1(@tanstack/ai@0.2.2)(ws@8.19.0)(zod@4.3.6)
+        version: 0.2.1(@tanstack/ai@0.5.1)(ws@8.19.0)(zod@4.3.6)
       '@tanstack/ai-react':
-        specifier: ^0.2.2
-        version: 0.2.2(@tanstack/ai@0.2.2)(@types/react@19.2.14)(react@19.2.4)
+        specifier: ^0.5.4
+        version: 0.5.4(@tanstack/ai@0.5.1)(@types/react@19.2.14)(react@19.2.4)
       '@tanstack/match-sorter-utils':
         specifier: ^8.19.4
         version: 8.19.4
@@ -1721,6 +1724,9 @@ packages:
     peerDependencies:
       solid-js: ^1.6.12
 
+  '@standard-schema/spec@1.1.0':
+    resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
+
   '@stylistic/eslint-plugin@5.8.0':
     resolution: {integrity: sha512-WNPVF/FfBAjyi3OA7gok8swRiImNLKI4dmV3iK/GC/0xSJR7eCzBFsw9hLZVgb1+MYNLy7aDsjohxN1hA/FIfQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -1821,17 +1827,16 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7
 
-  '@tanstack/ai-client@0.2.2':
-    resolution: {integrity: sha512-7WVYzMas6ACtt4NMGqnduWbKwDr1syYrmgQoy+hw3Iu5lEEIqdI/tG4koJJROtOM7ogUjKQBpIgsX4Tej+fPWA==}
+  '@tanstack/ai-client@0.4.5':
+    resolution: {integrity: sha512-L5pAuwtBs/iLFgiFB3acq/NNj/xBCMWTCZvOKC2PQsMHBnxjU5l8cZNYVCGk8Tzf/a9fe6s4wHOgckcHxkHStA==}
 
   '@tanstack/ai-devtools-core@0.3.4':
     resolution: {integrity: sha512-sosfvyJTIyXtbEiDu9JBATMjIX9kzOaxNTFYOhE02BB6ZfCt0EMt6PZujClMpXyoL2Hn7KZ80Al048lEragj4g==}
 
-  '@tanstack/ai-ollama@0.3.0':
-    resolution: {integrity: sha512-u/68bLsRehmFsfEcvmMS09yq5vuqOVJs51q1QvBLwxKwBoSzSIKFHArRSVW8W5RcBPdsYxnLyz9d0hcqUy2NjQ==}
+  '@tanstack/ai-ollama@0.5.0':
+    resolution: {integrity: sha512-CR/f6OS7WzrC1VIK819lDSHeEJWfpaEVyO0bSmE7EGUAfbv+JmDLd8tI2Pk/DhIRVw/rk0Zlcn35jWvvXLjwTg==}
     peerDependencies:
-      '@tanstack/ai': ^0.2.1
-      zod: ^4.0.0
+      '@tanstack/ai': ^0.5.0
 
   '@tanstack/ai-openai@0.2.1':
     resolution: {integrity: sha512-MCD/WgJ7qZr/oWyik/zlsXzuO++np+Ag5l5n/5ZmX4mXc3R8Ga1qDeCt+/7RSSmxDJbogeGGn/0j6JpQLrLmRA==}
@@ -1839,16 +1844,12 @@ packages:
       '@tanstack/ai': ^0.2.1
       zod: ^4.0.0
 
-  '@tanstack/ai-react@0.2.2':
-    resolution: {integrity: sha512-CNSOOoAUjre5lQxbQVqsXIJEJsTEdyPfyuvAFtgBGvbAJAVn5+6AZyOJzZZz1YKO3F05yD4hMkygelvoSPTUJA==}
+  '@tanstack/ai-react@0.5.4':
+    resolution: {integrity: sha512-vglZLEiTkwGkYhXkXCk9MfskrFyUSVLI8c+kIeGcx7e0AnsI0jda9mLq3Hkm3+WWNSYuqLqDk4KXkKo3XZCezw==}
     peerDependencies:
-      '@tanstack/ai': ^0.2.2
+      '@tanstack/ai': ^0.5.1
       '@types/react': '>=18.0.0'
       react: '>=18.0.0'
-
-  '@tanstack/ai@0.2.2':
-    resolution: {integrity: sha512-qqnUSKYMuJnGhiL6t8BAu3Joc9QhQTJIxUIWgQlObDhdY+dCJMLyv+Z7Zw+WqzCCjDfvWmHgLNWDI8+f3KkOPw==}
-    engines: {node: '>=18'}
 
   '@tanstack/ai@0.5.1':
     resolution: {integrity: sha512-kHZb8Q/aI/z20d4CB7U49Pbk8IoypbFA1saDYlPBFPbdSzikeutJ2oRyN4hY2qtrxnfyC1oHOhiWkDH0i+5kwg==}
@@ -5809,7 +5810,7 @@ snapshots:
 
   '@electron/universal@2.0.1':
     dependencies:
-      '@electron/asar': 3.2.18
+      '@electron/asar': 3.4.1
       '@malept/cross-spawn-promise': 2.0.0
       debug: 4.4.3
       dir-compare: 4.2.0
@@ -7103,6 +7104,8 @@ snapshots:
     dependencies:
       solid-js: 1.9.11
 
+  '@standard-schema/spec@1.1.0': {}
+
   '@stylistic/eslint-plugin@5.8.0(eslint@9.39.2(jiti@2.6.1))':
     dependencies:
       '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.2(jiti@2.6.1))
@@ -7185,9 +7188,9 @@ snapshots:
       tailwindcss: 4.1.18
       vite: 7.3.1(@types/node@22.19.11)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)
 
-  '@tanstack/ai-client@0.2.2':
+  '@tanstack/ai-client@0.4.5':
     dependencies:
-      '@tanstack/ai': 0.2.2
+      '@tanstack/ai': 0.5.1
 
   '@tanstack/ai-devtools-core@0.3.4(@types/react@19.2.14)(csstype@3.2.3)(react@19.2.4)':
     dependencies:
@@ -7203,31 +7206,25 @@ snapshots:
       - react
       - vue
 
-  '@tanstack/ai-ollama@0.3.0(@tanstack/ai@0.2.2)(zod@4.3.6)':
+  '@tanstack/ai-ollama@0.5.0(@tanstack/ai@0.5.1)':
     dependencies:
-      '@tanstack/ai': 0.2.2
+      '@tanstack/ai': 0.5.1
       ollama: 0.6.3
-      zod: 4.3.6
 
-  '@tanstack/ai-openai@0.2.1(@tanstack/ai@0.2.2)(ws@8.19.0)(zod@4.3.6)':
+  '@tanstack/ai-openai@0.2.1(@tanstack/ai@0.5.1)(ws@8.19.0)(zod@4.3.6)':
     dependencies:
-      '@tanstack/ai': 0.2.2
+      '@tanstack/ai': 0.5.1
       openai: 6.22.0(ws@8.19.0)(zod@4.3.6)
       zod: 4.3.6
     transitivePeerDependencies:
       - ws
 
-  '@tanstack/ai-react@0.2.2(@tanstack/ai@0.2.2)(@types/react@19.2.14)(react@19.2.4)':
+  '@tanstack/ai-react@0.5.4(@tanstack/ai@0.5.1)(@types/react@19.2.14)(react@19.2.4)':
     dependencies:
-      '@tanstack/ai': 0.2.2
-      '@tanstack/ai-client': 0.2.2
+      '@tanstack/ai': 0.5.1
+      '@tanstack/ai-client': 0.4.5
       '@types/react': 19.2.14
       react: 19.2.4
-
-  '@tanstack/ai@0.2.2':
-    dependencies:
-      '@tanstack/devtools-event-client': 0.4.0
-      partial-json: 0.1.7
 
   '@tanstack/ai@0.5.1':
     dependencies:

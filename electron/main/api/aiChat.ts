@@ -1,15 +1,20 @@
+import { nativeTheme } from 'electron'
 import { chat, toolDefinition } from '@tanstack/ai'
 import { createOllamaChat } from '@tanstack/ai-ollama'
 
 import { createResponseChannel } from '#/shared/lib/ipc'
 
-import type { ModelMessage, StreamChunk } from '@tanstack/ai'
+import type {
+  ConstrainedModelMessage,
+  InputModalitiesTypes,
+  ModelMessage,
+  StreamChunk,
+} from '@tanstack/ai'
 import type {
   AddListener,
   ApiInterface,
   WithWebContentsApi,
 } from '#/shared/lib/ipc'
-import { nativeTheme } from 'electron'
 
 // -----------------------------------------------------------------------------
 // 型定義
@@ -23,9 +28,14 @@ export type AIChatApiKey = typeof AI_CHAT_API_KEY
 export type AiChatApi = ApiInterface<{
   chat: (request: { messages: ModelMessage[]; data: unknown }) => Promise<void>
   on: {
-    chunk: AddListener<{
-      chunk: StreamChunk
-    }>
+    // TODO: なんらかの ID を渡さないと混線する可能性がある?
+    chunk: AddListener<
+      | {
+          type: 'chunk'
+          chunk: StreamChunk
+        }
+      | { type: 'done' }
+    >
   }
 }>
 
@@ -66,27 +76,25 @@ export function getAiChatApi(): WithWebContentsApi<AiChatApi> {
       const channel = createResponseChannel('aiChat.on.chunk')
 
       try {
-        const filteredMessages: ModelMessage<string>[] = []
-        for (const msg of messages) {
-          if (typeof msg.content === 'string') {
-            filteredMessages.push(msg as ModelMessage<string>)
-          } else if (msg.content === null) {
-            // tool call などで content が null の場合も許容する
-            filteredMessages.push(msg as ModelMessage<string>)
+        // 非対応の modality を含むメッセージをフィルタリング
+        const filteredModelMessages: Array<OllamaModelMessage> = []
+        messages.forEach((msg) => {
+          if (isOllamaModelMessage(msg)) {
+            filteredModelMessages.push(msg)
           } else {
-            console.warn(
-              `${new Date().toISOString()} AiChatApi: Skipping non-string message content:`,
-              msg,
+            // 非対応のメッセージ
+            throw new Error(
+              `${new Date().toISOString()} Skipping unsupported message format: ${JSON.stringify(msg)}`,
             )
           }
-        }
+        })
 
         const stream = chat({
           adapter: createOllamaChat(
             'gpt-oss:20b-cloud',
             'http://localhost:11434',
           ),
-          messages: filteredMessages,
+          messages: filteredModelMessages,
           tools: [switchThemeDarkTool, switchThemeLightTool],
         })
 
@@ -103,6 +111,8 @@ export function getAiChatApi(): WithWebContentsApi<AiChatApi> {
             }
           }
 
+          webContents.send(channel, { type: 'done' })
+
           console.log(`${new Date().toISOString()} AiChatApi done.`)
         })()
       } catch (error) {
@@ -116,4 +126,23 @@ export function getAiChatApi(): WithWebContentsApi<AiChatApi> {
       chunk: () => () => {}, // イベントリスナーの登録は不要
     },
   }
+}
+
+type OllamaInputModalities = readonly ['text', 'image']
+type OllamaModelMessage = ConstrainedModelMessage<
+  InputModalitiesTypes & {
+    inputModalities: OllamaInputModalities
+  }
+>
+
+function isOllamaModelMessage(
+  message: ModelMessage,
+): message is OllamaModelMessage {
+  if (typeof message.content === 'string' || message.content === null) {
+    return true
+  }
+  if (message.content.every((x) => x.type === 'text' || x.type === 'image')) {
+    return true
+  }
+  return false
 }
