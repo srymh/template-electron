@@ -195,7 +195,7 @@ function RouteComponent() {
                   </div>
                 </div>
                 <Button asChild>
-                  <Link to="/login" search={{ redirect: "/settings" }}>
+                  <Link to="/login" search={{ redirect: '/settings' }}>
                     ログイン
                   </Link>
                 </Button>
