@@ -1,5 +1,5 @@
-import { nativeTheme } from 'electron'
-import { chat, toolDefinition } from '@tanstack/ai'
+import type { WebContents } from 'electron'
+import { chat as tanstackChat } from '@tanstack/ai'
 import { createOllamaChat } from '@tanstack/ai-ollama'
 
 import { createResponseChannel } from '#/shared/lib/ipc'
@@ -13,8 +13,13 @@ import type {
 import type {
   AddListener,
   ApiInterface,
+  WithWebContents,
   WithWebContentsApi,
 } from '#/shared/lib/ipc'
+import {
+  switchThemeDarkTool,
+  switchThemeLightTool,
+} from '../features/chat/tools/tools'
 
 // -----------------------------------------------------------------------------
 // 型定義
@@ -22,109 +27,138 @@ import type {
 export const AI_CHAT_API_KEY = 'aiChat' as const
 export type AIChatApiKey = typeof AI_CHAT_API_KEY
 
+export type AIChatApiResponse =
+  | {
+      type: 'chunk'
+      id: string
+      chunk: StreamChunk
+    }
+  | { type: 'done'; id: string }
+  | { type: 'error'; id: string; error: string }
+
 // -----------------------------------------------------------------------------
 // インターフェイス定義
 
 export type AiChatApi = ApiInterface<{
-  chat: (request: { messages: ModelMessage[]; data: unknown }) => Promise<void>
+  chat: (request: {
+    messages: ModelMessage[]
+    // data の内容に id が含まれているが、外部ライブラリ依存の挙動なのでここでは利用しない
+    data: unknown
+    id: string
+  }) => Promise<void>
   on: {
-    // TODO: なんらかの ID を渡さないと混線する可能性がある?
-    chunk: AddListener<
-      | {
-          type: 'chunk'
-          chunk: StreamChunk
-        }
-      | { type: 'done' }
-    >
+    chunk: AddListener<AIChatApiResponse>
   }
 }>
 
 // -----------------------------------------------------------------------------
 // 実装
 
-export function getAiChatApi(): WithWebContentsApi<AiChatApi> {
-  const switchThemeDarkToolDef = toolDefinition({
-    name: 'switch_theme_dark',
-    description: "Change the application's theme to dark.",
-  })
+const chat: WithWebContents<AiChatApi['chat']> = async (
+  request,
+  webContents,
+) => {
+  const { messages, id } = request
+  const { sendChunk, sendDone, sendError } = createSendFn(webContents, id)
 
-  const switchThemeLightToolDef = toolDefinition({
-    name: 'switch_theme_light',
-    description: "Change the application's theme to light.",
-  })
+  try {
+    const tools = [switchThemeDarkTool, switchThemeLightTool]
 
-  const switchThemeDarkTool = switchThemeDarkToolDef.server(async () => {
-    nativeTheme.themeSource = 'dark'
-    console.log('theme', 'dark')
-    return {
-      content: [{ type: 'text', text: `テーマを「dark」に変更しました。` }],
-    }
-  })
-
-  const switchThemeLightTool = switchThemeLightToolDef.server(async () => {
-    nativeTheme.themeSource = 'light'
-    console.log('theme', 'light')
-    return {
-      content: [{ type: 'text', text: `テーマを「light」に変更しました。` }],
-    }
-  })
-
-  return {
-    chat: async (request, webContents) => {
-      const { messages } = request
-
-      const channel = createResponseChannel('aiChat.on.chunk')
-
-      try {
-        // 非対応の modality を含むメッセージをフィルタリング
-        const filteredModelMessages: Array<OllamaModelMessage> = []
-        messages.forEach((msg) => {
-          if (isOllamaModelMessage(msg)) {
-            filteredModelMessages.push(msg)
-          } else {
-            // 非対応のメッセージ
-            throw new Error(
-              `${new Date().toISOString()} Skipping unsupported message format: ${JSON.stringify(msg)}`,
-            )
-          }
-        })
-
-        const stream = chat({
-          adapter: createOllamaChat(
-            'gpt-oss:20b-cloud',
-            'http://localhost:11434',
-          ),
-          messages: filteredModelMessages,
-          tools: [switchThemeDarkTool, switchThemeLightTool],
-        })
-
-        // 非同期イテレータを即時実行してチャンクを送信
-        ;(async () => {
-          for await (const chunk of stream) {
-            try {
-              webContents.send(channel, { chunk })
-            } catch (error) {
-              console.error(
-                `${new Date().toISOString()} Error sending AiChatApi chunk:`,
-                error,
-              )
-            }
-          }
-
-          webContents.send(channel, { type: 'done' })
-
-          console.log(`${new Date().toISOString()} AiChatApi done.`)
-        })()
-      } catch (error) {
-        console.error(
-          `${new Date().toISOString()} Error in AiChatApi chat:`,
-          error,
+    /** ------------------------------------------------------------------------
+     *
+     * 非対応の modality を含むメッセージをフィルタリング
+     *
+     * ---------------------------------------------------------------------- */
+    const filteredModelMessages: Array<OllamaModelMessage> = []
+    messages.forEach((msg) => {
+      if (isOllamaModelMessage(msg)) {
+        filteredModelMessages.push(msg)
+      } else {
+        // 非対応のメッセージ
+        throw new Error(
+          `${new Date().toISOString()} Skipping unsupported message format: ${JSON.stringify(msg)}`,
         )
       }
-    },
+    })
+
+    /** ------------------------------------------------------------------------
+     *
+     * チャットストリームを作成
+     *
+     * ---------------------------------------------------------------------- */
+    const stream = tanstackChat({
+      adapter: createOllamaChat('gpt-oss:20b-cloud', 'http://localhost:11434'),
+      messages: filteredModelMessages,
+      tools,
+      stream: true,
+    })
+
+    /** ------------------------------------------------------------------------
+     *
+     * 非同期イテレータをIIFEで実行して、チャットストリームをIPCでクライアントに送信
+     *
+     * ---------------------------------------------------------------------- */
+    ;(async () => {
+      for await (const chunk of stream) {
+        // クライアントにチャットの応答を送信
+        sendChunk(chunk)
+      }
+      // チャットの完了を通知
+      sendDone()
+    })().catch((err) => {
+      // try-catch では捕捉できないエラーをキャッチ
+      console.error(
+        `${new Date().toISOString()} Error in AiChatApi chat stream:`,
+        err,
+      )
+      // エラーを通知
+      sendError(err)
+    })
+  } catch (error) {
+    console.error(`${new Date().toISOString()} Error in AiChatApi chat:`, error)
+    // エラーを通知
+    sendError(error)
+  }
+}
+
+export function getAiChatApi(): WithWebContentsApi<AiChatApi> {
+  return {
+    chat,
     on: {
       chunk: () => () => {}, // イベントリスナーの登録は不要
     },
+  }
+}
+
+function createSendFn(webContents: WebContents, id: string) {
+  const channel = createResponseChannel('aiChat.on.chunk')
+  const send = (response: AIChatApiResponse) => {
+    try {
+      webContents.send(channel, response)
+    } catch (error) {
+      console.error(
+        `${new Date().toISOString()} Error sending AiChatApi chunk:`,
+        error,
+      )
+    }
+  }
+  const sendChunk = (chunk: StreamChunk) => {
+    send({ type: 'chunk', id, chunk })
+  }
+  const sendDone = () => {
+    send({ type: 'done', id })
+  }
+  const sendError = (error: unknown) => {
+    send({
+      type: 'error',
+      id,
+      error: error instanceof Error ? error.message : String(error),
+    })
+  }
+  return {
+    sendChunk,
+    sendDone,
+    sendError,
   }
 }
 
