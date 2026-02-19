@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useChat } from '@tanstack/ai-react'
+import { clientTools } from '@tanstack/ai-client'
 import ReactMarkdown from 'react-markdown'
 
+import { clockTool } from '../api/tools/tools'
 import { fetchIpcEvents } from '@/lib/fetchIpcEvents'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,9 +12,10 @@ export function Chat() {
   const [input, setInput] = useState('')
   const { messages, sendMessage, isLoading } = useChat({
     connection: fetchIpcEvents(),
+    tools: clientTools(clockTool),
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault()
     if (input.trim() && !isLoading) {
       sendMessage(input)

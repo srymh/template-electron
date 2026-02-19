@@ -32,6 +32,9 @@ importers:
       '@tanstack/ai':
         specifier: ^0.5.1
         version: 0.5.1
+      '@tanstack/ai-client':
+        specifier: ^0.4.5
+        version: 0.4.5
       '@tanstack/ai-ollama':
         specifier: ^0.5.0
         version: 0.5.0(@tanstack/ai@0.5.1)

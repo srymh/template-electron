@@ -19,7 +19,8 @@ import type {
 import {
   switchThemeDarkTool,
   switchThemeLightTool,
-} from '../features/chat/tools/tools'
+} from '#/main/features/chat/tools/tools'
+import { clockToolDef } from '@/features/chat/api/tools/definitions'
 
 // -----------------------------------------------------------------------------
 // 型定義
@@ -62,7 +63,7 @@ const chat: WithWebContents<AiChatApi['chat']> = async (
   const { sendChunk, sendDone, sendError } = createSendFn(webContents, id)
 
   try {
-    const tools = [switchThemeDarkTool, switchThemeLightTool]
+    const tools = [switchThemeDarkTool, switchThemeLightTool, clockToolDef]
 
     /** ------------------------------------------------------------------------
      *
