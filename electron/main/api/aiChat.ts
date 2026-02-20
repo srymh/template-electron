@@ -1,14 +1,6 @@
 import type { WebContents } from 'electron'
-import { chat as tanstackChat } from '@tanstack/ai'
-import { createOllamaChat } from '@tanstack/ai-ollama'
 
-import type {
-  ConstrainedModelMessage,
-  InputModalitiesTypes,
-  ModelMessage,
-  ServerTool,
-  StreamChunk,
-} from '@tanstack/ai'
+import type { ModelMessage, ServerTool, StreamChunk } from '@tanstack/ai'
 import type {
   AddListener,
   ApiInterface,
@@ -16,11 +8,8 @@ import type {
   WithWebContentsApi,
 } from '#/shared/lib/ipc'
 import { createResponseChannel } from '#/shared/lib/ipc'
-import {
-  switchThemeDarkTool,
-  switchThemeLightTool,
-} from '#/main/features/chat/tools/tools'
-import { clockToolDef } from '@/features/chat/api/tools/definitions'
+
+import { chat } from '#/main/features/chat/chat'
 
 // -----------------------------------------------------------------------------
 // 型定義
@@ -65,85 +54,16 @@ const createChat =
   ): WithWebContents<AiChatApi['chat']> =>
   async (request, webContents) => {
     const { getToolsByMcp } = getContext(webContents)
-    const { messages, id } = request
+    const { messages, data, id } = request
     const { sendChunk, sendDone, sendError } = createSendFn(webContents, id)
 
-    try {
-      /** ----------------------------------------------------------------------
-       *
-       * ツールの準備
-       *
-       * -------------------------------------------------------------------- */
-      const toolsByMcp = await getToolsByMcp()
-
-      const tools = [
-        switchThemeDarkTool,
-        switchThemeLightTool,
-        clockToolDef,
-        ...toolsByMcp,
-      ]
-
-      /** ----------------------------------------------------------------------
-       *
-       * 非対応の modality を含むメッセージをフィルタリング
-       *
-       * -------------------------------------------------------------------- */
-      const filteredModelMessages: Array<OllamaModelMessage> = []
-      messages.forEach((msg) => {
-        if (isOllamaModelMessage(msg)) {
-          filteredModelMessages.push(msg)
-        } else {
-          // 非対応のメッセージ
-          throw new Error(
-            `${new Date().toISOString()} Skipping unsupported message format: ${JSON.stringify(msg)}`,
-          )
-        }
-      })
-
-      /** ----------------------------------------------------------------------
-       *
-       * チャットストリームを作成
-       *
-       * -------------------------------------------------------------------- */
-      const stream = tanstackChat({
-        adapter: createOllamaChat(
-          'gpt-oss:20b-cloud',
-          'http://localhost:11434',
-        ),
-        messages: filteredModelMessages,
-        tools,
-        stream: true,
-      })
-
-      /** ----------------------------------------------------------------------
-       *
-       * 非同期イテレータをIIFEで実行して、チャットストリームをIPCでクライアントに送信
-       *
-       * -------------------------------------------------------------------- */
-      ;(async () => {
-        for await (const chunk of stream) {
-          // クライアントにチャットの応答を送信
-          sendChunk(chunk)
-        }
-        // チャットの完了を通知
-        sendDone()
-      })().catch((err) => {
-        // try-catch では捕捉できないエラーをキャッチ
-        console.error(
-          `${new Date().toISOString()} Error in AiChatApi chat stream:`,
-          err,
-        )
-        // エラーを通知
-        sendError(err)
-      })
-    } catch (error) {
-      console.error(
-        `${new Date().toISOString()} Error in AiChatApi chat:`,
-        error,
-      )
-      // エラーを通知
-      sendError(error)
-    }
+    await chat({
+      request: { messages, data },
+      onChunk: sendChunk,
+      onDone: sendDone,
+      onError: sendError,
+      getToolsByMcp,
+    })
   }
 
 export function getAiChatApi(
@@ -187,23 +107,4 @@ function createSendFn(webContents: WebContents, id: string) {
     sendDone,
     sendError,
   }
-}
-
-type OllamaInputModalities = readonly ['text', 'image']
-type OllamaModelMessage = ConstrainedModelMessage<
-  InputModalitiesTypes & {
-    inputModalities: OllamaInputModalities
-  }
->
-
-function isOllamaModelMessage(
-  message: ModelMessage,
-): message is OllamaModelMessage {
-  if (typeof message.content === 'string' || message.content === null) {
-    return true
-  }
-  if (message.content.every((x) => x.type === 'text' || x.type === 'image')) {
-    return true
-  }
-  return false
 }

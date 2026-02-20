@@ -52,10 +52,8 @@ export function fetchIpcEvents() {
             break
           } else if (resp.type === 'error') {
             throw new Error(resp.error)
-          } else if (resp.type === 'chunk') {
-            yield resp.chunk
           } else {
-            throw new Error(`Unknown chunk type: ${(resp as any).type}`)
+            yield resp.chunk
           }
         }
       } catch (err) {
