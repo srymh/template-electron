@@ -3,6 +3,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { app, BrowserWindow } from 'electron'
 
 import type { WebContents } from 'electron'
+import type { ServerTool } from '@tanstack/ai'
 import type { AiAgent } from './features/ai-agent/AiAgent'
 import type { AuthRuntime } from './features/auth/authRuntime'
 import { createAppDataBase, type DataBase } from './features/db/db'
@@ -13,6 +14,7 @@ import { createAuthRuntime } from './features/auth/authRuntime'
 import { resolveMainPaths, type MainPaths } from './infra/paths'
 import { registerCustomProtocol } from './infra/registerCustomProtocol'
 import { createWindow, recommendedSecureOptions } from './windows/createWindow'
+import { mcpToTanStackAiTools } from '#/shared/lib/tanstack-ai-mcp'
 
 /** __dirname の代替 */
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -30,6 +32,7 @@ type AppContext = {
   aiAgent: AiAgent | null
   mcpServer: McpServer | null
   db: DataBase | null
+  toolsByMcp: ServerTool[] | null
   authRuntime: AuthRuntime | null
 
   registerIpcCache: WeakMap<WebContents, Map<string, () => void>>
@@ -151,6 +154,7 @@ startApp<AppContext>({
       aiAgent: null,
       mcpServer: null,
       db: null,
+      toolsByMcp: null,
       authRuntime: null,
       registerIpcCache: new WeakMap(),
       paths: resolveMainPaths({
@@ -188,6 +192,24 @@ function createWindowContext(
       getAiAgent: () => appContext.aiAgent,
       setAiAgent: (agent) => {
         appContext.aiAgent = agent
+      },
+    },
+    aiChat: {
+      getToolsByMcp: async () => {
+        if (appContext.mcpServer == null) {
+          return []
+        } else if (appContext.toolsByMcp != null) {
+          return appContext.toolsByMcp
+        }
+
+        const toolsByMcp = await mcpToTanStackAiTools({
+          httpOptions: {
+            url: `http://localhost:${appContext.mcpServer.port}/mcp`,
+          },
+        })
+
+        appContext.toolsByMcp = toolsByMcp
+        return toolsByMcp
       },
     },
     kakeibo: {

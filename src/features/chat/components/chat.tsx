@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useChat } from '@tanstack/ai-react'
 import { clientTools } from '@tanstack/ai-client'
 import ReactMarkdown from 'react-markdown'
@@ -7,8 +7,18 @@ import { clockTool } from '../api/tools/tools'
 import { fetchIpcEvents } from '@/lib/fetchIpcEvents'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { mcp } from '@/api'
 
 export function Chat() {
+  useEffect(() => {
+    ;(async () => {
+      const status = await mcp.getServerStatus()
+      if (!status.isRunning) {
+        mcp.startServer({})
+      }
+    })()
+  }, [])
+
   const [input, setInput] = useState('')
   const { messages, sendMessage, isLoading } = useChat({
     connection: fetchIpcEvents(),
