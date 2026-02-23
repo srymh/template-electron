@@ -3,13 +3,11 @@ import { useChat } from '@tanstack/ai-react'
 import { clientTools } from '@tanstack/ai-client'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { ArrowUpIcon, BotIcon, SquareIcon, User2Icon } from 'lucide-react'
 
-import { BotIcon, User2Icon } from 'lucide-react'
 import { clockTool } from '../api/tools/tools'
 import type { Model } from '#/main/features/chat/ollama/models'
 import { fetchIpcEvents } from '@/lib/fetchIpcEvents'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { mcp } from '@/api'
 import {
   Accordion,
@@ -30,6 +28,14 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { useAuth } from '@/features/auth/api/auth'
+import { Field } from '@/components/ui/field'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupTextarea,
+} from '@/components/ui/input-group'
+import { useAutoScrollToBottom } from '@/hooks/use-auto-scroll-to-bottom'
 
 export type ChatProps = {
   model?: Model
@@ -52,7 +58,7 @@ export function Chat(props: ChatProps) {
   }, [])
 
   const [input, setInput] = useState('')
-  const { messages, sendMessage, isLoading } = useChat({
+  const { messages, sendMessage, isLoading, stop, status } = useChat({
     connection: fetchIpcEvents(),
     tools: clientTools(clockTool),
     body: {
@@ -60,17 +66,45 @@ export function Chat(props: ChatProps) {
     },
   })
 
-  const handleSubmit = (e: React.SubmitEvent) => {
-    e.preventDefault()
-    if (input.trim() && !isLoading) {
+  const { scrollContainerRef, scrollBottomRef, onScroll } =
+    useAutoScrollToBottom([messages])
+
+  const send = () => {
+    if (isLoading) {
+      // 生成中に送信された場合は、生成停止とみなす
+      stop()
+    } else {
+      // 生成中でない場合は、通常の送信処理
+      if (!input.trim()) {
+        return
+      }
       sendMessage(input)
       setInput('')
     }
   }
 
+  const handleSubmit = (e: React.SubmitEvent) => {
+    e.preventDefault()
+    send()
+  }
+
+  const handleKeyDown: React.KeyboardEventHandler = (e) => {
+    // Ctrl+Enter で送信
+    if (e.key === 'Enter' && e.ctrlKey) {
+      e.preventDefault()
+      send()
+    }
+  }
+
+  const disabled = status === 'ready' && !input.trim()
+
   return (
     <div className="flex min-h-0 flex-1 flex-col w-full gap-4">
-      <div className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-4">
+      <div
+        ref={scrollContainerRef}
+        onScroll={onScroll}
+        className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-4"
+      >
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -178,18 +212,46 @@ export function Chat(props: ChatProps) {
             </div>
           </div>
         ))}
+
+        <div ref={scrollBottomRef} />
       </div>
 
-      <form onSubmit={handleSubmit} className="flex gap-2 p-2 pt-0">
-        <Input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          disabled={isLoading}
-        ></Input>
-        <Button variant="secondary" type="submit" disabled={isLoading}>
-          Send
-        </Button>
+      <form onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
+        <Field>
+          <InputGroup>
+            <InputGroupTextarea
+              id="textarea-comment-31"
+              placeholder={
+                status === 'ready'
+                  ? 'メッセージを入力... (Ctrl+Enterで送信)'
+                  : status === 'submitted'
+                    ? '送信しました。応答を待っています...'
+                    : status === 'streaming'
+                      ? '応答を生成中...'
+                      : 'エラーが発生しました。'
+              }
+              className="min-h-[120px] max-h-[200px]"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              disabled={isLoading}
+            />
+            <InputGroupAddon align="block-end">
+              <InputGroupButton
+                variant="default"
+                size="sm"
+                type="submit"
+                className="ml-auto"
+                disabled={disabled}
+              >
+                {isLoading ? (
+                  <SquareIcon className="fill-primary-foreground" />
+                ) : (
+                  <ArrowUpIcon />
+                )}
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
+        </Field>
       </form>
     </div>
   )
