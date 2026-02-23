@@ -4,12 +4,19 @@ import { clientTools } from '@tanstack/ai-client'
 import ReactMarkdown from 'react-markdown'
 
 import { clockTool } from '../api/tools/tools'
+import type { Model } from '#/main/features/chat/ollama/models'
 import { fetchIpcEvents } from '@/lib/fetchIpcEvents'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { mcp } from '@/api'
 
-export function Chat() {
+export type ChatProps = {
+  model?: Model
+}
+
+export function Chat(props: ChatProps) {
+  const { model = 'gpt-oss:20b-cloud' } = props
+
   useEffect(() => {
     ;(async () => {
       const status = await mcp.getServerStatus()
@@ -23,6 +30,9 @@ export function Chat() {
   const { messages, sendMessage, isLoading } = useChat({
     connection: fetchIpcEvents(),
     tools: clientTools(clockTool),
+    body: {
+      model,
+    },
   })
 
   const handleSubmit = (e: React.SubmitEvent) => {

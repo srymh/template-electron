@@ -1,17 +1,12 @@
 import { chat as tanstackChat } from '@tanstack/ai'
-import { createOllamaChat } from '@tanstack/ai-ollama'
 
 import type { ModelMessage, ServerTool, StreamChunk } from '@tanstack/ai'
-import {
-  switchThemeDarkTool,
-  switchThemeLightTool,
-} from '#/main/features/chat/tools/tools'
-import {
-  isOllamaModelMessage,
-  type OllamaModelMessage,
-} from '#/main/features/chat/adapters/ollama'
+import { switchThemeDarkTool, switchThemeLightTool } from './tools/tools'
+import { isOllamaModelMessage, type OllamaModelMessage } from './ollama/ollama'
 
 import { clockToolDef } from '@/features/chat/api/tools/definitions'
+import { adapters } from './ollama/adapters'
+import { modelSchema } from './ollama/models'
 
 export type ChatRequest = {
   messages: ModelMessage[]
@@ -23,20 +18,29 @@ export type OnError = (error: Error) => void
 
 export async function chat(options: {
   request: ChatRequest
-  getToolsByMcp: () => Promise<ServerTool[]>
-  onChunk: OnChunk
-  onDone: OnDone
-  onError: OnError
+  onChunk?: OnChunk
+  onDone?: OnDone
+  onError?: OnError
+  getToolsByMcp?: () => Promise<ServerTool[]>
 }) {
   const {
-    getToolsByMcp,
-    request: { messages },
-    onChunk,
-    onDone,
-    onError,
+    request: { messages, data },
+    onChunk = () => {},
+    onDone = () => {},
+    onError = () => {},
+    getToolsByMcp = async () => [],
   } = options
 
   try {
+    console.log(
+      `${new Date().toISOString()} Starting chat with messages:`,
+      messages,
+    )
+    console.log(`${new Date().toISOString()} Chat request data:`, data)
+
+    const model = modelSchema.parse((data as any)?.model || 'gpt-oss:20b-cloud')
+    console.log(`${new Date().toISOString()} Using model:`, model)
+
     /** ------------------------------------------------------------------------
      *
      * ツールの準備
@@ -74,7 +78,7 @@ export async function chat(options: {
      *
      * ---------------------------------------------------------------------- */
     const stream = tanstackChat({
-      adapter: createOllamaChat('gpt-oss:20b-cloud', 'http://localhost:11434'),
+      adapter: adapters[model](),
       messages: filteredModelMessages,
       tools,
       stream: true,
