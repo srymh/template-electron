@@ -3,7 +3,6 @@ import { getFileSystemApi } from '#/main/api/fs'
 import { THEME_API_KEY, getThemeApi } from '#/main/api/theme'
 import { getWebApi } from '#/main/api/web'
 import { MCP_API_KEY, getMcpApi } from '#/main/api/mcp'
-import { AI_AGENT_API_KEY, getAiAgentApi } from '#/main/api/aiAgent'
 import { AI_CHAT_API_KEY, getAiChatApi } from '#/main/api/aiChat'
 import { Kakeibo_API_KEY, getKakeiboApi } from '#/main/api/kakeibo'
 import { AUTH_API_KEY, getAuthApi } from '#/main/api/auth'
@@ -11,7 +10,6 @@ import { AUTH_API_KEY, getAuthApi } from '#/main/api/auth'
 import type { WebContents } from 'electron'
 import type { ThemeContext } from '#/main/api/theme'
 import type { McpApiContext } from '#/main/api/mcp'
-import type { AiAgentContext } from '#/main/api/aiAgent'
 import type { AiChatContext } from '#/main/api/aiChat'
 import type { KakeiboContext } from '#/main/api/kakeibo'
 import type { AuthContext } from '#/main/api/auth'
@@ -20,7 +18,6 @@ import type { ElectronMainApi } from './electronApi'
 export type Context = {
   [THEME_API_KEY]: ThemeContext
   [MCP_API_KEY]: McpApiContext
-  [AI_AGENT_API_KEY]: AiAgentContext
   [AI_CHAT_API_KEY]: AiChatContext
   [Kakeibo_API_KEY]: KakeiboContext
   [AUTH_API_KEY]: AuthContext
@@ -34,9 +31,6 @@ export const registerIpc = createRegisterIpc<ElectronMainApi, Context>(
     )
     const web = getWebApi()
     const mcp = getMcpApi((wc: WebContents) => getContext(wc)[MCP_API_KEY])
-    const aiAgent = getAiAgentApi(
-      (wc: WebContents) => getContext(wc)[AI_AGENT_API_KEY],
-    )
     const aiChat = getAiChatApi(
       (wc: WebContents) => getContext(wc)[AI_CHAT_API_KEY],
     )
@@ -85,12 +79,6 @@ export const registerIpc = createRegisterIpc<ElectronMainApi, Context>(
       'mcp.getServerStatus': { type: 'invoke', method: mcp.getServerStatus },
       'mcp.startServer': { type: 'invoke', method: mcp.startServer },
       'mcp.stopServer': { type: 'invoke', method: mcp.stopServer },
-      'aiAgent.setup': { type: 'invoke', method: aiAgent.setup },
-      'aiAgent.send': { type: 'invoke', method: aiAgent.send },
-      'aiAgent.getHistory': { type: 'invoke', method: aiAgent.getHistory },
-      'aiAgent.on.chunk': { type: 'event', addEventListener: aiAgent.on.chunk },
-      'aiAgent.on.done': { type: 'event', addEventListener: aiAgent.on.done },
-      'aiAgent.on.error': { type: 'event', addEventListener: aiAgent.on.error },
       'aiChat.chat': { type: 'invoke', method: aiChat.chat },
       'aiChat.on.chunk': { type: 'event', addEventListener: aiChat.on.chunk },
       'kakeibo.entries': { type: 'invoke', method: kakeibo.entries },

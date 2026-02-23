@@ -4,7 +4,6 @@ import {
 } from '@/lib/frame-rpc'
 
 export type Api = typeof window.api
-export type AiAgentApi = Api['aiAgent']
 export type AiChatApi = Api['aiChat']
 export type AuthApi = Api['auth']
 export type FsApi = Api['fs']
@@ -85,7 +84,6 @@ const api: Api = (() => {
 
   // Mock implementation for non-Electron environments
   return {
-    aiAgent: notAvailable('aiAgent') as AiAgentApi,
     aiChat: notAvailable('aiChat') as AiChatApi,
     auth: isIframe
       ? {
@@ -134,4 +132,4 @@ const api: Api = (() => {
 })()
 
 // export default api
-export const { aiAgent, aiChat, auth, fs, kakeibo, mcp, theme, web } = api
+export const { aiChat, auth, fs, kakeibo, mcp, theme, web } = api

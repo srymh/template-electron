@@ -4,7 +4,6 @@ import { app, BrowserWindow } from 'electron'
 
 import type { WebContents } from 'electron'
 import type { ServerTool } from '@tanstack/ai'
-import type { AiAgent } from './features/ai-agent/AiAgent'
 import type { AuthRuntime } from './features/auth/authRuntime'
 import { createAppDataBase, type DataBase } from './features/db/db'
 import type { McpServer } from './features/mcp'
@@ -29,7 +28,6 @@ type AppContext = {
   windowsById: Map<number, BrowserWindow>
   windowContextMap: WeakMap<WebContents, Context>
 
-  aiAgent: AiAgent | null
   mcpServer: McpServer | null
   db: DataBase | null
   toolsByMcp: ServerTool[] | null
@@ -186,12 +184,6 @@ function createWindowContext(
       getMcpServer: () => appContext.mcpServer,
       setMcpServer: (server) => {
         appContext.mcpServer = server
-      },
-    },
-    aiAgent: {
-      getAiAgent: () => appContext.aiAgent,
-      setAiAgent: (agent) => {
-        appContext.aiAgent = agent
       },
     },
     aiChat: {

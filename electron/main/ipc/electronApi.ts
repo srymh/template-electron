@@ -9,7 +9,6 @@ import type {
 import type { ThemeApi, THEME_API_KEY } from '#/main/api/theme'
 import type { WebApi, WEB_API_KEY } from '#/main/api/web'
 import type { McpApi, MCP_API_KEY } from '#/main/api/mcp'
-import type { AiAgentApi, AI_AGENT_API_KEY } from '#/main/api/aiAgent'
 import type { AiChatApi, AI_CHAT_API_KEY } from '#/main/api/aiChat'
 import type { KakeiboApi, Kakeibo_API_KEY } from '#/main/api/kakeibo'
 import type { AuthApi, AUTH_API_KEY } from '#/main/api/auth'
@@ -23,7 +22,6 @@ export type ElectronMainApi = {
   [THEME_API_KEY]: ThemeApi
   [WEB_API_KEY]: WebApi
   [MCP_API_KEY]: McpApi
-  [AI_AGENT_API_KEY]: AiAgentApi
   [AI_CHAT_API_KEY]: AiChatApi
   [Kakeibo_API_KEY]: KakeiboApi
   [AUTH_API_KEY]: AuthApi
@@ -79,16 +77,6 @@ export const electronApi = createElectronApi<
         getServerStatus: useChannelAsInvoke('mcp.getServerStatus'),
         startServer: useChannelAsInvoke('mcp.startServer'),
         stopServer: useChannelAsInvoke('mcp.stopServer'),
-      },
-      aiAgent: {
-        setup: useChannelAsInvoke('aiAgent.setup'),
-        send: useChannelAsInvoke('aiAgent.send'),
-        getHistory: useChannelAsInvoke('aiAgent.getHistory'),
-        on: {
-          chunk: useChannelAsEvent('aiAgent.on.chunk'),
-          done: useChannelAsEvent('aiAgent.on.done'),
-          error: useChannelAsEvent('aiAgent.on.error'),
-        },
       },
       aiChat: {
         chat: useChannelAsInvoke('aiChat.chat'),
