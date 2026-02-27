@@ -1,14 +1,8 @@
-import { useEffect, useState } from 'react'
-import { useChat } from '@tanstack/ai-react'
-import { clientTools } from '@tanstack/ai-client'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { ArrowUpIcon, BotIcon, SquareIcon, User2Icon } from 'lucide-react'
 
-import { clockTool } from '../api/tools/tools'
-import type { Model } from '#/main/features/chat/ollama/models'
-import { fetchIpcEvents } from '@/lib/fetchIpcEvents'
-import { mcp } from '@/api'
+import { useChatSession } from '@/features/chat/components/chat-session-provider'
 import {
   Accordion,
   AccordionContent,
@@ -37,34 +31,14 @@ import {
 } from '@/components/ui/input-group'
 import { useAutoScrollToBottom } from '@/hooks/use-auto-scroll-to-bottom'
 
-export type ChatProps = {
-  model?: Model
-}
-
-export function Chat(props: ChatProps) {
-  const { model = 'gpt-oss:20b-cloud' } = props
+export function Chat() {
   const {
     auth: { user },
   } = useAuth()
   const username = user?.username || 'あなた'
 
-  useEffect(() => {
-    ;(async () => {
-      const status = await mcp.getServerStatus()
-      if (!status.isRunning) {
-        mcp.startServer({})
-      }
-    })()
-  }, [])
-
-  const [input, setInput] = useState('')
-  const { messages, sendMessage, isLoading, stop, status } = useChat({
-    connection: fetchIpcEvents(),
-    tools: clientTools(clockTool),
-    body: {
-      model,
-    },
-  })
+  const { input, setInput, messages, sendMessage, isLoading, stop, status } =
+    useChatSession()
 
   const { scrollContainerRef, scrollBottomRef, onScroll } =
     useAutoScrollToBottom([messages])
