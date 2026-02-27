@@ -1,7 +1,7 @@
 import { convertMessagesToModelMessages } from '@tanstack/ai'
 import type { ConnectionAdapter } from '@tanstack/ai-react'
-import type { StreamChunk } from '@tanstack/ai'
 
+import type { AIChatApiResponse } from '#/main/api/aiChat'
 import { aiChat } from '@/api'
 
 /**
@@ -11,13 +11,16 @@ import { aiChat } from '@/api'
 export function fetchIpcEvents() {
   const connection: ConnectionAdapter = {
     async *connect(messages, data, abortSignal) {
+      const id = crypto.randomUUID()
       const modelMessages = convertMessagesToModelMessages(messages)
-      const queue = createAsyncQueue<StreamChunk>()
+      const queue = createAsyncQueue<AIChatApiResponse>()
 
       // IPC イベントリスナーを登録
-      const removeListener = aiChat.on.chunk(({ chunk }) => {
+      const removeListener = aiChat.on.chunk((resp) => {
+        // id が一致するものだけ処理する
+        if (resp.id !== id) return
         // ここでは yield できないのでキューに追加する
-        queue.push(chunk)
+        queue.push(resp)
       })
 
       // IPC 経由でチャットを開始
@@ -26,6 +29,7 @@ export function fetchIpcEvents() {
         .chat({
           messages: modelMessages,
           data,
+          id,
         })
         .catch((error) => {
           queue.error(error)
@@ -41,11 +45,23 @@ export function fetchIpcEvents() {
 
       try {
         for (;;) {
-          const chunk = await queue.shift()
-          if (chunk == null) break
-          if (chunk.type === 'done') break
-          yield chunk
+          const resp = await queue.shift()
+          if (resp == null) {
+            break
+          } else if (resp.type === 'done') {
+            break
+          } else if (resp.type === 'error') {
+            throw new Error(resp.error)
+          } else {
+            yield resp.chunk
+          }
         }
+      } catch (err) {
+        console.error(
+          `${new Date().toISOString()} Error in fetchIpcEvents connection:`,
+          err,
+        )
+        throw err
       } finally {
         removeListener()
         removeAbortListener()

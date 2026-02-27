@@ -58,13 +58,6 @@ function RouteComponent() {
       to: '/demo/kakeibo',
     },
     {
-      name: 'チャットを開始',
-      type: 'Chat',
-      status: 'running' as const,
-      at: '09:48',
-      to: '/demo/chat',
-    },
-    {
       name: 'テーブルのストレステスト',
       type: 'Table',
       status: 'queued' as const,
@@ -84,8 +77,6 @@ function RouteComponent() {
     switch (status) {
       case 'done':
         return <Badge variant="secondary">完了</Badge>
-      case 'running':
-        return <Badge>実行中</Badge>
       case 'queued':
         return <Badge variant="outline">待機</Badge>
     }
@@ -169,13 +160,6 @@ function RouteComponent() {
               <CardDescription>よく触るデモへの導線</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button
-                className="w-full justify-start"
-                variant="outline"
-                asChild
-              >
-                <Link to="/demo/chat">チャット</Link>
-              </Button>
               <Button
                 className="w-full justify-start"
                 variant="outline"

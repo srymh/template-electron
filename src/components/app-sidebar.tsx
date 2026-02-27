@@ -65,14 +65,6 @@ const data = {
           title: 'Kakeibo',
           url: '/demo/kakeibo',
         },
-        {
-          title: 'Chat',
-          url: '/demo/chat',
-        },
-        {
-          title: 'Chat(TanStack AI)',
-          url: '/demo/chat-t',
-        },
       ],
     },
     {

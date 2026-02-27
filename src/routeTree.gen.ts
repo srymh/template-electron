@@ -23,8 +23,6 @@ import { Route as appDemoTanstackQueryRouteImport } from './routes/(app)/demo.ta
 import { Route as appDemoTableRouteImport } from './routes/(app)/demo.table'
 import { Route as appDemoKakeiboRouteImport } from './routes/(app)/demo.kakeibo'
 import { Route as appDemoFsRouteImport } from './routes/(app)/demo.fs'
-import { Route as appDemoChatTRouteImport } from './routes/(app)/demo.chat-t'
-import { Route as appDemoChatRouteImport } from './routes/(app)/demo.chat'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -95,16 +93,6 @@ const appDemoFsRoute = appDemoFsRouteImport.update({
   path: '/fs',
   getParentRoute: () => appDemoRouteRoute,
 } as any)
-const appDemoChatTRoute = appDemoChatTRouteImport.update({
-  id: '/chat-t',
-  path: '/chat-t',
-  getParentRoute: () => appDemoRouteRoute,
-} as any)
-const appDemoChatRoute = appDemoChatRouteImport.update({
-  id: '/chat',
-  path: '/chat',
-  getParentRoute: () => appDemoRouteRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -112,8 +100,6 @@ export interface FileRoutesByFullPath {
   '/demo': typeof appDemoRouteRouteWithChildren
   '/ui': typeof appUiRouteRouteWithChildren
   '/settings': typeof appSettingsRoute
-  '/demo/chat': typeof appDemoChatRoute
-  '/demo/chat-t': typeof appDemoChatTRoute
   '/demo/fs': typeof appDemoFsRoute
   '/demo/kakeibo': typeof appDemoKakeiboRoute
   '/demo/table': typeof appDemoTableRoute
@@ -127,8 +113,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/settings': typeof appSettingsRoute
-  '/demo/chat': typeof appDemoChatRoute
-  '/demo/chat-t': typeof appDemoChatTRoute
   '/demo/fs': typeof appDemoFsRoute
   '/demo/kakeibo': typeof appDemoKakeiboRoute
   '/demo/table': typeof appDemoTableRoute
@@ -146,8 +130,6 @@ export interface FileRoutesById {
   '/(app)/demo': typeof appDemoRouteRouteWithChildren
   '/(app)/ui': typeof appUiRouteRouteWithChildren
   '/(app)/settings': typeof appSettingsRoute
-  '/(app)/demo/chat': typeof appDemoChatRoute
-  '/(app)/demo/chat-t': typeof appDemoChatTRoute
   '/(app)/demo/fs': typeof appDemoFsRoute
   '/(app)/demo/kakeibo': typeof appDemoKakeiboRoute
   '/(app)/demo/table': typeof appDemoTableRoute
@@ -165,8 +147,6 @@ export interface FileRouteTypes {
     | '/demo'
     | '/ui'
     | '/settings'
-    | '/demo/chat'
-    | '/demo/chat-t'
     | '/demo/fs'
     | '/demo/kakeibo'
     | '/demo/table'
@@ -180,8 +160,6 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/settings'
-    | '/demo/chat'
-    | '/demo/chat-t'
     | '/demo/fs'
     | '/demo/kakeibo'
     | '/demo/table'
@@ -198,8 +176,6 @@ export interface FileRouteTypes {
     | '/(app)/demo'
     | '/(app)/ui'
     | '/(app)/settings'
-    | '/(app)/demo/chat'
-    | '/(app)/demo/chat-t'
     | '/(app)/demo/fs'
     | '/(app)/demo/kakeibo'
     | '/(app)/demo/table'
@@ -316,26 +292,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appDemoFsRouteImport
       parentRoute: typeof appDemoRouteRoute
     }
-    '/(app)/demo/chat-t': {
-      id: '/(app)/demo/chat-t'
-      path: '/chat-t'
-      fullPath: '/demo/chat-t'
-      preLoaderRoute: typeof appDemoChatTRouteImport
-      parentRoute: typeof appDemoRouteRoute
-    }
-    '/(app)/demo/chat': {
-      id: '/(app)/demo/chat'
-      path: '/chat'
-      fullPath: '/demo/chat'
-      preLoaderRoute: typeof appDemoChatRouteImport
-      parentRoute: typeof appDemoRouteRoute
-    }
   }
 }
 
 interface appDemoRouteRouteChildren {
-  appDemoChatRoute: typeof appDemoChatRoute
-  appDemoChatTRoute: typeof appDemoChatTRoute
   appDemoFsRoute: typeof appDemoFsRoute
   appDemoKakeiboRoute: typeof appDemoKakeiboRoute
   appDemoTableRoute: typeof appDemoTableRoute
@@ -345,8 +305,6 @@ interface appDemoRouteRouteChildren {
 }
 
 const appDemoRouteRouteChildren: appDemoRouteRouteChildren = {
-  appDemoChatRoute: appDemoChatRoute,
-  appDemoChatTRoute: appDemoChatTRoute,
   appDemoFsRoute: appDemoFsRoute,
   appDemoKakeiboRoute: appDemoKakeiboRoute,
   appDemoTableRoute: appDemoTableRoute,
