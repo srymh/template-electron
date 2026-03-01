@@ -11,10 +11,10 @@ main().catch((err) => {
 })
 
 async function main() {
-  const textPath = path.join(__dirname, 'example-text.txt')
+  const textPath = path.join(__dirname, 'example.txt')
   const text = await fs.readFile(textPath, 'utf-8')
   await ingestDocuments(text, {
-    dbPath: path.join(__dirname, 'example.db'),
+    dbPath: path.join(__dirname, '..', '..', 'data', 'example.db'),
     docName: 'example-doc',
     model: 'nomic-embed-text-v2-moe:latest',
     prefix: 'search_document:',
@@ -22,5 +22,8 @@ async function main() {
     overlap: 120,
     maxEmbeddingChars: 700,
     embeddingOverlap: 120,
+    onProgress: (progress, total) => {
+      console.log(`Progress: ${progress}/${total}`)
+    },
   })
 }

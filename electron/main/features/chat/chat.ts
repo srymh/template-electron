@@ -1,10 +1,8 @@
 import { chat as tanstackChat } from '@tanstack/ai'
 
-import type { ModelMessage, ServerTool, StreamChunk } from '@tanstack/ai'
-import { switchThemeDarkTool, switchThemeLightTool } from './tools/tools'
-import { isOllamaModelMessage, type OllamaModelMessage } from './ollama/ollama'
+import type { ModelMessage, StreamChunk, TextOptions } from '@tanstack/ai'
 
-import { clockToolDef } from '@/features/chat/api/tools/definitions'
+import { isOllamaModelMessage, type OllamaModelMessage } from './ollama/ollama'
 import { adapters } from './ollama/adapters'
 import { modelSchema } from './ollama/models'
 
@@ -21,14 +19,14 @@ export async function chat(options: {
   onChunk?: OnChunk
   onDone?: OnDone
   onError?: OnError
-  getToolsByMcp?: () => Promise<ServerTool[]>
+  createTools?: () => TextOptions['tools'] | Promise<TextOptions['tools']>
 }) {
   const {
     request: { messages, data },
     onChunk = () => {},
     onDone = () => {},
     onError = () => {},
-    getToolsByMcp = async () => [],
+    createTools = () => [],
   } = options
 
   try {
@@ -46,14 +44,7 @@ export async function chat(options: {
      * ツールの準備
      *
      * ---------------------------------------------------------------------- */
-    const toolsByMcp = await getToolsByMcp()
-
-    const tools = [
-      switchThemeDarkTool,
-      switchThemeLightTool,
-      clockToolDef,
-      ...toolsByMcp,
-    ]
+    const tools = await createTools()
 
     /** ------------------------------------------------------------------------
      *

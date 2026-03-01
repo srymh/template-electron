@@ -203,6 +203,9 @@ function createWindowContext(
         appContext.toolsByMcp = toolsByMcp
         return toolsByMcp
       },
+      getSearchProjectDetailDbPath: () => {
+        return path.join(appContext.paths.dataPath, 'example.db')
+      },
     },
     kakeibo: {
       getDb: () => {

@@ -11,12 +11,12 @@ main().catch((err) => {
 })
 
 async function main() {
-  const textPath = path.join(__dirname, 'example-text.txt')
+  const textPath = path.join(__dirname, 'example.txt')
   const text = await fs.readFile(textPath, 'utf-8')
   await ingestDocuments(text, {
-    dbPath: path.join(__dirname, 'example.json'),
+    dbPath: path.join(__dirname, '..', '..', 'data', 'example.json'),
     docName: 'example-doc',
-    createHandlers: async (dbPath) => {
+    createHandlers: (dbPath) => {
       type ChunkEntry = {
         docName: string
         sourceChunkIndex: number

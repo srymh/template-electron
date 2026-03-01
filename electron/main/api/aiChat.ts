@@ -10,6 +10,13 @@ import type {
 import { createResponseChannel } from '#/shared/lib/ipc'
 
 import { chat } from '#/main/features/chat/chat'
+import {
+  createSearchProjectDetailTool,
+  switchThemeDarkTool,
+  switchThemeLightTool,
+} from '#/main/features/chat/tools/tools'
+
+import { clockToolDef } from '@/features/chat/api/tools/definitions'
 
 // -----------------------------------------------------------------------------
 // 型定義
@@ -19,6 +26,7 @@ export type AIChatApiKey = typeof AI_CHAT_API_KEY
 
 export type AiChatContext = {
   getToolsByMcp: () => Promise<ServerTool[]>
+  getSearchProjectDetailDbPath: () => string
 }
 
 export type AIChatApiResponse =
@@ -53,16 +61,35 @@ const createChat =
     getContext: (wc: WebContents) => AiChatContext,
   ): WithWebContents<AiChatApi['chat']> =>
   async (request, webContents) => {
-    const { getToolsByMcp } = getContext(webContents)
+    const { getToolsByMcp, getSearchProjectDetailDbPath } =
+      getContext(webContents)
     const { messages, data, id } = request
     const { sendChunk, sendDone, sendError } = createSendFn(webContents, id)
+
+    const createTools = async () => {
+      const toolsByMcp = await getToolsByMcp()
+      const searchProjectDetailsTool = createSearchProjectDetailTool({
+        dbPath: getSearchProjectDetailDbPath(),
+        docName: 'example-doc',
+        model: 'nomic-embed-text-v2-moe:latest',
+        queryPrefix: 'search_query:',
+        topK: 6,
+      })
+      return [
+        switchThemeDarkTool,
+        switchThemeLightTool,
+        clockToolDef,
+        ...toolsByMcp,
+        searchProjectDetailsTool,
+      ]
+    }
 
     await chat({
       request: { messages, data },
       onChunk: sendChunk,
       onDone: sendDone,
       onError: sendError,
-      getToolsByMcp,
+      createTools,
     })
   }
 

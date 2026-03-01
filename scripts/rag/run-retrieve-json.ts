@@ -11,9 +11,9 @@ main().catch((err) => {
 })
 
 async function main() {
-  const question = 'なぜ春一番と呼ばれるのか？'
+  const question = '主要機能'
   const result = await retrieveRagContext(question, {
-    dbPath: path.join(__dirname, 'example.json'),
+    dbPath: path.join(__dirname, '..', '..', 'data', 'example.json'),
     docName: 'example-doc',
     loadChunks: async (dbPath, docName) => {
       const data = await fs.readFile(dbPath, 'utf-8')
