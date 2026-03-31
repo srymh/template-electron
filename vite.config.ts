@@ -1,22 +1,21 @@
 import { URL, fileURLToPath } from 'node:url'
 import path from 'node:path'
-import { rmSync } from 'node:fs'
 import { defineConfig } from 'vite'
 import { devtools } from '@tanstack/devtools-vite'
 import viteReact from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
-import electron from 'vite-plugin-electron/simple'
+import { electron } from '@srymh/vite-plugin-electron'
 import pkg from './package.json'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
-  rmSync('dist-electron', { recursive: true, force: true })
   const isServe = command === 'serve'
   const isBuild = command === 'build'
-  const sourcemap = isServe || !!process.env.VSCODE_DEBUG
+  const sourcemap = isServe
 
   return {
+    base: isBuild ? './' : '/',
     plugins: [
       devtools(),
       tanstackRouter({
@@ -40,16 +39,7 @@ export default defineConfig(({ command }) => {
       tailwindcss(),
       electron({
         main: {
-          // `build.lib.entry` のショートカット。
           entry: 'electron/main/index.ts',
-          onstart({ startup }) {
-            if (process.env.VSCODE_DEBUG) {
-              // For `.vscode/.debug.script.mjs`
-              console.log('[startup] Electron App')
-            } else {
-              startup()
-            }
-          },
           vite: {
             build: {
               sourcemap,
@@ -70,9 +60,7 @@ export default defineConfig(({ command }) => {
           },
         },
         preload: {
-          // `build.rollupOptions.input` のショートカット。
-          // Preload スクリプトは Web アセットを含む場合があるため、`build.lib.entry` ではなく `build.rollupOptions.input` を使用します。
-          input: path.join(__dirname, 'electron', 'preload', 'index.ts'),
+          entry: path.join(__dirname, 'electron', 'preload', 'index.ts'),
           vite: {
             build: {
               sourcemap: sourcemap ? 'inline' : undefined,
@@ -91,25 +79,16 @@ export default defineConfig(({ command }) => {
             },
           },
         },
-        // Renderer プロセス用に Electron と Node.js の API をポリフィルします。
-        // Renderer プロセスで Node.js を使用したい場合、Main プロセスで `nodeIntegration` を有効にする必要があります。
-        // 参照 👉 https://github.com/electron-vite/vite-plugin-electron-renderer
-        renderer:
-          process.env.NODE_ENV === 'test'
-            ? // https://github.com/electron-vite/vite-plugin-electron-renderer/issues/78#issuecomment-2053600808
-              undefined
-            : {},
+        renderer: {
+          mode: 'internal',
+        },
+        debug: {
+          enabled: true,
+          port: 9229,
+          rendererPort: 9222,
+        },
       }),
     ],
-    server: process.env.VSCODE_DEBUG
-      ? (() => {
-          const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL)
-          return {
-            host: url.hostname,
-            port: +url.port,
-          }
-        })()
-      : undefined,
     clearScreen: false,
     resolve: {
       alias: {

@@ -12,7 +12,7 @@ import path from 'node:path'
  * │   ├─ main/
  * │   │   └─ index.js
  * │   └─ preload/
- * │       └─ index.mjs
+ * │       └─ index.cjs
  * ├─ public/
  * └─ data/
  * ```
@@ -25,7 +25,7 @@ import path from 'node:path'
  *   mainDist:      '$root/dist-electron',
  *   rendererDist:  '',
  *   vitePublic:    '$root/public',
- *   preloadPath:   '$root/dist-electron/preload/index.mjs',
+ *   preloadPath:   '$root/dist-electron/preload/index.cjs',
  *   indexHtmlPath: '',
  *   dataPath:      '$root/data'
  * }
@@ -42,7 +42,7 @@ import path from 'node:path'
  *    │    │   ├─ main/
  *    │    │   │   └─ index.js
  *    │    │   └─ preload/
- *    │    │       └─ index.mjs
+ *    │    │       └─ index.cjs
  *    │    └─ dist/
  *    │        └─ index.html
  *    └─ data/
@@ -54,7 +54,7 @@ import path from 'node:path'
  *   mainDist:      '$root/resources/app.asar/dist-electron',
  *   rendererDist:  '$root/resources/app.asar/dist',
  *   vitePublic:    '$root/resources/app.asar/dist',
- *   preloadPath:   '$root/resources/app.asar/dist-electron/preload/index.mjs',
+ *   preloadPath:   '$root/resources/app.asar/dist-electron/preload/index.cjs',
  *   indexHtmlPath: '$root/resources/app.asar/dist/index.html',
  *   dataPath:      '$root/resources/data'
  * }
@@ -71,7 +71,7 @@ import path from 'node:path'
  *    │    │   ├─ main/
  *    │    │   │   └─ index.js
  *    │    │   └─ preload/
- *    │    │       └─ index.mjs
+ *    │    │       └─ index.cjs
  *    │    └─ dist/
  *    │        └─ index.html
  *    └─ data/
@@ -83,7 +83,7 @@ import path from 'node:path'
  *   mainDist:      '$root/resources/app/dist-electron',
  *   rendererDist:  '$root/resources/app/dist',
  *   vitePublic:    '$root/resources/app/dist',
- *   preloadPath:   '$root/resources/app/dist-electron/preload/index.mjs',
+ *   preloadPath:   '$root/resources/app/dist-electron/preload/index.cjs',
  *   indexHtmlPath: '$root/resources/app/dist/index.html',
  *   dataPath:      '$root/resources/data'
  * }
@@ -105,7 +105,7 @@ export type MainPaths = {
   rendererDist: string
   /** Vite public 参照用のディレクトリ（dev: `public`, prod: `dist`） */
   vitePublic: string
-  /** preload スクリプトのパス（例: `dist-electron/preload/index.mjs`） */
+  /** preload スクリプトのパス（例: `dist-electron/preload/index.cjs`） */
   preloadPath: string
   /** Renderer のエントリ HTML のパス（例: `dist/index.html`） */
   indexHtmlPath: string
@@ -134,7 +134,7 @@ export function resolveMainPaths(args: {
   const appRoot = path.join(dirname, '..', '..')
 
   const mainDist = path.join(appRoot, 'dist-electron')
-  const preloadPath = path.join(mainDist, 'preload', 'index.mjs')
+  const preloadPath = path.join(mainDist, 'preload', 'index.cjs')
 
   const rendererDist = isProd
     ? path.join(appRoot, 'dist')
