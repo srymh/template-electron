@@ -1,7 +1,7 @@
 import { URL, fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { rmSync } from 'node:fs'
-import { defineConfig } from 'vitest/config'
+import { defineConfig } from 'vite'
 import { devtools } from '@tanstack/devtools-vite'
 import viteReact from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
