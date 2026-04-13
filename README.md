@@ -2,7 +2,9 @@
 
 Electron（Main/Preload）+ Vite（Renderer）構成のテンプレートです。React + TypeScript を前提に、TanStack Router/Query などのフロントエンド基盤と、electron-builder による配布ビルドまでを含みます。
 
-![screenshot](docs/screenshot.png)
+| Screenshot (Windows)               | Screenshot (macOS)                         |
+| ---------------------------------- | ------------------------------------------ |
+| ![screenshot](docs/screenshot.png) | ![screenshot mac](docs/screenshot_mac.png) |
 
 ## 特徴
 

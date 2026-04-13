@@ -16,8 +16,21 @@
 
 :root {
   --header-height: 30px;
-  /* タイトルバーオーバーレイの幅 */
+  --title-bar-overlay-width: 0px;
+  --traffic-light-width: 0px;
+  --traffic-light-height: 0px;
+}
+
+/* Windows / Linux: ウィンドウコントロール分の右パディング */
+:root[data-platform='win32'],
+:root[data-platform='linux'] {
   --title-bar-overlay-width: 137px;
+}
+
+/* macOS: トラフィックライト分の左パディング */
+:root[data-platform='darwin'] {
+  --traffic-light-width: 80px;
+  --traffic-light-height: var(--header-height);
 }
 
 [data-custom-title-bar] {

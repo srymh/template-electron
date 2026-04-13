@@ -3,4 +3,5 @@
 // Used in Renderer process, expose in `preload/index.ts`
 interface Window {
   api: import('#/main/ipc/electronApi').ElectronApi
+  platform?: NodeJS.Platform
 }
