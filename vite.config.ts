@@ -111,6 +111,11 @@ export default defineConfig(({ command }) => {
         })()
       : undefined,
     clearScreen: false,
+    define: {
+      __PLATFORM__: JSON.stringify(
+        process.env.TARGET_PLATFORM ?? process.platform,
+      ),
+    },
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),

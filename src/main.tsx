@@ -21,9 +21,7 @@ import './styles.css'
 import './custom.css'
 
 // プラットフォーム情報を CSS から参照できるよう data 属性にセット
-if (window.platform) {
-  document.documentElement.dataset.platform = window.platform
-}
+document.documentElement.dataset.platform = __PLATFORM__
 
 // 新しいルーターインスタンスを作成
 
