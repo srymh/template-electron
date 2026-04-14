@@ -16,6 +16,13 @@ export default defineConfig(({ command }) => {
   const isBuild = command === 'build'
   const sourcemap = isServe || !!process.env.VSCODE_DEBUG
 
+  // pnpm の strict node_modules 構造では、asar 内で推移的依存の解決が
+  // 失敗する（例: express → body-parser, ollama → whatwg-fetch）。
+  // ネイティブモジュール（.node バイナリを含むもの）のみ external にし、
+  // 残りはすべて Vite にバンドルさせることで asar 内の解決問題を回避する。
+  const nativeModules = ['better-sqlite3']
+  const external = nativeModules
+
   return {
     plugins: [
       devtools(),
@@ -56,9 +63,7 @@ export default defineConfig(({ command }) => {
               minify: isBuild,
               outDir: 'dist-electron/main',
               rollupOptions: {
-                external: Object.keys(
-                  'dependencies' in pkg ? pkg.dependencies : {},
-                ),
+                external,
               },
             },
             resolve: {
@@ -79,9 +84,7 @@ export default defineConfig(({ command }) => {
               minify: isBuild,
               outDir: 'dist-electron/preload',
               rollupOptions: {
-                external: Object.keys(
-                  'dependencies' in pkg ? pkg.dependencies : {},
-                ),
+                external,
               },
             },
             resolve: {
