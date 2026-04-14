@@ -33,7 +33,7 @@ function SiteHeader() {
       <div className="w-full flex items-center gap-2 pl-4 pr-(--title-bar-overlay-width)">
         <SidebarTrigger
           className={cn({
-            'group-has-data-[collapsible=icon]/sidebar-wrapper:ml-[calc(var(--traffic-light-width)-48px)]':
+            'group-has-data-[collapsible=icon]/sidebar-wrapper:ml-[max(0px,calc(var(--traffic-light-width)-48px))]':
               !isMobile,
             'ml-(--traffic-light-width)': isMobile,
           })}
