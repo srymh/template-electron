@@ -34,6 +34,7 @@
   mac: {
     target: ['dmg'],
     artifactName: '${productName}-Mac-${version}-Installer.${ext}',
+    icon: 'dist/app.icns',
   },
   win: {
     target: [

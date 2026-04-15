@@ -132,6 +132,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar collapsible="icon" {...props}>
+      <div className="w-full mt-(--traffic-light-height) border-b" />
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
