@@ -20,6 +20,9 @@ import { Toaster } from '@/components/ui/sonner'
 import './styles.css'
 import './custom.css'
 
+// プラットフォーム情報を CSS から参照できるよう data 属性にセット
+document.documentElement.dataset.platform = __PLATFORM__
+
 // 新しいルーターインスタンスを作成
 
 const TanStackQueryProviderContext = TanStackQueryProvider.getContext()
