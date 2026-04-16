@@ -6,13 +6,12 @@ import viteReact from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import { electron } from '@srymh/vite-plugin-electron'
-import pkg from './package.json'
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command }) => {
-  const isServe = command === 'serve'
-  const isBuild = command === 'build'
-  const sourcemap = isServe
+export default defineConfig(({ mode }) => {
+  const base = mode === 'production' ? './' : '/'
+  const minify = mode === 'production'
+  const sourcemap = mode !== 'production'
 
   // pnpm の strict node_modules 構造では、asar 内で推移的依存の解決が
   // 失敗する（例: express → body-parser, ollama → whatwg-fetch）。
@@ -22,7 +21,7 @@ export default defineConfig(({ command }) => {
   const external = nativeModules
 
   return {
-    base: isBuild ? './' : '/',
+    base,
     plugins: [
       devtools(),
       tanstackRouter({
@@ -50,7 +49,7 @@ export default defineConfig(({ command }) => {
           vite: {
             build: {
               sourcemap,
-              minify: isBuild,
+              minify,
               outDir: 'dist-electron/main',
               rollupOptions: {
                 external,
@@ -68,8 +67,8 @@ export default defineConfig(({ command }) => {
           entry: path.join(__dirname, 'electron', 'preload', 'index.ts'),
           vite: {
             build: {
-              sourcemap: sourcemap ? 'inline' : undefined,
-              minify: isBuild,
+              sourcemap: sourcemap ? 'inline' : false,
+              minify,
               outDir: 'dist-electron/preload',
               rollupOptions: {
                 external,

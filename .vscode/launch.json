@@ -29,7 +29,7 @@
       "address": "localhost",
       "port": 9229,
       "restart": true,
-      "timeout": 30000,
+      "timeout": 300000,
       "cwd": "${workspaceFolder}",
       "sourceMaps": true,
       "skipFiles": ["<node_internals>/**"]
@@ -42,7 +42,8 @@
       "port": 9222,
       "webRoot": "${workspaceFolder}",
       "sourceMaps": true,
-      "timeout": 30000
+      "restart": true,
+      "timeout": 300000
     }
   ]
 }
