@@ -17,7 +17,6 @@ export default [
     ignores: [
       '**/*.d.ts',
       'eslint.config.js',
-      'prettier.config.js',
       'dist-electron/**',
       'src/components/ui/**',
       'src/lib/utils.ts',

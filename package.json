@@ -9,8 +9,8 @@
     "build": "tsgo && vite build && electron-builder",
     "test": "tsgo --noEmit && vitest run",
     "lint": "tsgo --noEmit && eslint",
-    "format": "prettier --write .",
-    "check": "tsgo --noEmit && prettier --write . && eslint --fix",
+    "format": "oxfmt",
+    "check": "tsgo --noEmit && oxfmt && eslint --fix",
     "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
@@ -80,7 +80,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-use-no-memo": "^1.1.0",
     "jsdom": "^27.4.0",
-    "prettier": "^3.8.1",
+    "oxfmt": "^0.45.0",
     "typescript": "^6.0.3",
     "vite": "^8.0.8",
     "vitest": "^4.1.4",

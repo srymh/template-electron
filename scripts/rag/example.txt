@@ -12,8 +12,8 @@ template-electron プロジェクト概要
 - pnpm build: vite build でレンダラーをビルドし、tsc で型チェックを行い、electron-builder でパッケージングする。
 - pnpm test: tsc --noEmit で型チェックした後、vitest run でテストを実行する。
 - pnpm lint: tsc --noEmit と eslint を順に実行する。
-- pnpm check: tsc --noEmit、prettier --write、eslint --fix を順に実行するオートフィックスコマンド。
-- pnpm format: Prettier でコード整形を行う。
+- pnpm check: tsc --noEmit、oxfmt、eslint --fix を順に実行するオートフィックスコマンド。
+- pnpm format: oxfmt でコード整形を行う。
 - pnpm serve: Vite のプレビューサーバーでビルド済みレンダラーを確認する。
 
 postinstall フックでは electron-builder install-app-deps が自動実行され、better-sqlite3 などのネイティブ依存がプラットフォームに合わせてリビルドされる。
@@ -61,10 +61,10 @@ React Compiler 互換性のため、eslint-plugin-use-no-memo が導入されて
 一部のパスは ESLint の対象外となっている。dist-electron/、src/components/ui/（shadcn/ui ベンダーコード）、src/lib/utils.ts、src/features/ui-demo/、electron/ が含まれる。
 
 ========================================
-Prettier 設定
+oxfmt 設定
 ========================================
 
-prettier.config.js では以下の設定が適用されている。
+.oxfmtrc.json では以下の設定が適用されている。
 
 - semi: false（セミコロンなし）
 - singleQuote: true（シングルクォート）
@@ -471,7 +471,7 @@ IPC:
 - IPC ハンドラーではシリアライズ可能なエラーのみをスローする。
 
 フォーマット:
-- Prettier に任せる。手動フォーマットは行わない。
+- oxfmt に任せる。手動フォーマットは行わない。
 - 長い呼び出し引数や JSX プロパティは複数行に折り返すスタイルが一般的。
 
 ========================================
@@ -506,7 +506,7 @@ IPC:
 - electron-builder: パッケージングツール。
 - eslint: リンター。
 - jsdom: テスト環境。
-- prettier: フォーマッター。
+- oxfmt: フォーマッター。
 - tailwindcss: Tailwind CSS 本体。
 - typescript: TypeScript コンパイラ。
 - vite: ビルドツール。
@@ -582,7 +582,7 @@ template-electron/
 ├── vite.config.ts
 ├── tsconfig.json
 ├── eslint.config.js
-├── prettier.config.js
+├── .oxfmtrc.json
 ├── electron-builder.json5
 ├── index.html
 └── AGENTS.md                    # エージェント向け操作マニュアル

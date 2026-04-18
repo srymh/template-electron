@@ -56,8 +56,8 @@ pnpm build
 | `pnpm build`  | Renderer + Electron をビルドしてパッケージ作成 |
 | `pnpm test`   | 型チェック + Vitest                            |
 | `pnpm lint`   | 型チェック + ESLint                            |
-| `pnpm format` | Prettierで整形                                 |
-| `pnpm check`  | 型チェック + Prettier整形 + ESLint自動修正     |
+| `pnpm format` | oxfmtで整形                                    |
+| `pnpm check`  | 型チェック + oxfmt整形 + ESLint自動修正        |
 
 ## ディレクトリ構成
 
