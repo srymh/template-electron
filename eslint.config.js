@@ -23,6 +23,7 @@ export default [
       'src/lib/utils.ts',
       'src/features/ui-demo/**',
       'electron/**',
+      'scripts/**',
     ],
   },
 
