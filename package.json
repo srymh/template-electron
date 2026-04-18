@@ -11,7 +11,7 @@
     "lint": "tsgo --noEmit && oxlint",
     "format": "oxfmt",
     "check": "tsgo --noEmit && oxfmt && oxlint --fix",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-rebuild -f -w better-sqlite3"
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
@@ -32,7 +32,7 @@
     "@tanstack/react-router-devtools": "^1.161.1",
     "@tanstack/react-table": "^8.21.3",
     "@tanstack/router-plugin": "^1.161.1",
-    "better-sqlite3": "^12.6.2",
+    "better-sqlite3": "^12.9.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -60,6 +60,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@electron/rebuild": "^4.0.3",
     "@rolldown/plugin-babel": "^0.2.3",
     "@srymh/vite-plugin-electron": "0.2.0-beta.4",
     "@tanstack/devtools-vite": "^0.6.0",
@@ -67,13 +68,13 @@
     "@testing-library/react": "^16.3.2",
     "@types/better-sqlite3": "^7.6.13",
     "@types/express": "^5.0.6",
-    "@types/node": "^24.10.15",
+    "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@typescript/native-preview": "7.0.0-dev.20260418.1",
     "@vitejs/plugin-react": "^6.0.1",
     "babel-plugin-react-compiler": "^1.0.0",
-    "electron": "^40.6.1",
+    "electron": "^41.2.1",
     "electron-builder": "^26.8.1",
     "eslint-plugin-use-no-memo": "^1.1.0",
     "jsdom": "^27.4.0",
