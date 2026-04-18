@@ -11,8 +11,8 @@ template-electron プロジェクト概要
 - pnpm dev: Vite 開発サーバーを起動し、vite-plugin-electron を通じて Electron も同時に起動する。HMR（Hot Module Replacement）によりレンダラーの変更は即座に反映される。
 - pnpm build: vite build でレンダラーをビルドし、tsc で型チェックを行い、electron-builder でパッケージングする。
 - pnpm test: tsc --noEmit で型チェックした後、vitest run でテストを実行する。
-- pnpm lint: tsc --noEmit と eslint を順に実行する。
-- pnpm check: tsc --noEmit、oxfmt、eslint --fix を順に実行するオートフィックスコマンド。
+- pnpm lint: tsc --noEmit と oxlint を順に実行する。
+- pnpm check: tsc --noEmit、oxfmt、oxlint --fix を順に実行するオートフィックスコマンド。
 - pnpm format: oxfmt でコード整形を行う。
 - pnpm serve: Vite のプレビューサーバーでビルド済みレンダラーを確認する。
 
@@ -49,16 +49,6 @@ tsconfig.json では strict: true が有効であり、以下の追加チェッ�
 パスエイリアスとして @/* が src/* に、#/* が electron/* にマッピングされている。レンダラーコードでは @/ を、Electron コードでは #/ を使う規約になっている。
 
 モジュール解決は bundler モードで、ESM（ECMAScript Modules）を前提とする。package.json の type フィールドは module に設定されている。
-
-========================================
-ESLint 設定
-========================================
-
-eslint.config.js は @tanstack/eslint-config をベースに構成されている。React Hooks のルールが eslint-plugin-react-hooks で有効化されている。
-
-React Compiler 互換性のため、eslint-plugin-use-no-memo が導入されている。TanStack Table の useReactTable や React Hook Form の useForm を使うコンポーネントでは、関数本体の先頭に 'use no memo' ディレクティブを記述する規約がある。これは React Compiler がこれらのライブラリと互換性の問題を持つためである。
-
-一部のパスは ESLint の対象外となっている。dist-electron/、src/components/ui/（shadcn/ui ベンダーコード）、src/lib/utils.ts、src/features/ui-demo/、electron/ が含まれる。
 
 ========================================
 oxfmt 設定
@@ -504,7 +494,7 @@ IPC:
 - babel-plugin-react-compiler: React Compiler。
 - electron: Electron 本体。
 - electron-builder: パッケージングツール。
-- eslint: リンター。
+- oxlint: リンター。
 - jsdom: テスト環境。
 - oxfmt: フォーマッター。
 - tailwindcss: Tailwind CSS 本体。
@@ -581,7 +571,7 @@ template-electron/
 ├── package.json
 ├── vite.config.ts
 ├── tsconfig.json
-├── eslint.config.js
+├── .oxlint.json
 ├── .oxfmtrc.json
 ├── electron-builder.json5
 ├── index.html

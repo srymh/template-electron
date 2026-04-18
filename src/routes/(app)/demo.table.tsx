@@ -94,7 +94,6 @@ function PersonTable() {
         table.setSorting([{ id: 'fullName', desc: false }])
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [table.getState().columnFilters[0]?.id])
 
   return (

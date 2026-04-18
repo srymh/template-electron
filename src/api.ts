@@ -110,7 +110,6 @@ const api: Api = (() => {
               isAuthenticated: Boolean(mockUser),
               user: mockUser,
             }),
-          // eslint-disable-next-line @typescript-eslint/require-await
           login: async (username: string, _password: string) => {
             mockUser = { username }
             return {
@@ -118,7 +117,6 @@ const api: Api = (() => {
               user: mockUser,
             }
           },
-          // eslint-disable-next-line @typescript-eslint/require-await
           logout: async () => {
             mockUser = null
           },
