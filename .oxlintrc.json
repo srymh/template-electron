@@ -15,7 +15,6 @@
     "src/lib/utils.ts",
     "src/features/ui-demo/**",
     "electron/**",
-    "scripts/**",
     "**/.nx/**",
     "**/.svelte-kit/**",
     "**/build/**",
