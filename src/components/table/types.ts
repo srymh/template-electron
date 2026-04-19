@@ -32,7 +32,7 @@ declare module '@tanstack/react-table' {
    * ```
    */
   interface TableOptions<TData extends RowData> {
-    filterFns?: FilterFns | {}
+    filterFns: FilterFns
   }
 
   interface FilterFns {

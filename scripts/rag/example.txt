@@ -11,9 +11,9 @@ template-electron プロジェクト概要
 - pnpm dev: Vite 開発サーバーを起動し、vite-plugin-electron を通じて Electron も同時に起動する。HMR（Hot Module Replacement）によりレンダラーの変更は即座に反映される。
 - pnpm build: vite build でレンダラーをビルドし、tsc で型チェックを行い、electron-builder でパッケージングする。
 - pnpm test: tsc --noEmit で型チェックした後、vitest run でテストを実行する。
-- pnpm lint: tsc --noEmit と eslint を順に実行する。
-- pnpm check: tsc --noEmit、prettier --write、eslint --fix を順に実行するオートフィックスコマンド。
-- pnpm format: Prettier でコード整形を行う。
+- pnpm lint: tsc --noEmit と oxlint を順に実行する。
+- pnpm check: tsc --noEmit、oxfmt、oxlint --fix を順に実行するオートフィックスコマンド。
+- pnpm format: oxfmt でコード整形を行う。
 - pnpm serve: Vite のプレビューサーバーでビルド済みレンダラーを確認する。
 
 postinstall フックでは electron-builder install-app-deps が自動実行され、better-sqlite3 などのネイティブ依存がプラットフォームに合わせてリビルドされる。
@@ -51,20 +51,10 @@ tsconfig.json では strict: true が有効であり、以下の追加チェッ�
 モジュール解決は bundler モードで、ESM（ECMAScript Modules）を前提とする。package.json の type フィールドは module に設定されている。
 
 ========================================
-ESLint 設定
+oxfmt 設定
 ========================================
 
-eslint.config.js は @tanstack/eslint-config をベースに構成されている。React Hooks のルールが eslint-plugin-react-hooks で有効化されている。
-
-React Compiler 互換性のため、eslint-plugin-use-no-memo が導入されている。TanStack Table の useReactTable や React Hook Form の useForm を使うコンポーネントでは、関数本体の先頭に 'use no memo' ディレクティブを記述する規約がある。これは React Compiler がこれらのライブラリと互換性の問題を持つためである。
-
-一部のパスは ESLint の対象外となっている。dist-electron/、src/components/ui/（shadcn/ui ベンダーコード）、src/lib/utils.ts、src/features/ui-demo/、electron/ が含まれる。
-
-========================================
-Prettier 設定
-========================================
-
-prettier.config.js では以下の設定が適用されている。
+.oxfmtrc.json では以下の設定が適用されている。
 
 - semi: false（セミコロンなし）
 - singleQuote: true（シングルクォート）
@@ -471,7 +461,7 @@ IPC:
 - IPC ハンドラーではシリアライズ可能なエラーのみをスローする。
 
 フォーマット:
-- Prettier に任せる。手動フォーマットは行わない。
+- oxfmt に任せる。手動フォーマットは行わない。
 - 長い呼び出し引数や JSX プロパティは複数行に折り返すスタイルが一般的。
 
 ========================================
@@ -504,9 +494,9 @@ IPC:
 - babel-plugin-react-compiler: React Compiler。
 - electron: Electron 本体。
 - electron-builder: パッケージングツール。
-- eslint: リンター。
+- oxlint: リンター。
 - jsdom: テスト環境。
-- prettier: フォーマッター。
+- oxfmt: フォーマッター。
 - tailwindcss: Tailwind CSS 本体。
 - typescript: TypeScript コンパイラ。
 - vite: ビルドツール。
@@ -581,8 +571,8 @@ template-electron/
 ├── package.json
 ├── vite.config.ts
 ├── tsconfig.json
-├── eslint.config.js
-├── prettier.config.js
+├── .oxlint.json
+├── .oxfmtrc.json
 ├── electron-builder.json5
 ├── index.html
 └── AGENTS.md                    # エージェント向け操作マニュアル

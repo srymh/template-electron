@@ -40,7 +40,6 @@ export function useAutoScrollToBottom(
         behavior: nextBehavior,
       })
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps)
 
   const onScroll = () => {

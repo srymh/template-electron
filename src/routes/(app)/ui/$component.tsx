@@ -31,7 +31,6 @@ for (const [path, importer] of Object.entries(modules)) {
 export function ComponentLoader({ name }: { name: string }) {
   const Component = registry[name]
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!Component) {
     return null
   }

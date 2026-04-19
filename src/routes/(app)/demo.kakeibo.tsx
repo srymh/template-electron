@@ -104,7 +104,6 @@ function View(props: { data: Array<Entry>; refreshData?: () => void }) {
     ]
   }, [])
 
-  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,

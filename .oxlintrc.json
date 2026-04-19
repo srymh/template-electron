@@ -1,0 +1,32 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "unicorn", "oxc"],
+  "jsPlugins": ["eslint-plugin-use-no-memo"],
+  "categories": {
+    "correctness": "error"
+  },
+  "env": {
+    "builtin": true
+  },
+  "ignorePatterns": [
+    "**/*.d.ts",
+    "**/dist-electron/**",
+    "src/components/ui/**",
+    "src/lib/utils.ts",
+    "src/features/ui-demo/**",
+    "electron/**",
+    "**/.nx/**",
+    "**/.svelte-kit/**",
+    "**/build/**",
+    "**/coverage/**",
+    "**/dist/**",
+    "**/snap/**",
+    "**/vite.config.*.timestamp-*.*"
+  ],
+  "rules": {
+    "use-no-memo/react-hook-form": "error",
+    "use-no-memo/tanstack-table": "error",
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "warn"
+  }
+}

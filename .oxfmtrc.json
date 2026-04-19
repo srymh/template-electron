@@ -1,0 +1,26 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "semi": false,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "printWidth": 80,
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    "package-lock.json",
+    "pnpm-lock.yaml",
+    "yarn.lock",
+    ".cta.json",
+    "components.json",
+    "index.html",
+    "package.json",
+    "README.md",
+    "tsconfig.json",
+    "src/features/ui-demo/**",
+    "src/components/ui/**",
+    "src/hooks/use-mobile.ts",
+    "src/lib/utils.ts",
+    "src/styles/**",
+    "src/styles.css",
+    "AGENTS.md"
+  ]
+}

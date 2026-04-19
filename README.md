@@ -55,9 +55,9 @@ pnpm build
 | `pnpm dev`    | 開発サーバ起動（Vite）                         |
 | `pnpm build`  | Renderer + Electron をビルドしてパッケージ作成 |
 | `pnpm test`   | 型チェック + Vitest                            |
-| `pnpm lint`   | 型チェック + ESLint                            |
-| `pnpm format` | Prettierで整形                                 |
-| `pnpm check`  | 型チェック + Prettier整形 + ESLint自動修正     |
+| `pnpm lint`   | 型チェック + oxlint                            |
+| `pnpm format` | oxfmtで整形                                    |
+| `pnpm check`  | 型チェック + oxfmt整形 + oxlint自動修正        |
 
 ## ディレクトリ構成
 

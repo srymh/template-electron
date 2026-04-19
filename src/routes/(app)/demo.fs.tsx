@@ -101,8 +101,7 @@ function ShowOpenFileDialogRow() {
               ))}
             </ul>
           </>
-        ) : // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        isError ? (
+        ) : isError ? (
           <span className="text-red-500">エラーが発生しました</span>
         ) : null}
       </td>
@@ -308,8 +307,7 @@ function ShowOpenFileDialogAndReadAsImageRow() {
               </div>
             )}
           </>
-        ) : // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        isError ? (
+        ) : isError ? (
           <span className="text-red-500">エラーが発生しました</span>
         ) : null}
       </td>
@@ -376,8 +374,7 @@ function ShowSaveDialogRow() {
               </div>
             )}
           </>
-        ) : // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        isError ? (
+        ) : isError ? (
           <span className="text-red-500">エラーが発生しました</span>
         ) : null}
       </td>
@@ -467,8 +464,7 @@ function ShowSaveDialogAndWriteAsTextRow() {
               </div>
             )}
           </>
-        ) : // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        isError ? (
+        ) : isError ? (
           <span className="text-red-500">ダイアログが開かれませんでした</span>
         ) : isWriteError ? (
           <span className="text-red-500">
@@ -577,8 +573,7 @@ function ShowSaveDialogAndWriteAsArrayBufferRow() {
               </div>
             )}
           </>
-        ) : // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        isError ? (
+        ) : isError ? (
           <span className="text-red-500">ダイアログが開かれませんでした</span>
         ) : isWriteError ? (
           <span className="text-red-500">
@@ -644,8 +639,7 @@ function ShowOpenFolderDialogRow() {
               </li>
             </ul>
           </>
-        ) : // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        isError ? (
+        ) : isError ? (
           <span className="text-red-500">エラーが発生しました</span>
         ) : null}
       </td>
@@ -1040,8 +1034,7 @@ function FileExplorer() {
                 <span>フォルダは選択されていません</span>
               )}
             </>
-          ) : // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          isError ? (
+          ) : isError ? (
             <span className="text-red-500">エラーが発生しました</span>
           ) : null}
         </div>
