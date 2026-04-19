@@ -107,9 +107,7 @@ function createCurrentSession(db: DataBase, userId: number) {
   )
 }
 
-function readCurrentSessionUser(
-  db: DataBase,
-): DbAuthSessionWithUser | undefined {
+function readCurrentSessionUser(db: DataBase): DbAuthSessionWithUser | undefined {
   return db.get<DbAuthSessionWithUser>(
     [
       'SELECT u.username as username, s.expires_at as expires_at',
@@ -135,10 +133,9 @@ export function getAuthStatus(db: DataBase): AuthStatus {
     return { isAuthenticated: false, user: null }
   }
 
-  db.run(
-    'UPDATE auth_sessions SET last_used_at = ? WHERE is_current = 1 AND revoked_at IS NULL',
-    [nowIso()],
-  )
+  db.run('UPDATE auth_sessions SET last_used_at = ? WHERE is_current = 1 AND revoked_at IS NULL', [
+    nowIso(),
+  ])
 
   return {
     isAuthenticated: true,
@@ -146,11 +143,7 @@ export function getAuthStatus(db: DataBase): AuthStatus {
   }
 }
 
-export function login(
-  db: DataBase,
-  username: string,
-  password: string,
-): AuthStatus {
+export function login(db: DataBase, username: string, password: string): AuthStatus {
   const normalized = username.trim()
   if (!normalized) {
     throw new Error('username is required')

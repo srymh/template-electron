@@ -1,14 +1,10 @@
 import React from 'react'
-import { Breadcrumbs } from './breadcrumbs'
-import { AppSidebar } from '@/components/app-sidebar'
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-  useSidebar,
-} from '@/components/ui/sidebar'
 
+import { AppSidebar } from '@/components/app-sidebar'
+import { SidebarInset, SidebarProvider, SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
 import { cn } from '@/lib/utils'
+
+import { Breadcrumbs } from './breadcrumbs'
 
 export function Layout(props: { children?: React.ReactNode }) {
   const { children } = props

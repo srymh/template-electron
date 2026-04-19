@@ -11,9 +11,7 @@ export type RemoveListener = () => void
 
 export type Listener<TArg extends any = any> = (arg: TArg) => void
 
-export type AddListener<TArg extends any = any> = (
-  listener: Listener<TArg>,
-) => RemoveListener
+export type AddListener<TArg extends any = any> = (listener: Listener<TArg>) => RemoveListener
 
 /**
  * 任意の関数型
@@ -131,10 +129,7 @@ export type RecursiveMethodKeys<T> = T extends Api
  * type Result3 = PathValue<ExampleType, 'b.b2'>
  * // () => string[]
  */
-export type PathValue<
-  T,
-  P extends string,
-> = P extends `${infer K}.${infer Rest}`
+export type PathValue<T, P extends string> = P extends `${infer K}.${infer Rest}`
   ? K extends keyof T
     ? PathValue<T[K], Rest>
     : never
@@ -168,13 +163,8 @@ export type PathValue<
  * type Result3 = ExtractMethod<ExampleType, 'b.b2'>
  * // () => string[]
  */
-export type ExtractMethod<
-  TApiType extends Api,
-  TMethodKey extends RecursiveMethodKeys<TApiType>,
-> =
-  PathValue<TApiType, TMethodKey> extends (
-    ...args: infer TArgs
-  ) => infer TReturn
+export type ExtractMethod<TApiType extends Api, TMethodKey extends RecursiveMethodKeys<TApiType>> =
+  PathValue<TApiType, TMethodKey> extends (...args: infer TArgs) => infer TReturn
     ? (...args: TArgs) => TReturn
     : never
 
@@ -252,9 +242,7 @@ export type IpcEventEntry<
   TChannel extends RecursiveMethodKeys<TElectronMainApi>,
 > = {
   type: 'event'
-  addEventListener: WithWebContents<
-    ExtractAddListener<TElectronMainApi, TChannel>
-  >
+  addEventListener: WithWebContents<ExtractAddListener<TElectronMainApi, TChannel>>
 }
 
 export type IpcRegistrationMap<TElectronMainApi extends Api> = {

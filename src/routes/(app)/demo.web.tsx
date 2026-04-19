@@ -1,7 +1,8 @@
 import React from 'react'
-import { createFileRoute } from '@tanstack/react-router'
-import { web } from '@/api'
 
+import { createFileRoute } from '@tanstack/react-router'
+
+import { web } from '@/api'
 import {
   ContextMenu,
   ContextMenuContent,
@@ -74,9 +75,7 @@ function RouteComponent() {
     <ContextMenuWrapper>
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">Web Events Demo</h1>
-        <p className="mb-4">
-          This page demonstrates how to subscribe to web events in Electron.
-        </p>
+        <p className="mb-4">This page demonstrates how to subscribe to web events in Electron.</p>
         <div className="p-4 bg-gray-100 rounded">
           <h2 className="text-xl font-semibold mb-2">Web Focus State</h2>
           <p className="text-lg">
@@ -86,14 +85,10 @@ function RouteComponent() {
             </span>
           </p>
 
-          <h2 className="text-xl font-semibold mt-4 mb-2">
-            Browser Focus State
-          </h2>
+          <h2 className="text-xl font-semibold mt-4 mb-2">Browser Focus State</h2>
           <p className="text-lg">
             The browser window is currently{' '}
-            <span
-              className={isBlurredByBrowser ? 'text-red-500' : 'text-green-500'}
-            >
+            <span className={isBlurredByBrowser ? 'text-red-500' : 'text-green-500'}>
               {isBlurredByBrowser ? 'blurred' : 'focused'}
             </span>
           </p>
@@ -103,17 +98,15 @@ function RouteComponent() {
           は、Electronのメインプロセスやプリロードスクリプト経由で「ウィンドウ全体のフォーカス状態」を検知するための独自APIです。
           一方、Web標準API（例: `window.addEventListener(`blur`, ...)` や
           `focus`）は、**ブラウザやWebViewのウィンドウがアクティブかどうか**を検知します。
-          主な違いは以下の通りです： ###
-          Electron独自API（`electronApi.web.subscribeBlur` など） -
+          主な違いは以下の通りです： ### Electron独自API（`electronApi.web.subscribeBlur` など） -
           Electronアプリのウィンドウ全体の状態を検知できる -
           メインプロセスやプリロードスクリプト経由でイベントを受け取る -
           Web標準APIよりも「アプリ全体の状態」に近い ###
           Web標準API（`window.addEventListener(`blur`, ...)` など） -
           ブラウザやWebViewのウィンドウがアクティブかどうかを検知 -
           Electron以外の通常のWebアプリでも動作 -
-          Electronでも使えるが、Electron独自APIほど細かい制御はできない場合がある
-          #### まとめ - **Electron
-          API**はElectronアプリ専用で、よりアプリ全体の状態を正確に検知できる -
+          Electronでも使えるが、Electron独自APIほど細かい制御はできない場合がある #### まとめ -
+          **Electron API**はElectronアプリ専用で、よりアプリ全体の状態を正確に検知できる -
           **Web標準API**は汎用的で、Electron以外でも使えるが、検知できる範囲がやや狭い
           どちらを使うかは、アプリの要件や動作させたい環境によって選択します。
         </pre>

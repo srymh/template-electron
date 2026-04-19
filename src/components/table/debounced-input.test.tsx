@@ -12,9 +12,7 @@ describe('DebouncedInput', () => {
     vi.useFakeTimers()
 
     const onChange1 = vi.fn()
-    const { rerender } = render(
-      <DebouncedInput value="abc" onChange={onChange1} debounce={10} />,
-    )
+    const { rerender } = render(<DebouncedInput value="abc" onChange={onChange1} debounce={10} />)
 
     vi.advanceTimersByTime(10)
     expect(onChange1).not.toHaveBeenCalled()
@@ -35,9 +33,7 @@ describe('DebouncedInput', () => {
     vi.useFakeTimers()
 
     const onChange = vi.fn()
-    const { getByRole } = render(
-      <DebouncedInput value="" onChange={onChange} debounce={10} />,
-    )
+    const { getByRole } = render(<DebouncedInput value="" onChange={onChange} debounce={10} />)
 
     vi.advanceTimersByTime(10)
     expect(onChange).not.toHaveBeenCalled()

@@ -1,10 +1,10 @@
 import { chat as tanstackChat } from '@tanstack/ai'
-
 import type { ModelMessage, StreamChunk, TextOptions } from '@tanstack/ai'
 
-import { isOllamaModelMessage, type OllamaModelMessage } from './ollama/ollama'
 import { adapters } from './ollama/adapters'
 import { modelSchema } from './ollama/models'
+import { isOllamaModelMessage } from './ollama/ollama'
+import type { OllamaModelMessage } from './ollama/ollama'
 
 export type ChatRequest = {
   messages: ModelMessage[]
@@ -30,10 +30,7 @@ export async function chat(options: {
   } = options
 
   try {
-    console.log(
-      `${new Date().toISOString()} Starting chat with messages:`,
-      messages,
-    )
+    console.log(`${new Date().toISOString()} Starting chat with messages:`, messages)
     console.log(`${new Date().toISOString()} Chat request data:`, data)
 
     const model = modelSchema.parse((data as any)?.model || 'gpt-oss:20b-cloud')
@@ -89,10 +86,7 @@ export async function chat(options: {
       onDone()
     })().catch((err) => {
       // try-catch では捕捉できないエラーをキャッチ
-      console.error(
-        `${new Date().toISOString()} Error in AiChatApi chat stream:`,
-        err,
-      )
+      console.error(`${new Date().toISOString()} Error in AiChatApi chat stream:`, err)
       // エラーを通知
       onError(err)
     })

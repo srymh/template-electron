@@ -1,19 +1,13 @@
-import { toolDefinition, type ServerTool } from '@tanstack/ai'
-import {
-  type ListToolsRequest,
-  type Tool as McpTool,
-} from '@modelcontextprotocol/sdk/types.js'
-import type { RequestOptions } from '@modelcontextprotocol/sdk/shared/protocol.js'
 import { Client } from '@modelcontextprotocol/sdk/client'
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
+import type { StdioServerParameters } from '@modelcontextprotocol/sdk/client/stdio.js'
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
+import type { StreamableHTTPClientTransportOptions } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
+import type { RequestOptions } from '@modelcontextprotocol/sdk/shared/protocol.js'
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js'
-import {
-  StreamableHTTPClientTransport,
-  type StreamableHTTPClientTransportOptions,
-} from '@modelcontextprotocol/sdk/client/streamableHttp.js'
-import {
-  StdioClientTransport,
-  type StdioServerParameters,
-} from '@modelcontextprotocol/sdk/client/stdio.js'
+import type { ListToolsRequest, Tool as McpTool } from '@modelcontextprotocol/sdk/types.js'
+import { toolDefinition } from '@tanstack/ai'
+import type { ServerTool } from '@tanstack/ai'
 
 type ListToolsOptions = {
   params?: ListToolsRequest['params']
@@ -58,22 +52,13 @@ export async function mcpToTanStackAiTools(
       },
 ): Promise<ServerTool[]> {
   if ('stdioOptions' in options) {
-    return mcpToTanStackAiTools_stdio(
-      options.stdioOptions,
-      options.listToolsOptions,
-    )
+    return mcpToTanStackAiTools_stdio(options.stdioOptions, options.listToolsOptions)
   } else if ('httpOptions' in options) {
-    return mcpToTanStackAiTools_http(
-      options.httpOptions,
-      options.listToolsOptions,
-    )
+    return mcpToTanStackAiTools_http(options.httpOptions, options.listToolsOptions)
   } else if ('client' in options) {
     return mcpToTanStackAiTools_client(options.client, options.listToolsOptions)
   } else if ('transport' in options) {
-    return mcpToTanStackAiTools_transport(
-      options.transport,
-      options.listToolsOptions,
-    )
+    return mcpToTanStackAiTools_transport(options.transport, options.listToolsOptions)
   } else {
     throw new Error('Invalid options provided to mcpToTanStackAiTools')
   }
@@ -101,10 +86,7 @@ async function mcpToTanStackAiTools_http(
     version: '1',
   })
   const { url, ...transportOptions } = httpOptions
-  const transport = new StreamableHTTPClientTransport(
-    new URL(url),
-    transportOptions,
-  )
+  const transport = new StreamableHTTPClientTransport(new URL(url), transportOptions)
   await client.connect(transport)
   return mcpToTanStackAiTools_client(client, listToolsOptions)
 }
@@ -121,18 +103,12 @@ async function mcpToTanStackAiTools_transport(
   return mcpToTanStackAiTools_client(client, listToolsOptions)
 }
 
-async function mcpToTanStackAiTools_client(
-  client: Client,
-  listToolsOptions?: ListToolsOptions,
-) {
+async function mcpToTanStackAiTools_client(client: Client, listToolsOptions?: ListToolsOptions) {
   const mcpTools = await retrieveMcpTools(client, listToolsOptions)
   return mcpToolsToTanStackAiTools(mcpTools, client)
 }
 
-export async function retrieveMcpTools(
-  client: Client,
-  listToolsOptions?: ListToolsOptions,
-) {
+export async function retrieveMcpTools(client: Client, listToolsOptions?: ListToolsOptions) {
   const { params = {}, options = {} } = listToolsOptions ?? {}
   let cursor: string | undefined
   const allTools: McpTool[] = []

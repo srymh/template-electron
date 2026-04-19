@@ -1,16 +1,14 @@
+import { aiDevtoolsPlugin } from '@tanstack/react-ai-devtools'
+import { TanStackDevtools } from '@tanstack/react-devtools'
+import type { QueryClient } from '@tanstack/react-query'
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
-import { aiDevtoolsPlugin } from '@tanstack/react-ai-devtools'
+
+import { useDevTools } from '@/components/devtools-provider'
+import type { AuthState } from '@/features/auth/api/auth'
 
 import { Layout } from '../components/layout'
-
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
-
-import type { QueryClient } from '@tanstack/react-query'
-
-import type { AuthState } from '@/features/auth/api/auth'
-import { useDevTools } from '@/components/devtools-provider'
 
 const isDev = import.meta.env.DEV
 

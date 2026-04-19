@@ -1,7 +1,4 @@
-import {
-  registerAuthStatusResponder,
-  requestAuthStatusFromParent,
-} from '@/lib/frame-rpc'
+import { registerAuthStatusResponder, requestAuthStatusFromParent } from '@/lib/frame-rpc'
 
 export type Api = typeof window.api
 export type AiChatApi = Api['aiChat']
@@ -48,14 +45,10 @@ const api: Api = (() => {
       {},
       {
         get() {
-          throw new Error(
-            `[api] '${name}' は Electron 環境でのみ利用可能です。`,
-          )
+          throw new Error(`[api] '${name}' は Electron 環境でのみ利用可能です。`)
         },
         apply() {
-          throw new Error(
-            `[api] '${name}' は Electron 環境でのみ利用可能です。`,
-          )
+          throw new Error(`[api] '${name}' は Electron 環境でのみ利用可能です。`)
         },
       },
     ) as unknown
@@ -88,9 +81,7 @@ const api: Api = (() => {
     auth: isIframe
       ? {
           getStatus: async () =>
-            await requestAuthStatusFromParent<
-              Awaited<ReturnType<AuthApi['getStatus']>>
-            >({
+            await requestAuthStatusFromParent<Awaited<ReturnType<AuthApi['getStatus']>>>({
               timeoutMs: 3000,
             }),
           login: () => {

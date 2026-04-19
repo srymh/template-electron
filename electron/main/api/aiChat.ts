@@ -1,13 +1,6 @@
 import type { WebContents } from 'electron'
 
 import type { ModelMessage, ServerTool, StreamChunk } from '@tanstack/ai'
-import type {
-  AddListener,
-  ApiInterface,
-  WithWebContents,
-  WithWebContentsApi,
-} from '#/shared/lib/ipc'
-import { createResponseChannel } from '#/shared/lib/ipc'
 
 import { chat } from '#/main/features/chat/chat'
 import {
@@ -15,7 +8,13 @@ import {
   switchThemeDarkTool,
   switchThemeLightTool,
 } from '#/main/features/chat/tools/tools'
-
+import type {
+  AddListener,
+  ApiInterface,
+  WithWebContents,
+  WithWebContentsApi,
+} from '#/shared/lib/ipc'
+import { createResponseChannel } from '#/shared/lib/ipc'
 import { clockToolDef } from '@/features/chat/api/tools/definitions'
 
 // -----------------------------------------------------------------------------
@@ -57,12 +56,9 @@ export type AiChatApi = ApiInterface<{
 // 実装
 
 const createChat =
-  (
-    getContext: (wc: WebContents) => AiChatContext,
-  ): WithWebContents<AiChatApi['chat']> =>
+  (getContext: (wc: WebContents) => AiChatContext): WithWebContents<AiChatApi['chat']> =>
   async (request, webContents) => {
-    const { getToolsByMcp, getSearchProjectDetailDbPath } =
-      getContext(webContents)
+    const { getToolsByMcp, getSearchProjectDetailDbPath } = getContext(webContents)
     const { messages, data, id } = request
     const { sendChunk, sendDone, sendError } = createSendFn(webContents, id)
 
@@ -110,10 +106,7 @@ function createSendFn(webContents: WebContents, id: string) {
     try {
       webContents.send(channel, response)
     } catch (error) {
-      console.error(
-        `${new Date().toISOString()} Error sending AiChatApi chunk:`,
-        error,
-      )
+      console.error(`${new Date().toISOString()} Error sending AiChatApi chunk:`, error)
     }
   }
   const sendChunk = (chunk: StreamChunk) => {

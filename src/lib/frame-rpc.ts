@@ -40,16 +40,12 @@ function randomId(): string {
   }
 }
 
-export function requestAuthStatusFromParent<T>(options?: {
-  timeoutMs?: number
-}): Promise<T> {
+export function requestAuthStatusFromParent<T>(options?: { timeoutMs?: number }): Promise<T> {
   const timeoutMs = options?.timeoutMs ?? 2000
 
   if (window.self === window.top) {
     return Promise.reject(
-      new Error(
-        '[auth-status-rpc] requestAuthStatusFromParent must be called from an iframe',
-      ),
+      new Error('[auth-status-rpc] requestAuthStatusFromParent must be called from an iframe'),
     )
   }
 
@@ -60,8 +56,7 @@ export function requestAuthStatusFromParent<T>(options?: {
     id,
   }
 
-  const targetOrigin =
-    window.location.origin === 'null' ? '*' : window.location.origin
+  const targetOrigin = window.location.origin === 'null' ? '*' : window.location.origin
 
   return new Promise<T>((resolve, reject) => {
     const timeout = window.setTimeout(() => {
@@ -82,18 +77,12 @@ export function requestAuthStatusFromParent<T>(options?: {
       cleanup()
 
       if (maybe.ok === true) {
-        resolve(
-          (maybe as Extract<AuthStatusRpcResponse, { ok: true }>).result as T,
-        )
+        resolve((maybe as Extract<AuthStatusRpcResponse, { ok: true }>).result as T)
         return
       }
 
       if (maybe.ok === false) {
-        reject(
-          new Error(
-            (maybe as Extract<AuthStatusRpcResponse, { ok: false }>).error,
-          ),
-        )
+        reject(new Error((maybe as Extract<AuthStatusRpcResponse, { ok: false }>).error))
         return
       }
 
@@ -116,9 +105,7 @@ export function requestAuthStatusFromParent<T>(options?: {
   })
 }
 
-export function registerAuthStatusResponder(
-  handler: () => unknown | Promise<unknown>,
-): () => void {
+export function registerAuthStatusResponder(handler: () => unknown | Promise<unknown>): () => void {
   function onMessage(event: MessageEvent) {
     const data = event.data as unknown
     if (!isSameOrigin(event.origin)) return

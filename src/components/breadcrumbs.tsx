@@ -1,5 +1,7 @@
-import { Link, isMatch, useLocation, useMatches } from '@tanstack/react-router'
 import React from 'react'
+
+import { Link, isMatch, useLocation, useMatches } from '@tanstack/react-router'
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -48,9 +50,7 @@ export const Breadcrumbs = () => {
     return null
   }
 
-  const matchesWithCrumbs = matches.filter((match) =>
-    isMatch(match, 'loaderData.crumb'),
-  )
+  const matchesWithCrumbs = matches.filter((match) => isMatch(match, 'loaderData.crumb'))
 
   return (
     <Breadcrumb>

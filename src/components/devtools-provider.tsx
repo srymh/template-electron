@@ -18,8 +18,7 @@ const initialState: DevToolsProviderState = {
   show: () => {},
 }
 
-const DevToolsProviderContext =
-  createContext<DevToolsProviderState>(initialState)
+const DevToolsProviderContext = createContext<DevToolsProviderState>(initialState)
 
 export function DevToolsProvider({
   children,
@@ -51,12 +50,9 @@ export function DevToolsProvider({
 }
 
 export const useDevTools = () => {
-  const context = useContext(DevToolsProviderContext) as
-    | DevToolsProviderState
-    | undefined
+  const context = useContext(DevToolsProviderContext) as DevToolsProviderState | undefined
 
-  if (context === undefined)
-    throw new Error('useDevTools must be used within a DevToolsProvider')
+  if (context === undefined) throw new Error('useDevTools must be used within a DevToolsProvider')
 
   return context
 }

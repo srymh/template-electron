@@ -1,13 +1,8 @@
 import { ipcRenderer } from 'electron'
-import { deepMergeRecord } from './deepMerge'
-import { createResponseChannel } from '../shared/createResponseChannel'
 
-import type {
-  Api,
-  RecursiveMethodKeys,
-  ExtractMethod,
-  Listener,
-} from '../shared/types'
+import { createResponseChannel } from '../shared/createResponseChannel'
+import type { Api, RecursiveMethodKeys, ExtractMethod, Listener } from '../shared/types'
+import { deepMergeRecord } from './deepMerge'
 
 type UseChannel<TElectronApi extends Api> = {
   <TChannel extends RecursiveMethodKeys<TElectronApi>>(
@@ -34,9 +29,7 @@ const useChannelAsInvoke = <TElectronMainApi extends Api>(
 
 const useChannelAsEvent =
   (map: Map<string, () => void>) =>
-  <TElectronMainApi extends Api>(
-    channel: RecursiveMethodKeys<TElectronMainApi>,
-  ) => {
+  <TElectronMainApi extends Api>(channel: RecursiveMethodKeys<TElectronMainApi>) => {
     const responseChannel = createResponseChannel(channel)
     const addListener = (listener: Listener<any>) => {
       if (map.has(channel)) {
@@ -45,10 +38,7 @@ const useChannelAsEvent =
       }
 
       // イベント取りこぼしを防ぐため、先にリスナーを登録する
-      const listenerWrapper = (
-        _: Electron.IpcRendererEvent,
-        ...args: any[]
-      ) => {
+      const listenerWrapper = (_: Electron.IpcRendererEvent, ...args: any[]) => {
         // 規約として args[1] 以降は無視して、args[0] のみを渡す
         listener(args[0])
       }
@@ -73,14 +63,10 @@ const useChannelAsEvent =
           .invoke(channel, false)
           .then((success) => {
             if (!success) {
-              console.warn(
-                `Listener for ${channel} was already removed in main process.`,
-              )
+              console.warn(`Listener for ${channel} was already removed in main process.`)
             }
           })
-          .catch((error) =>
-            console.error(`Failed to remove listener for ${channel}:`, error),
-          )
+          .catch((error) => console.error(`Failed to remove listener for ${channel}:`, error))
       }
 
       map.set(channel, removeListener)
@@ -90,9 +76,7 @@ const useChannelAsEvent =
         .invoke(channel, true)
         .then((success) => {
           if (!success) {
-            console.warn(
-              `Listener for ${channel} was already registered in main process.`,
-            )
+            console.warn(`Listener for ${channel} was already registered in main process.`)
           }
         })
         .catch((error) => {

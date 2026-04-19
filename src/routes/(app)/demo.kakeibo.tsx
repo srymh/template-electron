@@ -1,6 +1,7 @@
 import React from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+
 import { useQuery } from '@tanstack/react-query'
+import { createFileRoute } from '@tanstack/react-router'
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -12,12 +13,13 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { Square, Table } from 'lucide-react'
 import type { Table as TanStackTable } from '@tanstack/react-table'
+import { Square, Table } from 'lucide-react'
+
+import { kakeibo } from '@/api'
 import { BasicTable } from '@/components/table/basic-table'
 import { fuzzyFilter } from '@/components/table/tableUtils'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { kakeibo } from '@/api'
 
 export type Entry = Awaited<ReturnType<typeof kakeibo.entries>>[number]
 
@@ -146,10 +148,7 @@ function View(props: { data: Array<Entry>; refreshData?: () => void }) {
   )
 }
 
-function TableView(props: {
-  table: TanStackTable<Entry>
-  refreshData?: () => void
-}) {
+function TableView(props: { table: TanStackTable<Entry>; refreshData?: () => void }) {
   'use no memo'
 
   const { table, refreshData } = props
@@ -176,9 +175,7 @@ function Card(props: { entry: Entry }) {
     <div className="border rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition">
       <div className="flex justify-between items-center mb-2">
         <span className="text-gray-600 text-sm">{entry.spent_at}</span>
-        <span className="text-lg font-bold text-green-700">
-          ¥{entry.amount.toLocaleString()}
-        </span>
+        <span className="text-lg font-bold text-green-700">¥{entry.amount.toLocaleString()}</span>
       </div>
       <div className="text-gray-700 text-sm">
         <span className="mr-4">
@@ -188,8 +185,7 @@ function Card(props: { entry: Entry }) {
           カテゴリ: <span className="font-medium">{entry.category}</span>
         </span>
         <span>
-          支払い方法:{' '}
-          <span className="font-medium">{entry.payment_method}</span>
+          支払い方法: <span className="font-medium">{entry.payment_method}</span>
         </span>
       </div>
     </div>

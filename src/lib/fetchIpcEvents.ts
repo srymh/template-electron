@@ -39,8 +39,7 @@ export function fetchIpcEvents() {
       if (abortSignal) {
         const onAbort = () => queue.close()
         abortSignal.addEventListener('abort', onAbort, { once: true })
-        removeAbortListener = () =>
-          abortSignal.removeEventListener('abort', onAbort)
+        removeAbortListener = () => abortSignal.removeEventListener('abort', onAbort)
       }
 
       try {
@@ -57,10 +56,7 @@ export function fetchIpcEvents() {
           }
         }
       } catch (err) {
-        console.error(
-          `${new Date().toISOString()} Error in fetchIpcEvents connection:`,
-          err,
-        )
+        console.error(`${new Date().toISOString()} Error in fetchIpcEvents connection:`, err)
         throw err
       } finally {
         removeListener()

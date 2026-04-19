@@ -1,6 +1,7 @@
-import path from 'node:path'
 import fs from 'node:fs/promises'
+import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+
 import { ingestDocuments } from '../../electron/shared/lib/rag/ingest.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -27,13 +28,7 @@ async function main() {
       const data: Array<ChunkEntry> = []
       return {
         initialize: () => {},
-        insert: (
-          docName,
-          sourceChunkIndex,
-          subIndex,
-          content,
-          embeddingJson,
-        ) => {
+        insert: (docName, sourceChunkIndex, subIndex, content, embeddingJson) => {
           data.push({
             docName,
             sourceChunkIndex,

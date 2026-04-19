@@ -1,6 +1,8 @@
 import React from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { createFileRoute } from '@tanstack/react-router'
+
 import { fs } from '@/api'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -196,18 +198,14 @@ function ShowOpenFileDialogAndReadAsTextRow() {
             {content && (
               <div>
                 <h3 className="text-sm font-bold">ファイル内容:</h3>
-                <pre className="max-h-[200px] overflow-auto border">
-                  {content}
-                </pre>
+                <pre className="max-h-[200px] overflow-auto border">{content}</pre>
               </div>
             )}
           </>
         ) : isError ? (
           <span className="text-red-500">エラーが発生しました</span>
         ) : isErrorOpenFile ? (
-          <span className="text-red-500">
-            ファイル読み込み中にエラーが発生しました
-          </span>
+          <span className="text-red-500">ファイル読み込み中にエラーが発生しました</span>
         ) : null}
       </td>
     </tr>
@@ -453,13 +451,9 @@ function ShowSaveDialogAndWriteAsTextRow() {
                 <h3 className="text-sm font-bold">選択されたファイル:</h3>
                 <pre>{file}</pre>
                 {isWriteSuccess ? (
-                  <span className="text-green-500">
-                    テキストが正常に書き込まれました
-                  </span>
+                  <span className="text-green-500">テキストが正常に書き込まれました</span>
                 ) : (
-                  <span className="text-red-500">
-                    テキストの書き込みに失敗しました
-                  </span>
+                  <span className="text-red-500">テキストの書き込みに失敗しました</span>
                 )}
               </div>
             )}
@@ -467,9 +461,7 @@ function ShowSaveDialogAndWriteAsTextRow() {
         ) : isError ? (
           <span className="text-red-500">ダイアログが開かれませんでした</span>
         ) : isWriteError ? (
-          <span className="text-red-500">
-            ファイル書き込み中にエラーが発生しました
-          </span>
+          <span className="text-red-500">ファイル書き込み中にエラーが発生しました</span>
         ) : null}
       </td>
     </tr>
@@ -562,13 +554,9 @@ function ShowSaveDialogAndWriteAsArrayBufferRow() {
                 <h3 className="text-sm font-bold">選択されたファイル:</h3>
                 <pre>{file}</pre>
                 {isWriteSuccess ? (
-                  <span className="text-green-500">
-                    バイナリデータが正常に書き込まれました
-                  </span>
+                  <span className="text-green-500">バイナリデータが正常に書き込まれました</span>
                 ) : (
-                  <span className="text-red-500">
-                    バイナリデータの書き込みに失敗しました
-                  </span>
+                  <span className="text-red-500">バイナリデータの書き込みに失敗しました</span>
                 )}
               </div>
             )}
@@ -576,9 +564,7 @@ function ShowSaveDialogAndWriteAsArrayBufferRow() {
         ) : isError ? (
           <span className="text-red-500">ダイアログが開かれませんでした</span>
         ) : isWriteError ? (
-          <span className="text-red-500">
-            ファイル書き込み中にエラーが発生しました
-          </span>
+          <span className="text-red-500">ファイル書き込み中にエラーが発生しました</span>
         ) : null}
       </td>
     </tr>
@@ -660,9 +646,7 @@ function ShowOpenFolderDialogAndReadDirectoryRow() {
   })
   const [folder, setFolder] = React.useState<string>('')
 
-  const [entries, setEntries] = React.useState<
-    Awaited<ReturnType<typeof fs.readDirectory>>
-  >([])
+  const [entries, setEntries] = React.useState<Awaited<ReturnType<typeof fs.readDirectory>>>([])
   const {
     mutate: readDirectory,
     isSuccess: isReadSuccess,
@@ -736,16 +720,12 @@ function ShowOpenFolderDialogAndReadDirectoryRow() {
             </ul>
             <h3 className="text-sm font-bold">フォルダ内容:</h3>
             <FolderTree folder={folder} />
-            {entries.length === 0 && (
-              <span className="text-gray-500">フォルダは空です</span>
-            )}
+            {entries.length === 0 && <span className="text-gray-500">フォルダは空です</span>}
           </>
         ) : isError ? (
           <span className="text-red-500">エラーが発生しました</span>
         ) : isReadError ? (
-          <span className="text-red-500">
-            フォルダ読み込み中にエラーが発生しました
-          </span>
+          <span className="text-red-500">フォルダ読み込み中にエラーが発生しました</span>
         ) : null}
       </td>
     </tr>
@@ -804,11 +784,7 @@ function GetPathForFileRow() {
 
         <div>
           <h3 className="text-sm font-bold">取得したパス:</h3>
-          {path ? (
-            <pre className="text-[10px]">{path}</pre>
-          ) : (
-            <span>パスが取得されていません</span>
-          )}
+          {path ? <pre className="text-[10px]">{path}</pre> : <span>パスが取得されていません</span>}
         </div>
       </td>
     </tr>
@@ -828,11 +804,7 @@ function ImageFromArrayBuffer({ arrayBuffer }: { arrayBuffer: ArrayBuffer }) {
 
   if (!src) return <span>画像を生成中...</span>
   return (
-    <img
-      src={src}
-      alt="Selected File"
-      className="max-h-[400px] max-w-full object-contain border"
-    />
+    <img src={src} alt="Selected File" className="max-h-[400px] max-w-full object-contain border" />
   )
 }
 
@@ -863,9 +835,7 @@ function FolderTree({
 
   React.useEffect(() => {
     if (data) {
-      const buildTree = (
-        entries: Array<DirectoryEntry>,
-      ): Array<DirectoryEntryEx> => {
+      const buildTree = (entries: Array<DirectoryEntry>): Array<DirectoryEntryEx> => {
         return entries.map((entry) => ({
           ...entry,
           isOpen: false,
@@ -880,9 +850,7 @@ function FolderTree({
     switch (entry.type) {
       case 'directory':
         setTree((prev) =>
-          prev.map((e) =>
-            e.path === entry.path ? { ...e, isOpen: !e.isOpen } : e,
-          ),
+          prev.map((e) => (e.path === entry.path ? { ...e, isOpen: !e.isOpen } : e)),
         )
         break
       case 'file':
@@ -951,11 +919,7 @@ function FolderTree({
 
             {/* サブフォルダの表示 */}
             {entry.isOpen ? (
-              <FolderTree
-                folder={entry.path}
-                depth={depth + 1}
-                onSelectFile={onSelectFile}
-              />
+              <FolderTree folder={entry.path} depth={depth + 1} onSelectFile={onSelectFile} />
             ) : null}
           </li>
         ))
@@ -1126,10 +1090,7 @@ function FileDetails({ filePath }: { filePath: string }) {
         デフォルトアプリで開く
       </button>
       <div className="mt-2"></div>
-      <RadioGroup
-        defaultValue={displayMode}
-        onValueChange={handleChangeDisplayMode}
-      >
+      <RadioGroup defaultValue={displayMode} onValueChange={handleChangeDisplayMode}>
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="text" id="open-as-text" />
           <Label htmlFor="open-as-text" className="text-xs">
@@ -1190,9 +1151,7 @@ function FileDetails({ filePath }: { filePath: string }) {
             {textContent && (
               <div className="mt-2">
                 <h4 className="text-sm font-bold">ファイル内容:</h4>
-                <pre className="max-h-[200px] overflow-auto border p-2">
-                  {textContent}
-                </pre>
+                <pre className="max-h-[200px] overflow-auto border p-2">{textContent}</pre>
               </div>
             )}
           </>

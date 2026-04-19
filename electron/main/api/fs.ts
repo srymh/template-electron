@@ -1,18 +1,15 @@
 import fs from 'node:fs/promises'
 import nodePath from 'node:path'
-import { dialog, shell } from 'electron'
 
+import { dialog, shell } from 'electron'
 import type {
   OpenDialogOptions,
   OpenDialogReturnValue,
   SaveDialogOptions,
   SaveDialogReturnValue,
 } from 'electron'
-import type {
-  ApiInterface,
-  WithWebContents,
-  WithWebContentsApi,
-} from '#/shared/lib/ipc'
+
+import type { ApiInterface, WithWebContents, WithWebContentsApi } from '#/shared/lib/ipc'
 
 // -----------------------------------------------------------------------------
 // 型定義
@@ -82,10 +79,7 @@ export type FileSystemApi = ApiInterface<{
    * @param options.path 書き込むファイルのパス
    * @param options.data 書き込むバイナリデータ
    */
-  writeFileAsArrayBuffer: (options: {
-    path: string
-    data: ArrayBuffer
-  }) => Promise<void>
+  writeFileAsArrayBuffer: (options: { path: string; data: ArrayBuffer }) => Promise<void>
   /**
    * ファイルを開くダイアログを表示します。
    * @param options オプション https://www.electronjs.org/ja/docs/latest/api/dialog#dialogshowopendialogwindow-options
@@ -130,17 +124,15 @@ export type FileSystemRendererApi = Readonly<{
 const joinPath: WithWebContents<FileSystemApi['joinPath']> = async (options) =>
   nodePath.join(...options.parts)
 
-const readFileAsText: WithWebContents<FileSystemApi['readFileAsText']> = async (
-  options,
-) => {
+const readFileAsText: WithWebContents<FileSystemApi['readFileAsText']> = async (options) => {
   const { path } = options
   const text = await fs.readFile(path, 'utf-8')
   return text
 }
 
-const readFileAsArrayBuffer: WithWebContents<
-  FileSystemApi['readFileAsArrayBuffer']
-> = async (options) => {
+const readFileAsArrayBuffer: WithWebContents<FileSystemApi['readFileAsArrayBuffer']> = async (
+  options,
+) => {
   const { path } = options
   const buffer = await fs.readFile(path)
 
@@ -158,36 +150,28 @@ const readFileAsArrayBuffer: WithWebContents<
   return arrayBuffer
 }
 
-const writeFileAsText: WithWebContents<
-  FileSystemApi['writeFileAsText']
-> = async (options) => {
+const writeFileAsText: WithWebContents<FileSystemApi['writeFileAsText']> = async (options) => {
   const { path, data } = options
   await fs.writeFile(path, data, 'utf-8')
 }
 
-const writeFileAsArrayBuffer: WithWebContents<
-  FileSystemApi['writeFileAsArrayBuffer']
-> = async (options) => {
+const writeFileAsArrayBuffer: WithWebContents<FileSystemApi['writeFileAsArrayBuffer']> = async (
+  options,
+) => {
   const { path, data } = options
   const buffer = Buffer.from(data)
   await fs.writeFile(path, buffer)
 }
 
-const showOpenDialog: WithWebContents<FileSystemApi['showOpenDialog']> = async (
-  options,
-) => {
+const showOpenDialog: WithWebContents<FileSystemApi['showOpenDialog']> = async (options) => {
   return await dialog.showOpenDialog(options)
 }
 
-const showSaveDialog: WithWebContents<FileSystemApi['showSaveDialog']> = async (
-  options,
-) => {
+const showSaveDialog: WithWebContents<FileSystemApi['showSaveDialog']> = async (options) => {
   return await dialog.showSaveDialog(options)
 }
 
-const readDirectory: WithWebContents<FileSystemApi['readDirectory']> = async (
-  options,
-) => {
+const readDirectory: WithWebContents<FileSystemApi['readDirectory']> = async (options) => {
   const { path } = options
   const entries = await fs.readdir(path, { withFileTypes: true })
   return entries.map((entry) => ({
@@ -197,16 +181,14 @@ const readDirectory: WithWebContents<FileSystemApi['readDirectory']> = async (
   }))
 }
 
-const openFileByDefaultApp: WithWebContents<
-  FileSystemApi['openFileByDefaultApp']
-> = async (options) => {
+const openFileByDefaultApp: WithWebContents<FileSystemApi['openFileByDefaultApp']> = async (
+  options,
+) => {
   const { path } = options
   await shell.openPath(path)
 }
 
-const getFileDetails: WithWebContents<FileSystemApi['getFileDetails']> = async (
-  options,
-) => {
+const getFileDetails: WithWebContents<FileSystemApi['getFileDetails']> = async (options) => {
   let path: string
   if ('path' in options) {
     path = options.path

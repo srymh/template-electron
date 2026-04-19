@@ -39,18 +39,12 @@ export function getPaginationItems({
   const endBoundaryStart = Math.max(totalPages - safeBoundaryCount, 0)
 
   const siblingsStart = Math.max(
-    Math.min(
-      clampedPageIndex - safeSiblingCount,
-      endBoundaryStart - safeSiblingCount * 2 - 1,
-    ),
+    Math.min(clampedPageIndex - safeSiblingCount, endBoundaryStart - safeSiblingCount * 2 - 1),
     startBoundaryEnd,
   )
 
   const siblingsEnd = Math.min(
-    Math.max(
-      clampedPageIndex + safeSiblingCount,
-      startBoundaryEnd + safeSiblingCount * 2,
-    ),
+    Math.max(clampedPageIndex + safeSiblingCount, startBoundaryEnd + safeSiblingCount * 2),
     endBoundaryStart - 1,
   )
 
@@ -78,11 +72,7 @@ export function getPaginationItems({
   }
 
   // 末尾の境界ページ
-  for (
-    let i = Math.max(endBoundaryStart, safeBoundaryCount);
-    i < totalPages;
-    i++
-  ) {
+  for (let i = Math.max(endBoundaryStart, safeBoundaryCount); i < totalPages; i++) {
     tokens.push(i)
   }
 

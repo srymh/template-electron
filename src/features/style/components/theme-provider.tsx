@@ -1,4 +1,5 @@
 import * as React from 'react'
+
 import { THEMES } from './themes'
 
 export type Theme = (typeof THEMES)[number]['name']
@@ -19,11 +20,7 @@ export type ThemeProviderProps = {
 }
 
 export function ThemeProvider(props: ThemeProviderProps) {
-  const {
-    children,
-    defaultTheme = 'teal',
-    storageKey = 'vite-ui-design-theme',
-  } = props
+  const { children, defaultTheme = 'teal', storageKey = 'vite-ui-design-theme' } = props
 
   const [theme, setTheme] = React.useState<Theme>(() => {
     const storedTheme = localStorage.getItem(storageKey)
@@ -46,11 +43,7 @@ export function ThemeProvider(props: ThemeProviderProps) {
     },
   }
 
-  return (
-    <ThemeProviderContext.Provider value={value}>
-      {children}
-    </ThemeProviderContext.Provider>
-  )
+  return <ThemeProviderContext.Provider value={value}>{children}</ThemeProviderContext.Provider>
 }
 
 /**
@@ -62,11 +55,7 @@ export function applyTheme(document: Document, theme: Theme) {
     return
   }
 
-  const {
-    theme: themeVars,
-    light: lightVars,
-    dark: darkVars,
-  } = themeObj.cssVars
+  const { theme: themeVars, light: lightVars, dark: darkVars } = themeObj.cssVars
 
   let cssText = ':root {\n'
   if (themeVars) {

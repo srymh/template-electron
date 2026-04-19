@@ -7,10 +7,7 @@ type Options = {
   behavior?: ScrollBehavior
 }
 
-export function useAutoScrollToBottom(
-  deps: ReadonlyArray<unknown>,
-  options: Options = {},
-) {
+export function useAutoScrollToBottom(deps: ReadonlyArray<unknown>, options: Options = {}) {
   const {
     enabled = true,
     bottomThreshold = 48,
@@ -28,9 +25,7 @@ export function useAutoScrollToBottom(
     if (!enabled) return
     if (!isPinnedToBottomRef.current) return
 
-    const nextBehavior = hasAutoScrolledOnceRef.current
-      ? behavior
-      : initialBehavior
+    const nextBehavior = hasAutoScrolledOnceRef.current ? behavior : initialBehavior
 
     hasAutoScrolledOnceRef.current = true
 

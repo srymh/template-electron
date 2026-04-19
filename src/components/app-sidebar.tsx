@@ -1,4 +1,6 @@
 import * as React from 'react'
+
+import { Link, useLocation } from '@tanstack/react-router'
 import {
   BookOpen,
   Frame,
@@ -9,8 +11,8 @@ import {
   PieChart,
   ToggleLeftIcon,
 } from 'lucide-react'
-import { Link, useLocation } from '@tanstack/react-router'
 
+import logo from '@/assets/logo.svg'
 import { NavMain } from '@/components/nav-main'
 import { NavUser } from '@/components/nav-user'
 import {
@@ -28,8 +30,6 @@ import { useAuth } from '@/features/auth/api/auth'
 import { OpenChat } from '@/features/chat/components/open-chat'
 import { components } from '@/features/ui-demo/constants'
 import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
-
-import logo from '@/assets/logo.svg'
 
 // This is sample data.
 const data = {

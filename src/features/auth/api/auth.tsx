@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { auth as authApi } from '@/api'
 
 export type AuthUser = {
@@ -50,13 +51,10 @@ export function AuthProvider(props: { children: React.ReactNode }) {
     }
   }, [])
 
-  const login = React.useCallback(
-    async (username: string, password: string) => {
-      const status = await authApi.login(username, password)
-      setUser(status.user)
-    },
-    [],
-  )
+  const login = React.useCallback(async (username: string, password: string) => {
+    const status = await authApi.login(username, password)
+    setUser(status.user)
+  }, [])
 
   const logout = React.useCallback(() => {
     void authApi.logout()
@@ -80,9 +78,7 @@ export function AuthProvider(props: { children: React.ReactNode }) {
     )
   }
 
-  return (
-    <AuthContext.Provider value={{ auth }}>{children}</AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={{ auth }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

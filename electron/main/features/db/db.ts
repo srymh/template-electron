@@ -14,7 +14,6 @@
  *   制約のもと、利用側からファイル名を受け取って解決します。
  */
 import BetterSqlite3 from 'better-sqlite3'
-
 import type { Database as BetterSqlite3Database, Options } from 'better-sqlite3'
 
 /**
@@ -99,9 +98,6 @@ export class DataBase {
  * 既定の場所から DB を開くファクトリ。
  * @param options better-sqlite3 のオプション（readonly 推奨）
  */
-export function createAppDataBase(
-  filePath: string,
-  options?: Options,
-): DataBase {
+export function createAppDataBase(filePath: string, options?: Options): DataBase {
   return new DataBase(filePath, options)
 }

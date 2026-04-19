@@ -1,19 +1,26 @@
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { app, BrowserWindow } from 'electron'
 
-import type { WebContents } from 'electron'
+import { app } from 'electron'
+import type { WebContents, BrowserWindow } from 'electron'
+
 import type { ServerTool } from '@tanstack/ai'
-import type { AuthRuntime } from './features/auth/authRuntime'
-import { createAppDataBase, type DataBase } from './features/db/db'
-import type { McpServer } from './features/mcp'
-import { registerIpc, type Context } from './ipc/registerIpc'
-import { startApp, type AppRuntime } from './app/startApp'
-import { createAuthRuntime } from './features/auth/authRuntime'
-import { resolveMainPaths, type MainPaths } from './infra/paths'
-import { registerCustomProtocol } from './infra/registerCustomProtocol'
-import { createWindow, recommendedSecureOptions } from './windows/createWindow'
+
 import { mcpToTanStackAiTools } from '#/shared/lib/tanstack-ai-mcp'
+
+import { startApp } from './app/startApp'
+import type { AppRuntime } from './app/startApp'
+import type { AuthRuntime } from './features/auth/authRuntime'
+import { createAuthRuntime } from './features/auth/authRuntime'
+import { createAppDataBase } from './features/db/db'
+import type { DataBase } from './features/db/db'
+import type { McpServer } from './features/mcp'
+import { resolveMainPaths } from './infra/paths'
+import type { MainPaths } from './infra/paths'
+import { registerCustomProtocol } from './infra/registerCustomProtocol'
+import { registerIpc } from './ipc/registerIpc'
+import type { Context } from './ipc/registerIpc'
+import { createWindow, recommendedSecureOptions } from './windows/createWindow'
 
 /** __dirname の代替 */
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -78,13 +85,10 @@ startApp<AppContext>({
      * @param p パス
      * @returns 末尾セパレータ付きのパス
      */
-    const ensureTrailingSeparator = (p: string) =>
-      p.endsWith(path.sep) ? p : p + path.sep
+    const ensureTrailingSeparator = (p: string) => (p.endsWith(path.sep) ? p : p + path.sep)
 
     const rendererRootUrl = appContext.paths.rendererDist
-      ? pathToFileURL(
-          ensureTrailingSeparator(appContext.paths.rendererDist),
-        ).toString()
+      ? pathToFileURL(ensureTrailingSeparator(appContext.paths.rendererDist)).toString()
       : null
 
     createWindow(
@@ -106,9 +110,7 @@ startApp<AppContext>({
           titleBarStyle: 'hidden',
           // macOS 以外は titleBarOverlay を有効にしてタイトルバーとコンテンツを重ねる
           // https://www.electronjs.org/ja/docs/latest/tutorial/custom-title-bar#%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E3%81%AE%E3%82%A6%E3%82%A4%E3%83%B3%E3%83%89%E3%82%A6%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%AB%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B-windows-linux
-          ...(process.platform !== 'darwin'
-            ? { titleBarOverlay: createTitleBarOverlay() }
-            : {}),
+          ...(process.platform !== 'darwin' ? { titleBarOverlay: createTitleBarOverlay() } : {}),
           webPreferences: {
             ...recommendedSecureOptions,
             preload: appContext.paths.preloadPath,
@@ -211,13 +213,10 @@ function createWindowContext(
       getDb: () => {
         if (!appContext.db) {
           try {
-            const db = createAppDataBase(
-              path.join(appContext.paths.dataPath, 'kakeibo.db'),
-              {
-                readonly: false,
-                fileMustExist: false,
-              },
-            )
+            const db = createAppDataBase(path.join(appContext.paths.dataPath, 'kakeibo.db'), {
+              readonly: false,
+              fileMustExist: false,
+            })
             appContext.db = db
             console.log(`[DB] Database opened successfully at kakeibo.db`)
           } catch (error) {

@@ -1,6 +1,5 @@
 import { createAuthDb, ensureAuthDb } from './authDb'
 import { getAuthStatus, login, logout } from './authService'
-
 import type { AuthStatus } from './authService'
 
 export type AuthRuntime = {
