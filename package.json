@@ -6,7 +6,7 @@
   "main": "dist-electron/main/index.js",
   "scripts": {
     "dev": "vite",
-    "build": "tsgo && vite build && electron-builder",
+    "build": "pnpm lint && vite build && electron-builder",
     "test": "tsgo --noEmit && vitest run",
     "lint": "tsgo --noEmit && oxlint",
     "format": "oxfmt",
