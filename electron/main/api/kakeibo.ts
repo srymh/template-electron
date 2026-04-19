@@ -1,6 +1,8 @@
 import type { WebContents } from 'electron'
-import type { DataBase } from '../features/db/db'
+
 import type { ApiInterface, WithWebContentsApi } from '#/shared/lib/ipc'
+
+import type { DataBase } from '../features/db/db'
 
 // -----------------------------------------------------------------------------
 // 型定義
@@ -38,9 +40,7 @@ export function getKakeiboApi(
     entries: async (wc) => {
       const db = getContext(wc).getDb()
 
-      const entries = db.query(
-        'SELECT * FROM expense_view ORDER BY spent_at DESC;',
-      )
+      const entries = db.query('SELECT * FROM expense_view ORDER BY spent_at DESC;')
 
       return entries as KakeiboEntry[]
     },

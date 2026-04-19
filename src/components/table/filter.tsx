@@ -1,5 +1,7 @@
 import React from 'react'
+
 import type { Column } from '@tanstack/react-table'
+
 import { DebouncedInput } from '@/components/table/debounced-input'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 
@@ -8,18 +10,13 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
 
   const { filterVariant } = column.columnDef.meta ?? {}
 
-  const columnFilterValue = column.getFilterValue() as
-    | [number, number]
-    | string
-    | null
+  const columnFilterValue = column.getFilterValue() as [number, number] | string | null
 
   const sortedUniqueValues = React.useMemo(
     () =>
       filterVariant === 'range'
         ? []
-        : Array.from(column.getFacetedUniqueValues().keys())
-            .sort()
-            .slice(0, 5000),
+        : Array.from(column.getFacetedUniqueValues().keys()).sort().slice(0, 5000),
     [column, filterVariant],
   )
 
@@ -31,9 +28,7 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
           min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
           max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
           value={columnFilterValue?.[0] ?? ''}
-          onChange={(value) =>
-            column.setFilterValue((old: [number, number]) => [value, old[1]])
-          }
+          onChange={(value) => column.setFilterValue((old: [number, number]) => [value, old[1]])}
           placeholder={`Min ${
             column.getFacetedMinMaxValues()?.[0] !== undefined
               ? `(${column.getFacetedMinMaxValues()?.[0]})`
@@ -45,13 +40,9 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
           min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
           max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
           value={columnFilterValue?.[1] ?? ''}
-          onChange={(value) =>
-            column.setFilterValue((old: [number, number]) => [old[0], value])
-          }
+          onChange={(value) => column.setFilterValue((old: [number, number]) => [old[0], value])}
           placeholder={`Max ${
-            column.getFacetedMinMaxValues()?.[1]
-              ? `(${column.getFacetedMinMaxValues()?.[1]})`
-              : ''
+            column.getFacetedMinMaxValues()?.[1] ? `(${column.getFacetedMinMaxValues()?.[1]})` : ''
           }`}
         />
       </div>

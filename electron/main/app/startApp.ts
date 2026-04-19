@@ -110,8 +110,7 @@ export async function startApp<TAppContext>(options: {
   openMainWindow({ appRuntime, appContext })
 }
 
-const sleep = (ms: number) =>
-  new Promise<void>((resolve) => setTimeout(resolve, ms))
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
 
 /**
  * 破棄処理をタイムアウト付きで実行する
@@ -160,10 +159,7 @@ async function disposeAndExit(
     // タイムアウト付きで破棄処理を実行
     await runDisposeWithTimeout(disposers, timeoutMs)
   } catch (err) {
-    console.error(
-      '[app:before-quit] dispose did not finish; force exiting:',
-      err,
-    )
+    console.error('[app:before-quit] dispose did not finish; force exiting:', err)
   } finally {
     // app.quit() だと before-quit が再度走る可能性があるため exit を使う
     app.exit(0)

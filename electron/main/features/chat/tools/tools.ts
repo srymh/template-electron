@@ -1,13 +1,12 @@
 import { nativeTheme } from 'electron'
+
+import { retrieveRagContext, type RetrieveRagContextOptions } from '#/shared/lib/rag/retrieve'
+
 import {
   switchThemeDarkToolDef,
   switchThemeLightToolDef,
   searchProjectDetailToolDef,
 } from './definitions'
-import {
-  retrieveRagContext,
-  type RetrieveRagContextOptions,
-} from '#/shared/lib/rag/retrieve'
 
 export const switchThemeDarkTool = switchThemeDarkToolDef.server(async () => {
   nativeTheme.themeSource = 'dark'
@@ -25,9 +24,7 @@ export const switchThemeLightTool = switchThemeLightToolDef.server(async () => {
   }
 })
 
-export function createSearchProjectDetailTool(
-  options: RetrieveRagContextOptions,
-) {
+export function createSearchProjectDetailTool(options: RetrieveRagContextOptions) {
   const { dbPath, docName, model, queryPrefix, topK } = options
   return searchProjectDetailToolDef.server(async ({ question }) => {
     const context = await retrieveRagContext(question, {

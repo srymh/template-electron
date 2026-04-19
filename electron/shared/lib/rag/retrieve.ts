@@ -55,10 +55,7 @@ export type RetrieveRagContextOptions = {
    * }
    * ```
    */
-  loadChunks?: (
-    dbPath: string,
-    docName: string,
-  ) => Array<ChunkRow> | Promise<Array<ChunkRow>>
+  loadChunks?: (dbPath: string, docName: string) => Array<ChunkRow> | Promise<Array<ChunkRow>>
 
   /** 使用する埋め込みモデル（例: 'nomic-embed-text-v2-moe:latest'） */
   model: string
@@ -164,16 +161,11 @@ function assertType<T extends keyof TypeMap>(
   fieldName: string,
 ): asserts value is TypeMap[T] {
   if (typeof value !== expected) {
-    throw new Error(
-      `Invalid ${fieldName} in chunk row: expected ${expected}, got ${typeof value}`,
-    )
+    throw new Error(`Invalid ${fieldName} in chunk row: expected ${expected}, got ${typeof value}`)
   }
 }
 
-async function loadChunksWithNodeSqlite(
-  dbPath: string,
-  docName: string,
-): Promise<Array<ChunkRow>> {
+async function loadChunksWithNodeSqlite(dbPath: string, docName: string): Promise<Array<ChunkRow>> {
   // 動的インポートを使用して、node:sqliteのDatabaseSyncクラスを読み込む
   // import { DatabaseSync } from 'node:sqlite'
   const { DatabaseSync } = await import('node:sqlite')
@@ -181,14 +173,7 @@ async function loadChunksWithNodeSqlite(
   const stmt = db.prepare(SQL_SELECT_CHUNKS)
   const rows = stmt.all(docName)
   const result = rows.map((row) => {
-    const {
-      id,
-      doc_name,
-      source_chunk_index,
-      sub_index,
-      content,
-      embedding_json,
-    } = row
+    const { id, doc_name, source_chunk_index, sub_index, content, embedding_json } = row
 
     assertType(id, 'number', 'id')
     assertType(doc_name, 'string', 'doc_name')
@@ -196,8 +181,7 @@ async function loadChunksWithNodeSqlite(
     assertType(sub_index, 'number', 'sub_index')
     assertType(content, 'string', 'content')
 
-    const embeddingJson =
-      typeof embedding_json === 'string' ? embedding_json : '[]'
+    const embeddingJson = typeof embedding_json === 'string' ? embedding_json : '[]'
     const embedding = JSON.parse(embeddingJson) as Array<number>
 
     return {
@@ -219,10 +203,7 @@ async function loadChunksWithNodeSqlite(
  * @param query
  * @param options
  */
-async function embedQuery(
-  query: string,
-  options: { model: string; queryPrefix: string },
-) {
+async function embedQuery(query: string, options: { model: string; queryPrefix: string }) {
   const { model, queryPrefix } = options
   const res = await ollama.embeddings({
     model,
@@ -244,9 +225,7 @@ async function embedQuery(
  */
 function cosineSimilarity(vecA: Array<number>, vecB: Array<number>): number {
   if (vecA.length !== vecB.length) {
-    throw new Error(
-      `ベクトルの次元数が一致しません: vecA=${vecA.length}, vecB=${vecB.length}`,
-    )
+    throw new Error(`ベクトルの次元数が一致しません: vecA=${vecA.length}, vecB=${vecB.length}`)
   }
 
   let dot = 0 // ベクトルの内積

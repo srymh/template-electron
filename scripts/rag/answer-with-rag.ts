@@ -1,6 +1,8 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+
 import ollama from 'ollama'
+
 import { retrieveRagContext } from '../../electron/shared/lib/rag/retrieve.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -19,9 +21,7 @@ async function main() {
     queryPrefix: 'search_query:',
     topK: 3,
   })
-  const context = result
-    .map((item) => `${item.content}\n【${item.score}】\n`)
-    .join('')
+  const context = result.map((item) => `${item.content}\n【${item.score}】\n`).join('')
 
   const res = await ollama.chat({
     model: 'gpt-oss:20b-cloud',

@@ -1,5 +1,6 @@
-import express from 'express'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
+import express from 'express'
+
 import { createMcpServer } from './mcpServer.js'
 
 export type McpServer = {

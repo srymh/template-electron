@@ -1,12 +1,10 @@
 import * as React from 'react'
+
 import { BotIcon, XIcon } from 'lucide-react'
+
 import type { Model } from '#/main/features/chat/ollama/models'
 import { MODELS, modelSchema } from '#/main/features/chat/ollama/models'
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from '@/components/ui/sidebar'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogClose,
@@ -23,13 +21,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 import { Chat } from '@/features/chat/components/chat'
 import { ChatSessionProvider } from '@/features/chat/components/chat-session-provider'
-import { Button } from '@/components/ui/button'
 
 export function OpenChat() {
-  const [selectedModel, setSelectedModel] =
-    React.useState<Model>('gpt-oss:20b-cloud')
+  const [selectedModel, setSelectedModel] = React.useState<Model>('gpt-oss:20b-cloud')
 
   return (
     <SidebarMenu>
@@ -64,9 +61,7 @@ export function OpenChat() {
                   </div>
                   <div className="flex items-center justify-end  gap-1">
                     <Select
-                      onValueChange={(value) =>
-                        setSelectedModel(modelSchema.parse(value))
-                      }
+                      onValueChange={(value) => setSelectedModel(modelSchema.parse(value))}
                       value={selectedModel}
                     >
                       <SelectTrigger>
@@ -83,11 +78,7 @@ export function OpenChat() {
                       </SelectContent>
                     </Select>
                     <DialogClose asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="hover:text-destructive"
-                      >
+                      <Button variant="ghost" size="sm" className="hover:text-destructive">
                         <XIcon />
                       </Button>
                     </DialogClose>

@@ -3,16 +3,44 @@
   "semi": false,
   "singleQuote": true,
   "trailingComma": "all",
-  "printWidth": 80,
-  "sortPackageJson": false,
+  "sortImports": {
+    "customGroups": [
+      {
+        "groupName": "react",
+        "elementNamePattern": ["react", "react-**"],
+        "selector": "external"
+      },
+      {
+        "groupName": "electron",
+        "elementNamePattern": ["electron"],
+        "selector": "external"
+      },
+      {
+        "groupName": "vite",
+        "elementNamePattern": ["vite", "vitest"],
+        "selector": "external"
+      }
+    ],
+    "groups": [
+      "builtin",
+      ["react", "electron"],
+      ["vite"],
+      { "newlinesBetween": false },
+      "external",
+      ["internal", "subpath"],
+      ["parent", "sibling", "index"],
+      "style",
+      "unknown"
+    ],
+    "internalPattern": ["~/", "@/", "#/"]
+  },
   "ignorePatterns": [
     "package-lock.json",
     "pnpm-lock.yaml",
-    "yarn.lock",
     ".cta.json",
+    "routeTree.gen.ts",
     "components.json",
     "index.html",
-    "package.json",
     "README.md",
     "tsconfig.json",
     "src/features/ui-demo/**",
@@ -21,6 +49,7 @@
     "src/lib/utils.ts",
     "src/styles/**",
     "src/styles.css",
-    "AGENTS.md"
+    "AGENTS.md",
+    ".*/**"
   ]
 }

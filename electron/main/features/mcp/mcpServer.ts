@@ -1,4 +1,5 @@
 import { nativeTheme } from 'electron'
+
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { z } from 'zod'
 
@@ -20,9 +21,7 @@ export function createMcpServer() {
     async ({ message }) => {
       console.log(message)
       return {
-        content: [
-          { type: 'text', text: `ログに「${message}」を出力しました。` },
-        ],
+        content: [{ type: 'text', text: `ログに「${message}」を出力しました。` }],
       }
     },
   )
@@ -40,9 +39,7 @@ export function createMcpServer() {
       nativeTheme.themeSource = theme
       console.log('theme', theme)
       return {
-        content: [
-          { type: 'text', text: `テーマを「${theme}」に変更しました。` },
-        ],
+        content: [{ type: 'text', text: `テーマを「${theme}」に変更しました。` }],
       }
     },
   )

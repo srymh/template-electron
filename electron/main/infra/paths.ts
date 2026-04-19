@@ -147,9 +147,7 @@ export function resolveMainPaths(args: {
     : // DEV時には使用しない
       ''
 
-  const dataPath = isProd
-    ? path.join(process.resourcesPath, 'data')
-    : path.join(appRoot, 'data')
+  const dataPath = isProd ? path.join(process.resourcesPath, 'data') : path.join(appRoot, 'data')
 
   return {
     appRoot,

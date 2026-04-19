@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { createFileRoute } from '@tanstack/react-router'
 import {
   createColumnHelper,
@@ -8,12 +9,12 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-
 import type { ColumnFiltersState } from '@tanstack/react-table'
-import type { Person } from '@/data/demo-table-data'
-import { makeData } from '@/data/demo-table-data'
+
 import { BasicTable } from '@/components/table/basic-table'
 import { fuzzyFilter, fuzzySort } from '@/components/table/tableUtils'
+import type { Person } from '@/data/demo-table-data'
+import { makeData } from '@/data/demo-table-data'
 
 export const Route = createFileRoute('/(app)/demo/table')({
   component: TableDemo,
@@ -29,9 +30,7 @@ function PersonTable() {
 
   const rerender = React.useReducer(() => ({}), {})[1]
 
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  )
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [globalFilter, setGlobalFilter] = React.useState('')
 
   const columns = React.useMemo(() => {
@@ -96,7 +95,5 @@ function PersonTable() {
     }
   }, [table.getState().columnFilters[0]?.id])
 
-  return (
-    <BasicTable table={table} rerender={rerender} refreshData={refreshData} />
-  )
+  return <BasicTable table={table} rerender={rerender} refreshData={refreshData} />
 }

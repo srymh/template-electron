@@ -1,14 +1,10 @@
 'use client'
 
-import { ChevronRight } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
+import { ChevronRight } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
   SidebarGroup,
   SidebarMenu,
@@ -51,10 +47,7 @@ export function NavMain({
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton tooltip={item.title}>
                       {item.icon && <item.icon />}
-                      <Link
-                        to={item.url}
-                        className="[&.active]:font-bold hover:font-bold"
-                      >
+                      <Link to={item.url} className="[&.active]:font-bold hover:font-bold">
                         <span>{item.title}</span>
                       </Link>
                       <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -66,18 +59,11 @@ export function NavMain({
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild>
                             {subItem.externalLink ? (
-                              <a
-                                href={subItem.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
+                              <a href={subItem.url} target="_blank" rel="noopener noreferrer">
                                 <span>{subItem.title}</span>
                               </a>
                             ) : (
-                              <Link
-                                to={subItem.url}
-                                className="[&.active]:font-bold"
-                              >
+                              <Link to={subItem.url} className="[&.active]:font-bold">
                                 <span>{subItem.title}</span>
                               </Link>
                             )}
@@ -90,10 +76,7 @@ export function NavMain({
               ) : (
                 <SidebarMenuButton tooltip={item.title}>
                   {item.icon && <item.icon />}
-                  <Link
-                    to={item.url}
-                    className="[&.active]:font-bold hover:font-bold"
-                  >
+                  <Link to={item.url} className="[&.active]:font-bold hover:font-bold">
                     <span>{item.title}</span>
                   </Link>
                 </SidebarMenuButton>

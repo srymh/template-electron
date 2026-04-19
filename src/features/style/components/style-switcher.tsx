@@ -1,8 +1,9 @@
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
+
 import { useStyle } from '../api/use-style'
 import { STYLES } from './style-provider'
 import type { Style } from './style-provider'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
 
 export function StyleSwitcher({ className }: { className?: string }) {
   const { style, setStyle } = useStyle()

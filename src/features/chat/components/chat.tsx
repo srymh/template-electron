@@ -1,15 +1,14 @@
 import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import { ArrowUpIcon, BotIcon, SquareIcon, User2Icon } from 'lucide-react'
 
-import { useChatSession } from '@/features/chat/components/chat-session-provider'
+import { ArrowUpIcon, BotIcon, SquareIcon, User2Icon } from 'lucide-react'
+import remarkGfm from 'remark-gfm'
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-import { Separator } from '@/components/ui/separator'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,7 +20,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import { useAuth } from '@/features/auth/api/auth'
 import { Field } from '@/components/ui/field'
 import {
   InputGroup,
@@ -29,6 +27,9 @@ import {
   InputGroupButton,
   InputGroupTextarea,
 } from '@/components/ui/input-group'
+import { Separator } from '@/components/ui/separator'
+import { useAuth } from '@/features/auth/api/auth'
+import { useChatSession } from '@/features/chat/components/chat-session-provider'
 import { useAutoScrollToBottom } from '@/hooks/use-auto-scroll-to-bottom'
 
 export function Chat() {
@@ -37,11 +38,9 @@ export function Chat() {
   } = useAuth()
   const username = user?.username || 'あなた'
 
-  const { input, setInput, messages, sendMessage, isLoading, stop, status } =
-    useChatSession()
+  const { input, setInput, messages, sendMessage, isLoading, stop, status } = useChatSession()
 
-  const { scrollContainerRef, scrollBottomRef, onScroll } =
-    useAutoScrollToBottom([messages])
+  const { scrollContainerRef, scrollBottomRef, onScroll } = useAutoScrollToBottom([messages])
 
   const send = () => {
     if (isLoading) {
@@ -80,10 +79,7 @@ export function Chat() {
         className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-4"
       >
         {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className="border border-border rounded bg-background text-foreground"
-          >
+          <div key={msg.id} className="border border-border rounded bg-background text-foreground">
             <div className="p-2">
               {msg.role === 'assistant' ? (
                 <div className="flex items-end gap-1">
@@ -123,9 +119,7 @@ export function Chat() {
                       >
                         <AccordionItem value={key}>
                           <AccordionTrigger>Thinking</AccordionTrigger>
-                          <AccordionContent className="h-fit">
-                            {part.content}
-                          </AccordionContent>
+                          <AccordionContent className="h-fit">{part.content}</AccordionContent>
                         </AccordionItem>
                       </Accordion>
                     )
@@ -138,9 +132,7 @@ export function Chat() {
                         key={key}
                       >
                         <AccordionItem value={key}>
-                          <AccordionTrigger>
-                            Tool Call: {part.name}
-                          </AccordionTrigger>
+                          <AccordionTrigger>Tool Call: {part.name}</AccordionTrigger>
                           <AccordionContent>
                             <pre className="font-mono not-italic">
                               {JSON.stringify(part, null, 2)}
@@ -176,11 +168,7 @@ export function Chat() {
                   case 'video':
                     return <div key={key}>Not Implemented</div>
                   default:
-                    return (
-                      <div key={key}>
-                        Unknown part type: {(part as any).type}
-                      </div>
-                    )
+                    return <div key={key}>Unknown part type: {(part as any).type}</div>
                 }
               })}
             </div>
@@ -217,11 +205,7 @@ export function Chat() {
                 className="ml-auto"
                 disabled={disabled}
               >
-                {isLoading ? (
-                  <SquareIcon className="fill-primary-foreground" />
-                ) : (
-                  <ArrowUpIcon />
-                )}
+                {isLoading ? <SquareIcon className="fill-primary-foreground" /> : <ArrowUpIcon />}
               </InputGroupButton>
             </InputGroupAddon>
           </InputGroup>
@@ -236,15 +220,9 @@ function TextContent({ content }: { content: string }) {
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
-        h1: (props) => (
-          <h1 className="text-2xl font-bold mt-6 mb-3" {...props} />
-        ),
-        h2: (props) => (
-          <h2 className="text-xl font-bold mt-5 mb-2" {...props} />
-        ),
-        h3: (props) => (
-          <h3 className="text-lg font-semibold mt-4 mb-2" {...props} />
-        ),
+        h1: (props) => <h1 className="text-2xl font-bold mt-6 mb-3" {...props} />,
+        h2: (props) => <h2 className="text-xl font-bold mt-5 mb-2" {...props} />,
+        h3: (props) => <h3 className="text-lg font-semibold mt-4 mb-2" {...props} />,
 
         p: (props) => <p className="my-3 leading-7" {...props} />,
         ul: (props) => <ul className="list-disc pl-6 my-3" {...props} />,
@@ -256,10 +234,7 @@ function TextContent({ content }: { content: string }) {
 
           if (!safeHref) {
             return (
-              <span
-                className="underline underline-offset-4 text-muted-foreground"
-                {...props}
-              />
+              <span className="underline underline-offset-4 text-muted-foreground" {...props} />
             )
           }
 
@@ -270,9 +245,7 @@ function TextContent({ content }: { content: string }) {
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    外部リンクにアクセスしようとしています
-                  </AlertDialogTitle>
+                  <AlertDialogTitle>外部リンクにアクセスしようとしています</AlertDialogTitle>
                   <AlertDialogDescription className="overflow-auto">
                     本当にアクセスしますか？
                     <br />
@@ -303,27 +276,15 @@ function TextContent({ content }: { content: string }) {
               </code>
             )
           return (
-            <code
-              className="px-1 py-0.5 rounded bg-black/5 font-mono text-[0.9em]"
-              {...props}
-            >
+            <code className="px-1 py-0.5 rounded bg-black/5 font-mono text-[0.9em]" {...props}>
               {children}
             </code>
           )
         },
-        pre: (props) => (
-          <pre
-            className="my-4 p-3 rounded overflow-x-auto bg-black/5"
-            {...props}
-          />
-        ),
+        pre: (props) => <pre className="my-4 p-3 rounded overflow-x-auto bg-black/5" {...props} />,
 
-        table: (props) => (
-          <table className="my-4 w-full border-collapse" {...props} />
-        ),
-        th: (props) => (
-          <th className="border px-2 py-1 text-left bg-black/5" {...props} />
-        ),
+        table: (props) => <table className="my-4 w-full border-collapse" {...props} />,
+        th: (props) => <th className="border px-2 py-1 text-left bg-black/5" {...props} />,
         td: (props) => <td className="border px-2 py-1 align-top" {...props} />,
       }}
     >

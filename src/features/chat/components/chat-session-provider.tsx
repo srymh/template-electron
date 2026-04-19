@@ -1,14 +1,14 @@
 import * as React from 'react'
-import { useChat } from '@tanstack/ai-react'
-import { clientTools } from '@tanstack/ai-client'
 
-import { clockTool } from '../api/tools/tools'
+import { clientTools } from '@tanstack/ai-client'
+import type { UIMessage } from '@tanstack/ai-client'
+import { useChat } from '@tanstack/ai-react'
 
 import type { Model } from '#/main/features/chat/ollama/models'
-import type { UIMessage } from '@tanstack/ai-client'
-
-import { fetchIpcEvents } from '@/lib/fetchIpcEvents'
 import { mcp } from '@/api'
+import { fetchIpcEvents } from '@/lib/fetchIpcEvents'
+
+import { clockTool } from '../api/tools/tools'
 
 type ChatSessionValue = {
   input: string
@@ -64,28 +64,15 @@ export function ChatSessionProvider(props: ChatSessionProviderProps) {
       stop: chat.stop,
       status: chat.status,
     }
-  }, [
-    chat.isLoading,
-    chat.messages,
-    chat.sendMessage,
-    chat.status,
-    chat.stop,
-    input,
-  ])
+  }, [chat.isLoading, chat.messages, chat.sendMessage, chat.status, chat.stop, input])
 
-  return (
-    <ChatSessionContext.Provider value={value}>
-      {children}
-    </ChatSessionContext.Provider>
-  )
+  return <ChatSessionContext.Provider value={value}>{children}</ChatSessionContext.Provider>
 }
 
 export function useChatSession() {
   const ctx = React.useContext(ChatSessionContext)
   if (!ctx) {
-    throw new Error(
-      'useChatSession must be used within <ChatSessionProvider />',
-    )
+    throw new Error('useChatSession must be used within <ChatSessionProvider />')
   }
   return ctx
 }

@@ -24,10 +24,7 @@ export type Handlers = {
   finalize: Finalize
 }
 
-export type CreateHandlers = (
-  dbPath: string,
-  docName: string,
-) => Handlers | Promise<Handlers>
+export type CreateHandlers = (dbPath: string, docName: string) => Handlers | Promise<Handlers>
 
 export type IngestDocumentsOptions = {
   /** データベースファイルのパス */
@@ -117,10 +114,7 @@ VALUES (?, ?, ?, ?, ?)`
  * @param text 取り込むテキスト
  * @param options 取り込みオプション
  */
-export async function ingestDocuments(
-  text: string,
-  options: IngestDocumentsOptions,
-) {
+export async function ingestDocuments(text: string, options: IngestDocumentsOptions) {
   const {
     dbPath,
     docName,
@@ -152,11 +146,7 @@ export async function ingestDocuments(
       continue
     }
 
-    const subChunks = splitForEmbedding(
-      content,
-      maxEmbeddingChars,
-      embeddingOverlap,
-    )
+    const subChunks = splitForEmbedding(content, maxEmbeddingChars, embeddingOverlap)
 
     // サブチャンクごとに処理する
     for (let subIdx = 0; subIdx < subChunks.length; subIdx++) {
@@ -193,11 +183,7 @@ export async function ingestDocuments(
  * @param overlap スライス間のオーバーラップ（文字数）
  * @returns スライスの配列（空文字列のスライスは除外される）
  */
-function sliceWithOverlap(
-  text: string,
-  size: number,
-  overlap: number,
-): Array<string> {
+function sliceWithOverlap(text: string, size: number, overlap: number): Array<string> {
   const slices: Array<string> = []
   let i = 0
 
@@ -283,9 +269,7 @@ async function createHandlersWithNodeSqlite(
   const { DatabaseSync } = await import('node:sqlite')
 
   let db: import('node:sqlite').DatabaseSync | null = null
-  let insertStmt: ReturnType<
-    import('node:sqlite').DatabaseSync['prepare']
-  > | null = null
+  let insertStmt: ReturnType<import('node:sqlite').DatabaseSync['prepare']> | null = null
 
   const initialize = () => {
     if (db) {

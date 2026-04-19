@@ -1,6 +1,7 @@
-import { protocol } from 'electron'
-import path from 'node:path'
 import fs from 'node:fs/promises'
+import path from 'node:path'
+
+import { protocol } from 'electron'
 
 export function registerCustomProtocol() {
   protocol.handle('app', async (request) => {

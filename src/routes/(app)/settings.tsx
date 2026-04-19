@@ -1,4 +1,5 @@
 import * as React from 'react'
+
 import { Link, createFileRoute } from '@tanstack/react-router'
 
 import { ThemeSwitcher as ModeSwitcher } from '@/components/theme-switcher'
@@ -33,35 +34,21 @@ export const Route = createFileRoute('/(app)/settings')({
 function RouteComponent() {
   const { auth } = Route.useRouteContext()
 
-  const [language, setLanguage] = useLocalStorageState<'ja' | 'en'>(
-    'settings.language',
-    'ja',
-  )
+  const [language, setLanguage] = useLocalStorageState<'ja' | 'en'>('settings.language', 'ja')
   const [restoreOnLaunch, setRestoreOnLaunch] = useLocalStorageState(
     'settings.restoreOnLaunch',
     true,
   )
-  const [notifications, setNotifications] = useLocalStorageState(
-    'settings.notifications',
-    true,
-  )
-  const [autoUpdate, setAutoUpdate] = useLocalStorageState(
-    'settings.autoUpdate',
-    true,
-  )
-  const [downloadDir, setDownloadDir] = useLocalStorageState(
-    'settings.downloadDir',
-    '',
-  )
+  const [notifications, setNotifications] = useLocalStorageState('settings.notifications', true)
+  const [autoUpdate, setAutoUpdate] = useLocalStorageState('settings.autoUpdate', true)
+  const [downloadDir, setDownloadDir] = useLocalStorageState('settings.downloadDir', '')
 
   return (
     <div className="w-full h-full">
       <div className="max-w-4xl mx-auto p-6 space-y-6">
         <div className="space-y-1">
           <h1 className="text-xl font-semibold">設定</h1>
-          <p className="text-sm text-muted-foreground">
-            テーマ、見た目、動作に関する基本設定
-          </p>
+          <p className="text-sm text-muted-foreground">テーマ、見た目、動作に関する基本設定</p>
         </div>
 
         <Card>
@@ -74,9 +61,7 @@ function RouteComponent() {
             <div className="space-y-2">
               <div className="text-sm font-medium">モード</div>
               <ModeSwitcher className="justify-start" />
-              <div className="text-xs text-muted-foreground">
-                ライト / ダーク / システム
-              </div>
+              <div className="text-xs text-muted-foreground">ライト / ダーク / システム</div>
             </div>
 
             <Separator />
@@ -109,10 +94,7 @@ function RouteComponent() {
                   表示言語（画面の文言は順次対応）
                 </div>
               </div>
-              <Select
-                value={language}
-                onValueChange={(v) => setLanguage(v as 'ja' | 'en')}
-              >
+              <Select value={language} onValueChange={(v) => setLanguage(v as 'ja' | 'en')}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="選択" />
                 </SelectTrigger>

@@ -1,5 +1,6 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+
 import { retrieveRagContext } from '../../electron/shared/lib/rag/retrieve.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -18,8 +19,6 @@ async function main() {
     queryPrefix: 'search_query:',
     topK: 3,
   })
-  const formattedResult = result
-    .map((item) => `${item.content}\n【${item.score}】\n`)
-    .join('')
+  const formattedResult = result.map((item) => `${item.content}\n【${item.score}】\n`).join('')
   console.log(formattedResult)
 }

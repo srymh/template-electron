@@ -108,9 +108,7 @@ function RouteComponent() {
                 <CardDescription>{kpi.hint}</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-semibold tabular-nums">
-                  {kpi.value}
-                </div>
+                <div className="text-2xl font-semibold tabular-nums">{kpi.value}</div>
               </CardContent>
             </Card>
           ))}
@@ -139,9 +137,7 @@ function RouteComponent() {
                       <TableCell className="font-medium">{a.name}</TableCell>
                       <TableCell>{a.type}</TableCell>
                       <TableCell>{statusBadge(a.status)}</TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {a.at}
-                      </TableCell>
+                      <TableCell className="text-muted-foreground">{a.at}</TableCell>
                       <TableCell>
                         <Button variant="ghost" size="sm" asChild>
                           <Link to={a.to}>開く</Link>
@@ -160,25 +156,13 @@ function RouteComponent() {
               <CardDescription>よく触るデモへの導線</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button
-                className="w-full justify-start"
-                variant="outline"
-                asChild
-              >
+              <Button className="w-full justify-start" variant="outline" asChild>
                 <Link to="/demo/kakeibo">家計簿</Link>
               </Button>
-              <Button
-                className="w-full justify-start"
-                variant="outline"
-                asChild
-              >
+              <Button className="w-full justify-start" variant="outline" asChild>
                 <Link to="/demo/table">テーブル</Link>
               </Button>
-              <Button
-                className="w-full justify-start"
-                variant="outline"
-                asChild
-              >
+              <Button className="w-full justify-start" variant="outline" asChild>
                 <Link to="/demo/web">Web Events</Link>
               </Button>
             </CardContent>

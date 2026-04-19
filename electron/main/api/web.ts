@@ -1,9 +1,6 @@
 import type { Event, Result } from 'electron'
-import type {
-  ApiInterface,
-  AddListener,
-  WithWebContentsApi,
-} from '#/shared/lib/ipc'
+
+import type { ApiInterface, AddListener, WithWebContentsApi } from '#/shared/lib/ipc'
 
 // -----------------------------------------------------------------------------
 // 型定義
@@ -32,8 +29,7 @@ export type WebApi = ApiInterface<{
 export function getWebApi(): WithWebContentsApi<WebApi> {
   return {
     findInPage: async ({ text }, webContents) => webContents.findInPage(text),
-    stopFindInPage: async ({ action }, webContents) =>
-      webContents.stopFindInPage(action),
+    stopFindInPage: async ({ action }, webContents) => webContents.stopFindInPage(action),
     on: {
       blur: (listener, webContents) => {
         const listenerWrapper = () => listener()

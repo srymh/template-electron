@@ -1,8 +1,5 @@
-import {
-  BrowserWindow,
-  shell,
-  type BrowserWindowConstructorOptions,
-} from 'electron'
+import { BrowserWindow, shell, type BrowserWindowConstructorOptions } from 'electron'
+
 import { createContextMenu } from './createContextMenu'
 
 type NavigationPolicy = {
@@ -51,8 +48,7 @@ export async function createWindow(
     onClosed?: () => void
   } = {},
 ) {
-  const { browserWindowOptions, navigation, onCreated, onClose, onClosed } =
-    options
+  const { browserWindowOptions, navigation, onCreated, onClose, onClosed } = options
 
   const isAllowedNavigation = createIsAllowedNavigation(
     navigation ?? {
@@ -72,11 +68,9 @@ export async function createWindow(
     webPreferences: {
       ...browserWindowOptions?.webPreferences,
       // セキュリティ強化のために contextIsolation が省略された場合には明示的に有効化
-      contextIsolation:
-        browserWindowOptions?.webPreferences?.contextIsolation ?? true,
+      contextIsolation: browserWindowOptions?.webPreferences?.contextIsolation ?? true,
       // セキュリティ強化のために nodeIntegration が省略された場合には明示的に無効化
-      nodeIntegration:
-        browserWindowOptions?.webPreferences?.nodeIntegration ?? false,
+      nodeIntegration: browserWindowOptions?.webPreferences?.nodeIntegration ?? false,
     },
   })
 
@@ -193,11 +187,7 @@ export async function createWindow(
 const isAllowedExternalUrl = (urlString: string) => {
   try {
     const url = new URL(urlString)
-    return (
-      url.protocol === 'https:' ||
-      url.protocol === 'http:' ||
-      url.protocol === 'mailto:'
-    )
+    return url.protocol === 'https:' || url.protocol === 'http:' || url.protocol === 'mailto:'
   } catch {
     return false
   }

@@ -1,6 +1,6 @@
 import { nativeTheme, systemPreferences } from 'electron'
-
 import type { Event, WebContents, TitleBarOverlayOptions } from 'electron'
+
 import type {
   ApiInterface,
   AddListener,
@@ -56,15 +56,11 @@ const createSetTheme = (
   }
 }
 
-const getAccentColor: WithWebContents<
-  ThemeApi['getAccentColor']
-> = async () => {
+const getAccentColor: WithWebContents<ThemeApi['getAccentColor']> = async () => {
   return systemPreferences.getAccentColor()
 }
 
-const onAccentColorChanged: WithWebContents<
-  ThemeApi['on']['accentColorChanged']
-> = (listener) => {
+const onAccentColorChanged: WithWebContents<ThemeApi['on']['accentColorChanged']> = (listener) => {
   const listenerWrapper = (_: Event, newColor: string) => {
     return listener(newColor)
   }

@@ -1,5 +1,7 @@
 import React from 'react'
+
 import { createColumnHelper, flexRender } from '@tanstack/react-table'
+import type { CellContext, Column, Header, HeaderContext, Table } from '@tanstack/react-table'
 import {
   ArrowDown,
   ArrowDownUp,
@@ -17,27 +19,17 @@ import {
   PinOffIcon,
 } from 'lucide-react'
 
-import { NativeSelect, NativeSelectOption } from '../ui/native-select'
-import { Input } from '../ui/input'
-import { Separator } from '../ui/separator'
-import type {
-  CellContext,
-  Column,
-  Header,
-  HeaderContext,
-  Table,
-} from '@tanstack/react-table'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
 import { DebouncedInput } from '@/components/table/debounced-input'
 import { Filter } from '@/components/table/filter'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
+
+import { Input } from '../ui/input'
+import { NativeSelect, NativeSelectOption } from '../ui/native-select'
+import { Separator } from '../ui/separator'
 
 export function BasicTable<T>(props: {
   table: Table<T>
@@ -70,8 +62,7 @@ export function BasicTable<T>(props: {
     const columns = prev.columns
 
     const firstId = (columns[0] as any)?.id
-    const hasPin =
-      firstId === '__pin' || columns.some((col: any) => col?.id === '__pin')
+    const hasPin = firstId === '__pin' || columns.some((col: any) => col?.id === '__pin')
     const needsResizeMode = prev.columnResizeMode !== 'onChange'
 
     // 変更がない場合は高速パス - ページネーションの自動リセットを回避します。
@@ -116,10 +107,8 @@ export function BasicTable<T>(props: {
   // View the index.css file for more needed styles such as border-collapse: separate
   const getCommonPinningStyles = (column: Column<T>): React.CSSProperties => {
     const isPinned = column.getIsPinned()
-    const isLastLeftPinnedColumn =
-      isPinned === 'left' && column.getIsLastColumn('left')
-    const isFirstRightPinnedColumn =
-      isPinned === 'right' && column.getIsFirstColumn('right')
+    const isLastLeftPinnedColumn = isPinned === 'left' && column.getIsLastColumn('left')
+    const isFirstRightPinnedColumn = isPinned === 'right' && column.getIsFirstColumn('right')
 
     return {
       boxShadow: isLastLeftPinnedColumn
@@ -149,15 +138,9 @@ export function BasicTable<T>(props: {
             onChangeGlobalFilter={handleChangeGlobalFilter}
           />
         </div>
-        <Button
-          variant="outline"
-          size="default"
-          onClick={() => setShowFilters(!showFilters)}
-        >
+        <Button variant="outline" size="default" onClick={() => setShowFilters(!showFilters)}>
           <ListFilter />
-          <span className="ml-2">
-            {showFilters ? 'フィルターを非表示' : 'フィルターを表示'}
-          </span>
+          <span className="ml-2">{showFilters ? 'フィルターを非表示' : 'フィルターを表示'}</span>
         </Button>
         <GlobalColumnVisibilityToggle table={table} />
         <GlobalTableControls
@@ -177,32 +160,23 @@ export function BasicTable<T>(props: {
             '--table-height': '80vh',
           } as React.CSSProperties
         }
-        className={cn(
-          'w-full rounded-lg border border-border overflow-auto overscroll-none',
-          {
-            'h-(--table-height)': isTableHeightFixed,
-          },
-        )}
+        className={cn('w-full rounded-lg border border-border overflow-auto overscroll-none', {
+          'h-(--table-height)': isTableHeightFixed,
+        })}
       >
         <table
-          className={cn(
-            'text-sm text-foreground table-fixed border-spacing-0 border-separate',
-            {
-              'min-w-full': isTableWidthFull,
-              'w-full': isTableWidthFull,
-              'w-(--table-total-width)': !isTableWidthFull,
-            },
-          )}
+          className={cn('text-sm text-foreground table-fixed border-spacing-0 border-separate', {
+            'min-w-full': isTableWidthFull,
+            'w-full': isTableWidthFull,
+            'w-(--table-total-width)': !isTableWidthFull,
+          })}
         >
           <TableHeader
             table={table}
             showFilters={showFilters}
             getCommonPinningStyles={getCommonPinningStyles}
           />
-          <TableBody
-            table={table}
-            getCommonPinningStyles={getCommonPinningStyles}
-          />
+          <TableBody table={table} getCommonPinningStyles={getCommonPinningStyles} />
         </table>
       </div>
       <div className="h-4" />
@@ -305,9 +279,7 @@ function GlobalColumnVisibilityToggle<T>(props: { table: Table<T> }) {
                   }
                 }}
               />
-              {typeof column.columnDef.header === 'string'
-                ? column.columnDef.header
-                : column.id}
+              {typeof column.columnDef.header === 'string' ? column.columnDef.header : column.id}
             </Label>
           </div>
         ))}
@@ -364,11 +336,7 @@ function GlobalTableControls<T>(props: {
         >
           <div>
             <span>テーブルの高さを</span>
-            {isTableHeightFixed ? (
-              <span>固定しない</span>
-            ) : (
-              <span>固定する</span>
-            )}
+            {isTableHeightFixed ? <span>固定しない</span> : <span>固定する</span>}
           </div>
         </Button>
         <Button
@@ -496,10 +464,7 @@ function TableHeader<T>(props: {
                         onClick={header.column.getToggleSortingHandler()}
                       >
                         <div className="flex-1 truncate">
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                          {flexRender(header.column.columnDef.header, header.getContext())}
                         </div>
                         {header.column.getCanSort() && (
                           <div className="w-4 flex items-center justify-center">
@@ -512,17 +477,14 @@ function TableHeader<T>(props: {
                           </div>
                         )}
                       </div>
-                      {header.column.getCanFilter() &&
-                        header.column.getIsFiltered() && (
-                          <div
-                            className="w-4 flex items-center justify-center hover:text-blue-400 cursor-pointer"
-                            onClick={() =>
-                              header.column.setFilterValue(undefined)
-                            }
-                          >
-                            <FilterXIcon />
-                          </div>
-                        )}
+                      {header.column.getCanFilter() && header.column.getIsFiltered() && (
+                        <div
+                          className="w-4 flex items-center justify-center hover:text-blue-400 cursor-pointer"
+                          onClick={() => header.column.setFilterValue(undefined)}
+                        >
+                          <FilterXIcon />
+                        </div>
+                      )}
                       <div className="w-4 flex items-center justify-center">
                         <HeaderActionMenu header={header} />
                       </div>
@@ -575,10 +537,7 @@ function HeaderActionMenu<T>(props: { header: Header<T, unknown> }) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <EllipsisVertical
-          size="16"
-          className="hover:text-blue-400 cursor-pointer"
-        />
+        <EllipsisVertical size="16" className="hover:text-blue-400 cursor-pointer" />
       </PopoverTrigger>
       <PopoverContent className="p-2 bg-background text-foreground flex flex-col min-h-64 justify-start items-start gap-2">
         <Button
@@ -586,9 +545,7 @@ function HeaderActionMenu<T>(props: { header: Header<T, unknown> }) {
           variant="outline"
           size="default"
           onClick={() => header.column.setFilterValue(undefined)}
-          disabled={
-            !header.column.getCanFilter() || !header.column.getIsFiltered()
-          }
+          disabled={!header.column.getCanFilter() || !header.column.getIsFiltered()}
         >
           <FilterXIcon className="inline mr-1" />
           フィルターをクリア
@@ -608,9 +565,7 @@ function HeaderActionMenu<T>(props: { header: Header<T, unknown> }) {
           variant="outline"
           size="default"
           onClick={() => header.column.pin('left')}
-          disabled={
-            !header.column.getCanPin() || header.column.getIsPinned() === 'left'
-          }
+          disabled={!header.column.getCanPin() || header.column.getIsPinned() === 'left'}
         >
           <PinIcon className="inline mr-1" />
           列を左に固定
@@ -620,10 +575,7 @@ function HeaderActionMenu<T>(props: { header: Header<T, unknown> }) {
           variant="outline"
           size="default"
           onClick={() => header.column.pin('right')}
-          disabled={
-            !header.column.getCanPin() ||
-            header.column.getIsPinned() === 'right'
-          }
+          disabled={!header.column.getCanPin() || header.column.getIsPinned() === 'right'}
         >
           <PinIcon className="inline mr-1" />
           列を右に固定
@@ -633,9 +585,7 @@ function HeaderActionMenu<T>(props: { header: Header<T, unknown> }) {
           variant="outline"
           size="default"
           onClick={() => header.column.pin(false)}
-          disabled={
-            !header.column.getCanPin() || header.column.getIsPinned() === false
-          }
+          disabled={!header.column.getCanPin() || header.column.getIsPinned() === false}
         >
           <PinOffIcon className="inline mr-1" />
           列の固定を解除
@@ -666,18 +616,13 @@ function TableBody<T>(props: {
         return (
           <tr
             key={row.id}
-            className={cn(
-              'transition-colors group h-12 [&:last-child_td]:border-b-0',
-              {
-                sticky: row.getIsPinned() === 'top',
-                'z-15': row.getIsPinned() === 'top',
-              },
-            )}
+            className={cn('transition-colors group h-12 [&:last-child_td]:border-b-0', {
+              sticky: row.getIsPinned() === 'top',
+              'z-15': row.getIsPinned() === 'top',
+            })}
             style={{
               top:
-                row.getIsPinned() === 'top'
-                  ? `${row.getPinnedIndex() * 48 + 48 + 1}px`
-                  : undefined,
+                row.getIsPinned() === 'top' ? `${row.getPinnedIndex() * 48 + 48 + 1}px` : undefined,
             }}
           >
             {row.getVisibleCells().map((cell) => {
@@ -704,10 +649,7 @@ function TableBody<T>(props: {
       })}
       {table.getCenterRows().map((row) => {
         return (
-          <tr
-            key={row.id}
-            className="transition-colors group h-12 [&:last-child_td]:border-b-0"
-          >
+          <tr key={row.id} className="transition-colors group h-12 [&:last-child_td]:border-b-0">
             {row.getVisibleCells().map((cell) => {
               return (
                 <td
@@ -810,10 +752,7 @@ function Pagination<T>(props: { table: Table<T> }) {
           value={table.getState().pagination.pageIndex + 1}
         />
       </Label>
-      <NativeSelect
-        value={table.getState().pagination.pageSize}
-        onChange={handlePageSizeChange}
-      >
+      <NativeSelect value={table.getState().pagination.pageSize} onChange={handlePageSizeChange}>
         {[10, 20, 30, 40, 50].map((pageSize) => (
           <NativeSelectOption key={pageSize} value={pageSize}>
             {pageSize} 件 / ページ
@@ -824,20 +763,14 @@ function Pagination<T>(props: { table: Table<T> }) {
   )
 }
 
-function DebugInfo<T>(props: {
-  table: Table<T>
-  rerender?: () => void
-  refreshData?: () => void
-}) {
+function DebugInfo<T>(props: { table: Table<T>; rerender?: () => void; refreshData?: () => void }) {
   'use no memo'
 
   const { table, rerender, refreshData } = props
 
   return (
     <>
-      <div className="mt-4 text-gray-400">
-        {table.getPrePaginationRowModel().rows.length} Rows
-      </div>
+      <div className="mt-4 text-gray-400">{table.getPrePaginationRowModel().rows.length} Rows</div>
       <div className="mt-4 flex gap-2">
         {rerender && (
           <button

@@ -1,6 +1,5 @@
-import { sortingFns } from '@tanstack/react-table'
 import { compareItems, rankItem } from '@tanstack/match-sorter-utils'
-
+import { sortingFns } from '@tanstack/react-table'
 import type { FilterFn, FilterMeta, SortingFn } from '@tanstack/react-table'
 
 // カスタムのファジーフィルタ関数を定義（match-sorter utilsを使って行にランキング情報を適用）
@@ -21,12 +20,8 @@ export const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 export const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
   let dir = 0
 
-  const columnFilterMetaA = rowA.columnFiltersMeta[columnId] as
-    | FilterMeta
-    | undefined
-  const columnFilterMetaB = rowB.columnFiltersMeta[columnId] as
-    | FilterMeta
-    | undefined
+  const columnFilterMetaA = rowA.columnFiltersMeta[columnId] as FilterMeta | undefined
+  const columnFilterMetaB = rowB.columnFiltersMeta[columnId] as FilterMeta | undefined
 
   // 列にランキング情報がある場合のみランクでソート
   if (columnFilterMetaA && columnFilterMetaB) {

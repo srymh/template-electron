@@ -10,9 +10,7 @@ type StyleProviderState = {
   setStyle: (style: Style) => void
 }
 
-export const StyleProviderContext = createContext<StyleProviderState>(
-  {} as StyleProviderState,
-)
+export const StyleProviderContext = createContext<StyleProviderState>({} as StyleProviderState)
 
 export type StyleProviderProps = {
   children: ReactNode
@@ -21,11 +19,7 @@ export type StyleProviderProps = {
 }
 
 export function StyleProvider(props: StyleProviderProps) {
-  const {
-    children,
-    defaultStyle = 'vega',
-    storageKey = 'vite-ui-style',
-  } = props
+  const { children, defaultStyle = 'vega', storageKey = 'vite-ui-style' } = props
 
   const root = window.document.documentElement
 
@@ -45,11 +39,7 @@ export function StyleProvider(props: StyleProviderProps) {
     },
   }
 
-  return (
-    <StyleProviderContext.Provider value={value}>
-      {children}
-    </StyleProviderContext.Provider>
-  )
+  return <StyleProviderContext.Provider value={value}>{children}</StyleProviderContext.Provider>
 }
 
 /**

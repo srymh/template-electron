@@ -1,26 +1,15 @@
 import * as React from 'react'
+
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { MoonIcon, SunIcon } from 'lucide-react'
 import { z } from 'zod'
 
 import type { Theme as AppearanceMode } from '#/main/api/theme'
-
-import type { Style } from '@/features/style/components/style-provider'
 import { useTheme as useAppearanceMode } from '@/components/theme-provider'
 import { ThemeSwitcher as ModeSwitcher } from '@/components/theme-switcher'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { Item } from '@/components/ui/item'
 import { Label } from '@/components/ui/label'
 import {
@@ -32,21 +21,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-
-import { useTheme } from '@/features/style/api/use-theme'
-import { useStyle } from '@/features/style/api/use-style'
-import { STYLES } from '@/features/style/components/style-provider'
-import { StyleSwitcher } from '@/features/style/components/style-switcher'
-import { ThemeSwitcher } from '@/features/style/components/theme-switcher'
-import { components } from '@/features/ui-demo/constants'
-
-import { useIframeMessage } from '@/hooks/use-iframe-message'
-import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
-import { getPaginationItems } from '@/lib/pagination'
-import { cn } from '@/lib/utils'
-import { THEMES } from '@/features/style/components/themes'
-import { applyTheme } from '@/features/style/components/theme-provider'
 import {
   Popover,
   PopoverContent,
@@ -55,6 +29,20 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { useStyle } from '@/features/style/api/use-style'
+import { useTheme } from '@/features/style/api/use-theme'
+import type { Style } from '@/features/style/components/style-provider'
+import { STYLES } from '@/features/style/components/style-provider'
+import { StyleSwitcher } from '@/features/style/components/style-switcher'
+import { applyTheme } from '@/features/style/components/theme-provider'
+import { ThemeSwitcher } from '@/features/style/components/theme-switcher'
+import { THEMES } from '@/features/style/components/themes'
+import { components } from '@/features/ui-demo/constants'
+import { useIframeMessage } from '@/hooks/use-iframe-message'
+import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
+import { getPaginationItems } from '@/lib/pagination'
+import { cn } from '@/lib/utils'
 
 const SearchSchema = z.object({
   page: z.number().default(0).optional(),
@@ -107,36 +95,21 @@ function RouteComponent() {
   )
 
   const filteredComponents = components.filter((_, index) => {
-    return (
-      index >= page * componentsPerPage &&
-      index < (page + 1) * componentsPerPage
-    )
+    return index >= page * componentsPerPage && index < (page + 1) * componentsPerPage
   })
 
   return (
     <div className="p-2 flex gap-2 flex-col bg-accent h-full overflow-auto">
       <div className="p-2 bg-background flex flex-wrap gap-2 items-center justify-start border border-border">
-        <Item
-          size="xs"
-          variant="outline"
-          className="flex-col w-fit items-start"
-        >
+        <Item size="xs" variant="outline" className="flex-col w-fit items-start">
           <Label className="text-muted-foreground text-xs">モード</Label>
           <ModeSwitcher />
         </Item>
-        <Item
-          size="xs"
-          variant="outline"
-          className="flex-col w-fit items-start"
-        >
+        <Item size="xs" variant="outline" className="flex-col w-fit items-start">
           <Label className="text-muted-foreground text-xs">スタイル</Label>
           <StyleSwitcher />
         </Item>
-        <Item
-          size="xs"
-          variant="outline"
-          className="flex-col w-fit items-start"
-        >
+        <Item size="xs" variant="outline" className="flex-col w-fit items-start">
           <Label className="text-muted-foreground text-xs">テーマ</Label>
           <ThemeSwitcher className="text-xs" />
         </Item>
@@ -192,10 +165,7 @@ function RouteComponent() {
                   componentsPerPage={componentsPerPage}
                   componentNames={components}
                 >
-                  <PaginationLink
-                    onClick={() => setPage(item)}
-                    isActive={item === page}
-                  >
+                  <PaginationLink onClick={() => setPage(item)} isActive={item === page}>
                     {item + 1}
                   </PaginationLink>
                 </PaginationHoverPreview>
@@ -241,10 +211,7 @@ function PaginationHoverPreview({
 }) {
   const pageComponents = React.useMemo(() => {
     if (pageIndex < 0) return []
-    return componentNames.slice(
-      pageIndex * componentsPerPage,
-      (pageIndex + 1) * componentsPerPage,
-    )
+    return componentNames.slice(pageIndex * componentsPerPage, (pageIndex + 1) * componentsPerPage)
   }, [componentNames, componentsPerPage, pageIndex])
 
   return (
@@ -266,15 +233,7 @@ function PaginationHoverPreview({
   )
 }
 
-function Content({
-  title,
-  src,
-  to,
-}: {
-  title: string
-  src: string
-  to: string
-}) {
+function Content({ title, src, to }: { title: string; src: string; to: string }) {
   const navigate = useNavigate()
 
   const { theme: currentMode } = useAppearanceMode()
@@ -287,10 +246,7 @@ function Content({
   const [style, setStyle] = React.useState<Style>(currentStyle)
 
   const handleMessage = React.useCallback(
-    (
-      window: Window,
-      data: { mode?: AppearanceMode; theme?: string; style?: Style },
-    ) => {
+    (window: Window, data: { mode?: AppearanceMode; theme?: string; style?: Style }) => {
       const html = window.document.documentElement
 
       if (data.style) {
@@ -341,25 +297,13 @@ function Content({
           <div className="text-lg font-semibold">{title}</div>
           <div className="flex gap-2">
             <DemoModeSwitcher value={mode} onValueChange={handleModeChange} />
-            <DemoStyleSwitcher
-              value={style}
-              onValueChange={handleStyleChange}
-            />
-            <DemoThemeSwitcher
-              value={theme}
-              onValueChange={handleThemeChange}
-            />
+            <DemoStyleSwitcher value={style} onValueChange={handleStyleChange} />
+            <DemoThemeSwitcher value={theme} onValueChange={handleThemeChange} />
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <iframe
-          ref={ref}
-          src={src}
-          width={550}
-          height={550}
-          className="border rounded-xl"
-        />
+        <iframe ref={ref} src={src} width={550} height={550} className="border rounded-xl" />
       </CardContent>
       <CardFooter>
         <Button variant="link" onClick={() => navigate({ to })}>
@@ -413,17 +357,12 @@ function DemoThemeSwitcher({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={cn(className, 'min-w-20 flex items-center')}
-        >
+        <Button variant="outline" className={cn(className, 'min-w-20 flex items-center')}>
           {formatKebabAsTitle(value)}
           <div
             className="size-4 rounded-full"
             style={{
-              backgroundColor: THEMES.find((t) => t.name === value)?.cssVars[
-                'light'
-              ]['primary'],
+              backgroundColor: THEMES.find((t) => t.name === value)?.cssVars['light']['primary'],
             }}
           ></div>
         </Button>

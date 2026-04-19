@@ -1,20 +1,17 @@
 import { StrictMode, useEffect, useRef } from 'react'
-import ReactDOM from 'react-dom/client'
-import {
-  RouterProvider,
-  createHashHistory,
-  createRouter,
-} from '@tanstack/react-router'
 
-import * as TanStackQueryProvider from './integrations/tanstack-query/root-provider.tsx'
-import { routeTree } from './routeTree.gen'
-import reportWebVitals from './reportWebVitals.ts'
-import { ThemeProvider } from '@/components/theme-provider'
+import { RouterProvider, createHashHistory, createRouter } from '@tanstack/react-router'
+import ReactDOM from 'react-dom/client'
+
 import { DevToolsProvider } from '@/components/devtools-provider.tsx'
+import { ThemeProvider } from '@/components/theme-provider'
+import { Toaster } from '@/components/ui/sonner'
 import { AuthProvider, useAuth } from '@/features/auth/api/auth'
 import { DesignProvider } from '@/features/style/components/design-provider'
-import { Toaster } from '@/components/ui/sonner'
 
+import * as TanStackQueryProvider from './integrations/tanstack-query/root-provider.tsx'
+import reportWebVitals from './reportWebVitals.ts'
+import { routeTree } from './routeTree.gen'
 // 生成されたルートツリーをインポート
 
 import './styles.css'
@@ -63,10 +60,7 @@ if (rootElement && !rootElement.innerHTML) {
 
       // TanStack Router はマッチやローダーをキャッシュします。認証状態が変わったとき、
       // 次のナビゲーションでガードを再評価するために強制的にキャッシュを無効化します。
-      if (
-        wasAuthenticated !== null &&
-        wasAuthenticated !== auth.isAuthenticated
-      ) {
+      if (wasAuthenticated !== null && wasAuthenticated !== auth.isAuthenticated) {
         router.invalidate()
       }
     }, [auth.isAuthenticated])

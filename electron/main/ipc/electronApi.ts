@@ -1,17 +1,13 @@
 import { webUtils } from 'electron'
-import { createElectronApi } from '#/shared/lib/ipc/browser'
 
-import type {
-  FileSystemApi,
-  FileSystemRendererApi,
-  FS_API_KEY,
-} from '#/main/api/fs'
+import type { AiChatApi, AI_CHAT_API_KEY } from '#/main/api/aiChat'
+import type { AuthApi, AUTH_API_KEY } from '#/main/api/auth'
+import type { FileSystemApi, FileSystemRendererApi, FS_API_KEY } from '#/main/api/fs'
+import type { KakeiboApi, Kakeibo_API_KEY } from '#/main/api/kakeibo'
+import type { McpApi, MCP_API_KEY } from '#/main/api/mcp'
 import type { ThemeApi, THEME_API_KEY } from '#/main/api/theme'
 import type { WebApi, WEB_API_KEY } from '#/main/api/web'
-import type { McpApi, MCP_API_KEY } from '#/main/api/mcp'
-import type { AiChatApi, AI_CHAT_API_KEY } from '#/main/api/aiChat'
-import type { KakeiboApi, Kakeibo_API_KEY } from '#/main/api/kakeibo'
-import type { AuthApi, AUTH_API_KEY } from '#/main/api/auth'
+import { createElectronApi } from '#/shared/lib/ipc/browser'
 
 type ElectronRendererApi = {
   [FS_API_KEY]: FileSystemRendererApi
@@ -27,14 +23,10 @@ export type ElectronMainApi = {
   [AUTH_API_KEY]: AuthApi
 }
 
-const getPathForFile: FileSystemRendererApi['getPathForFile'] = async (
-  options,
-) => webUtils.getPathForFile(options.file)
+const getPathForFile: FileSystemRendererApi['getPathForFile'] = async (options) =>
+  webUtils.getPathForFile(options.file)
 
-export const electronApi = createElectronApi<
-  ElectronMainApi,
-  ElectronRendererApi
->(
+export const electronApi = createElectronApi<ElectronMainApi, ElectronRendererApi>(
   ({ defineHelper, useChannelAsInvoke, useChannelAsEvent }) =>
     /**
      * defineHelper の使用は任意ですが、以下の利点があります。

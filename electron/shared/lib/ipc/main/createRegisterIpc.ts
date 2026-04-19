@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron'
-import { createResponseChannel } from '../shared/createResponseChannel'
-
 import type { WebContents } from 'electron'
+
+import { createResponseChannel } from '../shared/createResponseChannel'
 import type {
   Api,
   IpcRegistrationMap,
@@ -11,10 +11,7 @@ import type {
   ExtractAddListener,
 } from '../shared/types'
 
-type CreateRegistrationMap<
-  TElectronMainApi extends Api,
-  TContext = any,
-> = (helpers: {
+type CreateRegistrationMap<TElectronMainApi extends Api, TContext = any> = (helpers: {
   getContext: (webContents: WebContents) => TContext
   defineHelper: <T extends IpcRegistrationMap<TElectronMainApi>>(map: T) => T
 }) => IpcRegistrationMap<TElectronMainApi>
@@ -38,10 +35,7 @@ const createRegisterInvoke =
       `${new Date().toISOString()} INFO: IPC Invoke Handler registered. Channel: ${channel}`,
     )
 
-    const listener = async (
-      event: Electron.IpcMainInvokeEvent,
-      ...args: any[]
-    ) => {
+    const listener = async (event: Electron.IpcMainInvokeEvent, ...args: any[]) => {
       try {
         // イベント送信元の WebContents を取得
         const webContents = event.sender
@@ -140,9 +134,7 @@ const createRegisterEvent = <TElectronMainApi extends Api>(
      * addListener: ExtractAddListener<TElectronMainApi, TChannel>
      * ```
      */
-    addListener: WithWebContents<
-      ExtractAddListener<TElectronMainApi, TChannel>
-    >,
+    addListener: WithWebContents<ExtractAddListener<TElectronMainApi, TChannel>>,
   ) => {
     /**
      * イベントリスナー登録/解除ハンドラ
@@ -150,10 +142,7 @@ const createRegisterEvent = <TElectronMainApi extends Api>(
      * @param register 登録する場合は true、解除する場合は false
      * @returns 登録/解除が成功した場合は true、すでに登録/解除されていた場合は false
      */
-    const registrationListener = (
-      event: Electron.IpcMainInvokeEvent,
-      register: boolean,
-    ) => {
+    const registrationListener = (event: Electron.IpcMainInvokeEvent, register: boolean) => {
       // イベント送信元の WebContents を取得
       const webContents = event.sender
       // 応答チャンネル名を生成
@@ -167,10 +156,7 @@ const createRegisterEvent = <TElectronMainApi extends Api>(
         // 登録
 
         // すでに登録されている場合は何もしない
-        if (
-          cache.has(webContents) &&
-          cache.get(webContents)!.has(responseChannel)
-        ) {
+        if (cache.has(webContents) && cache.get(webContents)!.has(responseChannel)) {
           return false
         }
 
@@ -196,10 +182,7 @@ const createRegisterEvent = <TElectronMainApi extends Api>(
         // 登録解除
 
         // 登録されていない場合は何もしない
-        if (
-          !cache.has(webContents) ||
-          !cache.get(webContents)!.has(responseChannel)
-        ) {
+        if (!cache.has(webContents) || !cache.get(webContents)!.has(responseChannel)) {
           return false
         }
 
@@ -234,8 +217,7 @@ export const createRegisterIpc =
   ({ getContext, cache }) => {
     const map = createRegistrationMap({
       getContext,
-      defineHelper: <T extends IpcRegistrationMap<TElectronMainApi>>(map: T) =>
-        map,
+      defineHelper: <T extends IpcRegistrationMap<TElectronMainApi>>(map: T) => map,
     })
 
     for (const channel of Object.keys(map) as Array<keyof typeof map>) {
@@ -243,10 +225,7 @@ export const createRegisterIpc =
       if (entry.type === 'invoke') {
         createRegisterInvoke<TElectronMainApi>()(channel, entry.method)
       } else if (entry.type === 'event') {
-        createRegisterEvent<TElectronMainApi>(cache)(
-          channel,
-          entry.addEventListener,
-        )
+        createRegisterEvent<TElectronMainApi>(cache)(channel, entry.addEventListener)
       }
     }
   }
