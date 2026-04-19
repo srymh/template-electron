@@ -1,21 +1,25 @@
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
-import { app, BrowserWindow } from 'electron'
-import type { WebContents } from 'electron'
+import { app } from 'electron'
+import type { WebContents, BrowserWindow } from 'electron'
 
 import type { ServerTool } from '@tanstack/ai'
 
 import { mcpToTanStackAiTools } from '#/shared/lib/tanstack-ai-mcp'
 
-import { startApp, type AppRuntime } from './app/startApp'
+import { startApp } from './app/startApp'
+import type { AppRuntime } from './app/startApp'
 import type { AuthRuntime } from './features/auth/authRuntime'
 import { createAuthRuntime } from './features/auth/authRuntime'
-import { createAppDataBase, type DataBase } from './features/db/db'
+import { createAppDataBase } from './features/db/db'
+import type { DataBase } from './features/db/db'
 import type { McpServer } from './features/mcp'
-import { resolveMainPaths, type MainPaths } from './infra/paths'
+import { resolveMainPaths } from './infra/paths'
+import type { MainPaths } from './infra/paths'
 import { registerCustomProtocol } from './infra/registerCustomProtocol'
-import { registerIpc, type Context } from './ipc/registerIpc'
+import { registerIpc } from './ipc/registerIpc'
+import type { Context } from './ipc/registerIpc'
 import { createWindow, recommendedSecureOptions } from './windows/createWindow'
 
 /** __dirname の代替 */

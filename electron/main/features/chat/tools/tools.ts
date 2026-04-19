@@ -1,6 +1,7 @@
 import { nativeTheme } from 'electron'
 
-import { retrieveRagContext, type RetrieveRagContextOptions } from '#/shared/lib/rag/retrieve'
+import { retrieveRagContext } from '#/shared/lib/rag/retrieve'
+import type { RetrieveRagContextOptions } from '#/shared/lib/rag/retrieve'
 
 import {
   switchThemeDarkToolDef,

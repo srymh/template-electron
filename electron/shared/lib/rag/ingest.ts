@@ -1,3 +1,5 @@
+import type { DatabaseSync } from 'node:sqlite'
+
 import ollama from 'ollama'
 
 // -----------------------------------------------------------------------------
@@ -268,8 +270,8 @@ async function createHandlersWithNodeSqlite(
 }> {
   const { DatabaseSync } = await import('node:sqlite')
 
-  let db: import('node:sqlite').DatabaseSync | null = null
-  let insertStmt: ReturnType<import('node:sqlite').DatabaseSync['prepare']> | null = null
+  let db: DatabaseSync | null = null
+  let insertStmt: ReturnType<DatabaseSync['prepare']> | null = null
 
   const initialize = () => {
     if (db) {

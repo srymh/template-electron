@@ -3,7 +3,8 @@ import type { ModelMessage, StreamChunk, TextOptions } from '@tanstack/ai'
 
 import { adapters } from './ollama/adapters'
 import { modelSchema } from './ollama/models'
-import { isOllamaModelMessage, type OllamaModelMessage } from './ollama/ollama'
+import { isOllamaModelMessage } from './ollama/ollama'
+import type { OllamaModelMessage } from './ollama/ollama'
 
 export type ChatRequest = {
   messages: ModelMessage[]

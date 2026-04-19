@@ -1,16 +1,13 @@
 import { Client } from '@modelcontextprotocol/sdk/client'
-import {
-  StdioClientTransport,
-  type StdioServerParameters,
-} from '@modelcontextprotocol/sdk/client/stdio.js'
-import {
-  StreamableHTTPClientTransport,
-  type StreamableHTTPClientTransportOptions,
-} from '@modelcontextprotocol/sdk/client/streamableHttp.js'
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
+import type { StdioServerParameters } from '@modelcontextprotocol/sdk/client/stdio.js'
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
+import type { StreamableHTTPClientTransportOptions } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
 import type { RequestOptions } from '@modelcontextprotocol/sdk/shared/protocol.js'
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js'
-import { type ListToolsRequest, type Tool as McpTool } from '@modelcontextprotocol/sdk/types.js'
-import { toolDefinition, type ServerTool } from '@tanstack/ai'
+import type { ListToolsRequest, Tool as McpTool } from '@modelcontextprotocol/sdk/types.js'
+import { toolDefinition } from '@tanstack/ai'
+import type { ServerTool } from '@tanstack/ai'
 
 type ListToolsOptions = {
   params?: ListToolsRequest['params']

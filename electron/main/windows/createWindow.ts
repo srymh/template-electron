@@ -1,4 +1,5 @@
-import { BrowserWindow, shell, type BrowserWindowConstructorOptions } from 'electron'
+import { BrowserWindow, shell } from 'electron'
+import type { BrowserWindowConstructorOptions } from 'electron'
 
 import { createContextMenu } from './createContextMenu'
 
