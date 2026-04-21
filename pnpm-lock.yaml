@@ -29,6 +29,9 @@ importers:
       '@repo/shadcn':
         specifier: workspace:*
         version: link:../../packages/shadcn
+      '@repo/tanstack-ai-mcp':
+        specifier: workspace:*
+        version: link:../../packages/tanstack-ai-mcp
       '@standard-schema/spec':
         specifier: ^1.1.0
         version: 1.1.0
@@ -284,6 +287,28 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260418.1
         version: 7.0.0-dev.20260418.1
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  packages/tanstack-ai-mcp:
+    dependencies:
+      '@modelcontextprotocol/sdk':
+        specifier: ^1.26.0
+        version: 1.29.0(zod@4.3.6)
+      '@tanstack/ai':
+        specifier: ^0.5.1
+        version: 0.5.1
+    devDependencies:
+      '@types/node':
+        specifier: ^24.12.2
+        version: 24.12.2
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20260418.1
+        version: 7.0.0-dev.20260418.1
+      oxlint:
+        specifier: ^1.60.0
+        version: 1.60.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3

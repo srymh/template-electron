@@ -6,7 +6,7 @@ import type { WebContents, BrowserWindow } from 'electron'
 
 import type { ServerTool } from '@tanstack/ai'
 
-import { mcpToTanStackAiTools } from '#/shared/lib/tanstack-ai-mcp'
+import { mcpToTanStackAiTools } from '@repo/tanstack-ai-mcp'
 
 import { startApp } from './app/startApp'
 import type { AppRuntime } from './app/startApp'
