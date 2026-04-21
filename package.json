@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "pnpm --filter your-app-name run dev",
     "build": "pnpm --filter your-app-name run build",
-    "test": "pnpm --filter your-app-name run test",
-    "lint": "pnpm --filter your-app-name run lint",
+    "test": "pnpm -r run test",
+    "lint": "pnpm -r run lint",
     "format": "oxfmt",
     "check": "pnpm --filter your-app-name run check"
   },

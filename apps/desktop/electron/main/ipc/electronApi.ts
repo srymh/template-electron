@@ -1,5 +1,7 @@
 import { webUtils } from 'electron'
 
+import { createElectronApi } from '@repo/ipc/browser'
+
 import type { AiChatApi, AI_CHAT_API_KEY } from '#/main/api/aiChat'
 import type { AuthApi, AUTH_API_KEY } from '#/main/api/auth'
 import type { FileSystemApi, FileSystemRendererApi, FS_API_KEY } from '#/main/api/fs'
@@ -7,7 +9,6 @@ import type { KakeiboApi, Kakeibo_API_KEY } from '#/main/api/kakeibo'
 import type { McpApi, MCP_API_KEY } from '#/main/api/mcp'
 import type { ThemeApi, THEME_API_KEY } from '#/main/api/theme'
 import type { WebApi, WEB_API_KEY } from '#/main/api/web'
-import { createElectronApi } from '#/shared/lib/ipc/browser'
 
 type ElectronRendererApi = {
   [FS_API_KEY]: FileSystemRendererApi

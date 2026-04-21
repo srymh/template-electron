@@ -15,6 +15,7 @@
   "dependencies": {
     "@faker-js/faker": "^10.3.0",
     "@modelcontextprotocol/sdk": "^1.26.0",
+    "@repo/ipc": "workspace:*",
     "@repo/shadcn": "workspace:*",
     "@standard-schema/spec": "^1.1.0",
     "@tailwindcss/vite": "^4.2.2",

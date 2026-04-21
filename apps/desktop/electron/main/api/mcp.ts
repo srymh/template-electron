@@ -1,6 +1,6 @@
 import type { WebContents } from 'electron'
 
-import type { ApiInterface, WithWebContents, WithWebContentsApi } from '#/shared/lib/ipc'
+import type { ApiInterface, WithWebContents, WithWebContentsApi } from '@repo/ipc'
 
 import { startServer as startMcpServer } from '../features/mcp'
 import type { McpServer } from '../features/mcp'

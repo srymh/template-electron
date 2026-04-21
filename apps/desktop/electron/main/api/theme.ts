@@ -1,12 +1,7 @@
 import { nativeTheme, systemPreferences } from 'electron'
 import type { Event, WebContents, TitleBarOverlayOptions } from 'electron'
 
-import type {
-  ApiInterface,
-  AddListener,
-  WithWebContents,
-  WithWebContentsApi,
-} from '#/shared/lib/ipc'
+import type { ApiInterface, AddListener, WithWebContents, WithWebContentsApi } from '@repo/ipc'
 
 // -----------------------------------------------------------------------------
 // 型定義

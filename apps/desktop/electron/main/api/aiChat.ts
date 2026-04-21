@@ -2,19 +2,15 @@ import type { WebContents } from 'electron'
 
 import type { ModelMessage, ServerTool, StreamChunk } from '@tanstack/ai'
 
+import type { AddListener, ApiInterface, WithWebContents, WithWebContentsApi } from '@repo/ipc'
+import { createResponseChannel } from '@repo/ipc'
+
 import { chat } from '#/main/features/chat/chat'
 import {
   createSearchProjectDetailTool,
   switchThemeDarkTool,
   switchThemeLightTool,
 } from '#/main/features/chat/tools/tools'
-import type {
-  AddListener,
-  ApiInterface,
-  WithWebContents,
-  WithWebContentsApi,
-} from '#/shared/lib/ipc'
-import { createResponseChannel } from '#/shared/lib/ipc'
 import { clockToolDef } from '@/features/chat/api/tools/definitions'
 
 // -----------------------------------------------------------------------------

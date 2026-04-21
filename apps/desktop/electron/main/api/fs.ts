@@ -9,7 +9,7 @@ import type {
   SaveDialogReturnValue,
 } from 'electron'
 
-import type { ApiInterface, WithWebContents, WithWebContentsApi } from '#/shared/lib/ipc'
+import type { ApiInterface, WithWebContents, WithWebContentsApi } from '@repo/ipc'
 
 // -----------------------------------------------------------------------------
 // 型定義

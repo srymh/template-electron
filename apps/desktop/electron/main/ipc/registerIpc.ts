@@ -1,5 +1,7 @@
 import type { WebContents } from 'electron'
 
+import { createRegisterIpc } from '@repo/ipc/main'
+
 import { AI_CHAT_API_KEY, getAiChatApi } from '#/main/api/aiChat'
 import type { AiChatContext } from '#/main/api/aiChat'
 import { AUTH_API_KEY, getAuthApi } from '#/main/api/auth'
@@ -12,7 +14,6 @@ import type { McpApiContext } from '#/main/api/mcp'
 import { THEME_API_KEY, getThemeApi } from '#/main/api/theme'
 import type { ThemeContext } from '#/main/api/theme'
 import { getWebApi } from '#/main/api/web'
-import { createRegisterIpc } from '#/shared/lib/ipc/main'
 
 import type { ElectronMainApi } from './electronApi'
 

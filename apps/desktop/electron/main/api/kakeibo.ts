@@ -1,6 +1,6 @@
 import type { WebContents } from 'electron'
 
-import type { ApiInterface, WithWebContentsApi } from '#/shared/lib/ipc'
+import type { ApiInterface, WithWebContentsApi } from '@repo/ipc'
 
 import type { DataBase } from '../features/db/db'
 
