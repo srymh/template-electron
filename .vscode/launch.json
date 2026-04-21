@@ -30,7 +30,7 @@
       "port": 9229,
       "restart": true,
       "timeout": 300000,
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}/apps/desktop",
       "sourceMaps": true,
       "skipFiles": ["<node_internals>/**"]
     },
@@ -40,7 +40,7 @@
       "request": "attach",
       "address": "localhost",
       "port": 9222,
-      "webRoot": "${workspaceFolder}",
+      "webRoot": "${workspaceFolder}/apps/desktop",
       "sourceMaps": true,
       "restart": true,
       "timeout": 300000
