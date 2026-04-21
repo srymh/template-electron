@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { retrieveRagContext } from '../../electron/shared/lib/rag/retrieve.ts'
+import { retrieveRagContext } from '../src/retrieve.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -13,7 +13,7 @@ main().catch((err) => {
 async function main() {
   const question = '主要機能'
   const result = await retrieveRagContext(question, {
-    dbPath: path.join(__dirname, '..', '..', 'data', 'example.db'),
+    dbPath: path.join(__dirname, '..', 'data', 'example.db'),
     docName: 'example-doc',
     model: 'nomic-embed-text-v2-moe:latest',
     queryPrefix: 'search_query:',

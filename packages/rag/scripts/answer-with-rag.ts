@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url'
 
 import ollama from 'ollama'
 
-import { retrieveRagContext } from '../../electron/shared/lib/rag/retrieve.ts'
+import { retrieveRagContext } from '../src/retrieve.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 

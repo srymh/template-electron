@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { ingestDocuments } from '../../electron/shared/lib/rag/ingest.ts'
+import { ingestDocuments } from '../src/ingest.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -15,7 +15,7 @@ async function main() {
   const textPath = path.join(__dirname, 'example.txt')
   const text = await fs.readFile(textPath, 'utf-8')
   await ingestDocuments(text, {
-    dbPath: path.join(__dirname, '..', '..', 'data', 'example.db'),
+    dbPath: path.join(__dirname, '..', 'data', 'example.db'),
     docName: 'example-doc',
     model: 'nomic-embed-text-v2-moe:latest',
     prefix: 'search_document:',
