@@ -36,6 +36,10 @@
     "./demo/constants": {
       "types": "./src/demo/constants.ts",
       "import": "./src/demo/constants.ts"
+    },
+    "./demo/registry": {
+      "types": "./src/demo/registry.ts",
+      "import": "./src/demo/registry.ts"
     }
   },
   "dependencies": {
