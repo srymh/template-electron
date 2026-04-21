@@ -9,8 +9,7 @@
     "build": "pnpm lint && vite build && electron-builder",
     "test": "tsgo --noEmit && vitest run",
     "lint": "tsgo --noEmit && oxlint",
-    "format": "oxfmt",
-    "check": "tsgo --noEmit && oxfmt && oxlint --fix",
+    "check": "tsgo --noEmit && oxlint --fix",
     "postinstall": "electron-rebuild -f -w better-sqlite3"
   },
   "dependencies": {
@@ -62,7 +61,6 @@
     "electron-builder": "^26.8.1",
     "eslint-plugin-use-no-memo": "^1.1.0",
     "jsdom": "^29.0.2",
-    "oxfmt": "^0.45.0",
     "oxlint": "^1.60.0",
     "typescript": "^6.0.3",
     "vite": "^8.0.8",

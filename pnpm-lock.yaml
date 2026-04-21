@@ -6,7 +6,11 @@ settings:
 
 importers:
 
-  .: {}
+  .:
+    devDependencies:
+      oxfmt:
+        specifier: ^0.45.0
+        version: 0.45.0
 
   apps/desktop:
     dependencies:
@@ -149,9 +153,6 @@ importers:
       jsdom:
         specifier: ^29.0.2
         version: 29.0.2
-      oxfmt:
-        specifier: ^0.45.0
-        version: 0.45.0
       oxlint:
         specifier: ^1.60.0
         version: 1.60.0

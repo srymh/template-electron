@@ -7,8 +7,11 @@
     "build": "pnpm --filter your-app-name run build",
     "test": "pnpm --filter your-app-name run test",
     "lint": "pnpm --filter your-app-name run lint",
-    "format": "pnpm --filter your-app-name run format",
+    "format": "oxfmt",
     "check": "pnpm --filter your-app-name run check"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.45.0"
   },
   "packageManager": "pnpm@10.33.0"
 }
