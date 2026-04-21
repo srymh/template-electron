@@ -3,8 +3,8 @@
 import * as React from "react"
 
 import { Example, ExampleWrapper } from './helper/example'
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "#components/ui/button"
+import { Checkbox } from "#components/ui/checkbox"
 import {
   Dialog,
   DialogClose,
@@ -14,7 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "#components/ui/dialog"
 import {
   Field,
   FieldContent,
@@ -24,19 +24,19 @@ import {
   FieldSeparator,
   FieldSet,
   FieldTitle,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "#components/ui/field"
+import { Input } from "#components/ui/input"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group"
-import { Kbd } from "@/components/ui/kbd"
+} from "#components/ui/input-group"
+import { Kbd } from "#components/ui/kbd"
 import {
   NativeSelect,
   NativeSelectOption,
-} from "@/components/ui/native-select"
+} from "#components/ui/native-select"
 import {
   Select,
   SelectContent,
@@ -44,21 +44,21 @@ import {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
+} from "#components/ui/select"
+import { Switch } from "#components/ui/switch"
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/components/ui/tabs"
-import { Textarea } from "@/components/ui/textarea"
+} from "#components/ui/tabs"
+import { Textarea } from "#components/ui/textarea"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/tooltip"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function DialogExample() {
   return (

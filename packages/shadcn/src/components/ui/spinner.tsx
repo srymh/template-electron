@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils"
-import { IconPlaceholder } from "@/components/ui/helper/icon-placeholder"
+import { cn } from "#lib/utils"
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
   return (

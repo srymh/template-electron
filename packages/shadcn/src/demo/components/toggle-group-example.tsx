@@ -1,5 +1,5 @@
 import { Example, ExampleWrapper } from './helper/example'
-import { Input } from "@/components/ui/input"
+import { Input } from "#components/ui/input"
 import {
   Select,
   SelectContent,
@@ -7,12 +7,12 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "#components/ui/select"
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from "@/components/ui/toggle-group"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/toggle-group"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function ToggleGroupExample() {
   return (

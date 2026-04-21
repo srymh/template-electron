@@ -11,7 +11,7 @@ import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from "@/components/ui/resizable"
+} from "#components/ui/resizable"
 
 export default function ResizableExample() {
   return (

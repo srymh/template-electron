@@ -1,7 +1,8 @@
 import { LaptopIcon, MoonIcon, SunIcon } from 'lucide-react'
 
+import { ToggleGroup, ToggleGroupItem } from '@repo/shadcn/ui/toggle-group'
+
 import { useTheme } from '@/components/theme-provider'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
 export function ThemeSwitcher({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()

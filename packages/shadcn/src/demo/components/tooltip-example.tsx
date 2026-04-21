@@ -1,14 +1,14 @@
 "use client"
 
 import { Example, ExampleWrapper } from './helper/example'
-import { Button } from "@/components/ui/button"
-import { Kbd } from "@/components/ui/kbd"
+import { Button } from "#components/ui/button"
+import { Kbd } from "#components/ui/kbd"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/tooltip"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function TooltipExample() {
   return (

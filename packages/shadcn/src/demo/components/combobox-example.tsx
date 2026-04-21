@@ -4,8 +4,8 @@ import * as React from "react"
 import { toast } from "sonner"
 
 import { Example, ExampleWrapper } from './helper/example'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Button } from "#components/ui/button"
+import { Card, CardContent, CardFooter } from "#components/ui/card"
 import {
   Combobox,
   ComboboxChip,
@@ -23,7 +23,7 @@ import {
   ComboboxTrigger,
   ComboboxValue,
   useComboboxAnchor,
-} from "@/components/ui/combobox"
+} from "#components/ui/combobox"
 import {
   Dialog,
   DialogContent,
@@ -32,26 +32,26 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "#components/ui/dialog"
 import {
   Field,
   FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "#components/ui/field"
+import { Input } from "#components/ui/input"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/components/ui/input-group"
+} from "#components/ui/input-group"
 import {
   Item,
   ItemContent,
   ItemDescription,
   ItemTitle,
-} from "@/components/ui/item"
+} from "#components/ui/item"
 import {
   Select,
   SelectContent,
@@ -59,8 +59,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/select"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function ComboboxExample() {
   return (

@@ -2,8 +2,7 @@ import * as React from 'react'
 
 import { Link, createFileRoute } from '@tanstack/react-router'
 
-import { ThemeSwitcher as ModeSwitcher } from '@/components/theme-switcher'
-import { Button } from '@/components/ui/button'
+import { Button } from '@repo/shadcn/ui/button'
 import {
   Card,
   CardContent,
@@ -11,18 +10,20 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+} from '@repo/shadcn/ui/card'
+import { Input } from '@repo/shadcn/ui/input'
+import { Label } from '@repo/shadcn/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
-import { Switch } from '@/components/ui/switch'
+} from '@repo/shadcn/ui/select'
+import { Separator } from '@repo/shadcn/ui/separator'
+import { Switch } from '@repo/shadcn/ui/switch'
+
+import { ThemeSwitcher as ModeSwitcher } from '@/components/theme-switcher'
 import { StyleSwitcher } from '@/features/style/components/style-switcher'
 import { ThemeSwitcher } from '@/features/style/components/theme-switcher'
 

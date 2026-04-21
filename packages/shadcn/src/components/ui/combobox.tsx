@@ -3,15 +3,15 @@
 import * as React from "react"
 import { Combobox as ComboboxPrimitive } from "@base-ui/react"
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "#lib/utils"
+import { Button } from "#components/ui/button"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group"
-import { IconPlaceholder } from "@/components/ui/helper/icon-placeholder"
+} from "#components/ui/input-group"
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 const Combobox = ComboboxPrimitive.Root
 

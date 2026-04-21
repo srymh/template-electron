@@ -4,14 +4,13 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { MoonIcon, SunIcon } from 'lucide-react'
 import { z } from 'zod'
 
-import type { Theme as AppearanceMode } from '#/main/api/theme'
-import { useTheme as useAppearanceMode } from '@/components/theme-provider'
-import { ThemeSwitcher as ModeSwitcher } from '@/components/theme-switcher'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
-import { Item } from '@/components/ui/item'
-import { Label } from '@/components/ui/label'
+import { components } from '@repo/shadcn/demo/constants'
+import { cn } from '@repo/shadcn/lib/utils'
+import { Button } from '@repo/shadcn/ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@repo/shadcn/ui/card'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@repo/shadcn/ui/hover-card'
+import { Item } from '@repo/shadcn/ui/item'
+import { Label } from '@repo/shadcn/ui/label'
 import {
   Pagination,
   PaginationContent,
@@ -20,7 +19,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination'
+} from '@repo/shadcn/ui/pagination'
 import {
   Popover,
   PopoverContent,
@@ -28,8 +27,12 @@ import {
   PopoverHeader,
   PopoverTitle,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+} from '@repo/shadcn/ui/popover'
+import { ToggleGroup, ToggleGroupItem } from '@repo/shadcn/ui/toggle-group'
+
+import type { Theme as AppearanceMode } from '#/main/api/theme'
+import { useTheme as useAppearanceMode } from '@/components/theme-provider'
+import { ThemeSwitcher as ModeSwitcher } from '@/components/theme-switcher'
 import { useStyle } from '@/features/style/api/use-style'
 import { useTheme } from '@/features/style/api/use-theme'
 import type { Style } from '@/features/style/components/style-provider'
@@ -38,11 +41,9 @@ import { StyleSwitcher } from '@/features/style/components/style-switcher'
 import { applyTheme } from '@/features/style/components/theme-provider'
 import { ThemeSwitcher } from '@/features/style/components/theme-switcher'
 import { THEMES } from '@/features/style/components/themes'
-import { components } from '@/features/ui-demo/constants'
 import { useIframeMessage } from '@/hooks/use-iframe-message'
 import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
 import { getPaginationItems } from '@/lib/pagination'
-import { cn } from '@/lib/utils'
 
 const SearchSchema = z.object({
   page: z.number().default(0).optional(),

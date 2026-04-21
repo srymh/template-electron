@@ -1,7 +1,7 @@
 import { Example, ExampleWrapper } from './helper/example'
-import { Button } from "@/components/ui/button"
-import { Toggle } from "@/components/ui/toggle"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+import { Button } from "#components/ui/button"
+import { Toggle } from "#components/ui/toggle"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function ToggleExample() {
   return (

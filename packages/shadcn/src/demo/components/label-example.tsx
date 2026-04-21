@@ -1,9 +1,9 @@
 import { Example, ExampleWrapper } from './helper/example'
-import { Checkbox } from "@/components/ui/checkbox"
-import { Field } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import { Checkbox } from "#components/ui/checkbox"
+import { Field } from "#components/ui/field"
+import { Input } from "#components/ui/input"
+import { Label } from "#components/ui/label"
+import { Textarea } from "#components/ui/textarea"
 
 export default function LabelExample() {
   return (

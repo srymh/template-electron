@@ -6,13 +6,13 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+} from "#components/ui/avatar"
+import { Button } from "#components/ui/button"
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "#components/ui/collapsible"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,14 +21,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "#components/ui/dropdown-menu"
 import {
   Item,
   ItemContent,
   ItemDescription,
   ItemMedia,
   ItemTitle,
-} from "@/components/ui/item"
+} from "#components/ui/item"
 import {
   Sidebar,
   SidebarContent,
@@ -47,8 +47,8 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/sidebar"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function SidebarIconExample() {
   const data = {

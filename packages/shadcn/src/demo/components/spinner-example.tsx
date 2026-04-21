@@ -1,6 +1,6 @@
 import { Example, ExampleWrapper } from './helper/example'
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Badge } from "#components/ui/badge"
+import { Button } from "#components/ui/button"
 import {
   Empty,
   EmptyContent,
@@ -8,15 +8,15 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty"
-import { Field, FieldLabel } from "@/components/ui/field"
+} from "#components/ui/empty"
+import { Field, FieldLabel } from "#components/ui/field"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/components/ui/input-group"
-import { Spinner } from "@/components/ui/spinner"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/input-group"
+import { Spinner } from "#components/ui/spinner"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function SpinnerExample() {
   return (

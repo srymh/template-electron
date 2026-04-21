@@ -6,11 +6,11 @@ import {
   FieldLabel,
   FieldLegend,
   FieldSet,
-} from "@/components/ui/field"
+} from "#components/ui/field"
 import {
   RadioGroup,
   RadioGroupItem,
-} from "@/components/ui/radio-group"
+} from "#components/ui/radio-group"
 
 export default function RadioGroupExample() {
   return (

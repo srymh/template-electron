@@ -3,7 +3,7 @@
 import * as React from "react"
 
 import { Example, ExampleWrapper } from './helper/example'
-import { Button } from "@/components/ui/button"
+import { Button } from "#components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -11,24 +11,24 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "#components/ui/dialog"
 import {
   Field,
   FieldDescription,
   FieldError,
   FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "#components/ui/field"
+import { Input } from "#components/ui/input"
 import {
   Item,
   ItemContent,
   ItemDescription,
   ItemTitle,
-} from "@/components/ui/item"
+} from "#components/ui/item"
 import {
   NativeSelect,
   NativeSelectOption,
-} from "@/components/ui/native-select"
+} from "#components/ui/native-select"
 import {
   Select,
   SelectContent,
@@ -38,8 +38,8 @@ import {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/select"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function SelectExample() {
   return (

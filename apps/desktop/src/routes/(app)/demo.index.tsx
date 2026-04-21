@@ -1,7 +1,7 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Badge } from '@repo/shadcn/ui/badge'
+import { Button } from '@repo/shadcn/ui/button'
 import {
   Card,
   CardContent,
@@ -9,8 +9,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Separator } from '@/components/ui/separator'
+} from '@repo/shadcn/ui/card'
+import { Separator } from '@repo/shadcn/ui/separator'
 import {
   Table,
   TableBody,
@@ -18,7 +18,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from '@repo/shadcn/ui/table'
 
 export const Route = createFileRoute('/(app)/demo/')({
   component: RouteComponent,

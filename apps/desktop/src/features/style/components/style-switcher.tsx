@@ -1,4 +1,5 @@
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { ToggleGroup, ToggleGroupItem } from '@repo/shadcn/ui/toggle-group'
+
 import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
 
 import { useStyle } from '../api/use-style'

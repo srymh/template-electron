@@ -1,8 +1,8 @@
 import * as React from "react"
 import { Slot } from "radix-ui"
 
-import { cn } from "@/lib/utils"
-import { IconPlaceholder } from "@/components/ui/helper/icon-placeholder"
+import { cn } from "#lib/utils"
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
   return (

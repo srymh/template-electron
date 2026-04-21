@@ -3,11 +3,11 @@
 import { useState } from "react"
 
 import { Example, ExampleWrapper } from './helper/example'
-import { Button } from "@/components/ui/button"
+import { Button } from "#components/ui/button"
 import {
   ButtonGroup,
   ButtonGroupText,
-} from "@/components/ui/button-group"
+} from "#components/ui/button-group"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,28 +15,28 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Field, FieldGroup } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "#components/ui/dropdown-menu"
+import { Field, FieldGroup } from "#components/ui/field"
+import { Input } from "#components/ui/input"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/components/ui/input-group"
-import { Label } from "@/components/ui/label"
+} from "#components/ui/input-group"
+import { Label } from "#components/ui/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "#components/ui/select"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/tooltip"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function ButtonGroupExample() {
   return (

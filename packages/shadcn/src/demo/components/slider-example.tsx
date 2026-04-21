@@ -3,8 +3,8 @@
 import * as React from "react"
 
 import { Example, ExampleWrapper } from './helper/example'
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
+import { Label } from "#components/ui/label"
+import { Slider } from "#components/ui/slider"
 
 export default function SliderExample() {
   return (

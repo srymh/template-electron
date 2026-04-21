@@ -1,17 +1,17 @@
 import { Example, ExampleWrapper } from './helper/example'
-import { Button } from "@/components/ui/button"
+import { Button } from "#components/ui/button"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/components/ui/input-group"
-import { Kbd, KbdGroup } from "@/components/ui/kbd"
+} from "#components/ui/input-group"
+import { Kbd, KbdGroup } from "#components/ui/kbd"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/tooltip"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function KbdExample() {
   return (

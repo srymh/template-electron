@@ -6,8 +6,8 @@ import {
   AvatarGroup,
   AvatarGroupCount,
   AvatarImage,
-} from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+} from "#components/ui/avatar"
+import { Button } from "#components/ui/button"
 import {
   Empty,
   EmptyContent,
@@ -15,8 +15,8 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/empty"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function AvatarExample() {
   return (

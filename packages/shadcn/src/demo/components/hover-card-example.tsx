@@ -1,5 +1,5 @@
 import { Example, ExampleWrapper } from './helper/example'
-import { Button } from "@/components/ui/button"
+import { Button } from "#components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -7,12 +7,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "#components/ui/dialog"
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card"
+} from "#components/ui/hover-card"
 
 export default function HoverCardExample() {
   return (

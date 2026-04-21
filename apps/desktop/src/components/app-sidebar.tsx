@@ -12,9 +12,7 @@ import {
   ToggleLeftIcon,
 } from 'lucide-react'
 
-import logo from '@/assets/logo.svg'
-import { NavMain } from '@/components/nav-main'
-import { NavUser } from '@/components/nav-user'
+import { components } from '@repo/shadcn/demo/constants'
 import {
   Sidebar,
   SidebarContent,
@@ -25,10 +23,13 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
-} from '@/components/ui/sidebar'
+} from '@repo/shadcn/ui/sidebar'
+
+import logo from '@/assets/logo.svg'
+import { NavMain } from '@/components/nav-main'
+import { NavUser } from '@/components/nav-user'
 import { useAuth } from '@/features/auth/api/auth'
 import { OpenChat } from '@/features/chat/components/open-chat'
-import { components } from '@/features/ui-demo/constants'
 import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
 
 // This is sample data.

@@ -2,29 +2,29 @@
 
 // import * as React from "react"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "#components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "#components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Field } from "@/components/ui/field"
+} from "#components/ui/dropdown-menu"
+import { Field } from "#components/ui/field"
 import {
   Item,
   ItemContent,
   ItemDescription,
   // ItemMedia,
   ItemTitle,
-} from "@/components/ui/item"
+} from "#components/ui/item"
 import {
   Sidebar,
   SidebarContent,
@@ -39,8 +39,8 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/sidebar"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function SidebarFloatingExample() {
   const data = {

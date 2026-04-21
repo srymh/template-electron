@@ -12,8 +12,8 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/navigation-menu"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 const components: { title: string; href: string; description: string }[] = [
   {

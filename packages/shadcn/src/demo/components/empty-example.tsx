@@ -1,5 +1,5 @@
 import { Example, ExampleWrapper } from './helper/example'
-import { Button } from "@/components/ui/button"
+import { Button } from "#components/ui/button"
 import {
   Empty,
   EmptyContent,
@@ -7,14 +7,14 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty"
+} from "#components/ui/empty"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/components/ui/input-group"
-import { Kbd } from "@/components/ui/kbd"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/input-group"
+import { Kbd } from "#components/ui/kbd"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function EmptyExample() {
   return (

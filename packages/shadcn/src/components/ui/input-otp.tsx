@@ -3,8 +3,8 @@
 import * as React from "react"
 import { OTPInput, OTPInputContext } from "input-otp"
 
-import { cn } from "@/lib/utils"
-import { IconPlaceholder } from "@/components/ui/helper/icon-placeholder"
+import { cn } from "#lib/utils"
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 function InputOTP({
   className,

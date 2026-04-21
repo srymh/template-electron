@@ -1,5 +1,5 @@
 import { Example, ExampleWrapper } from './helper/example'
-import { Separator } from "@/components/ui/separator"
+import { Separator } from "#components/ui/separator"
 
 export default function SeparatorExample() {
   return (

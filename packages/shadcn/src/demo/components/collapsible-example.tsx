@@ -3,23 +3,23 @@
 import * as React from "react"
 
 import { Example, ExampleWrapper } from './helper/example'
-import { Button } from "@/components/ui/button"
+import { Button } from "#components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "#components/ui/card"
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/collapsible"
+import { Field, FieldGroup, FieldLabel } from "#components/ui/field"
+import { Input } from "#components/ui/input"
+import { Tabs, TabsList, TabsTrigger } from "#components/ui/tabs"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function CollapsibleExample() {
   return (

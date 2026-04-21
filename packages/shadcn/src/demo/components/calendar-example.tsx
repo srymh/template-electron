@@ -6,21 +6,21 @@ import { type DateRange } from "react-day-picker"
 import { es } from "react-day-picker/locale"
 
 import { Example, ExampleWrapper } from './helper/example'
-import { Button } from "@/components/ui/button"
-import { Calendar, CalendarDayButton } from "@/components/ui/calendar"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
+import { Button } from "#components/ui/button"
+import { Calendar, CalendarDayButton } from "#components/ui/calendar"
+import { Card, CardContent, CardFooter } from "#components/ui/card"
+import { Field, FieldGroup, FieldLabel } from "#components/ui/field"
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-} from "@/components/ui/input-group"
+} from "#components/ui/input-group"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/popover"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function CalendarExample() {
   return (

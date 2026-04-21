@@ -2,14 +2,14 @@
 
 import * as React from "react"
 
-// import { Button } from "@/components/ui/button"
+// import { Button } from "#components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "#components/ui/dropdown-menu"
 import {
   Item,
   ItemActions,
@@ -17,8 +17,8 @@ import {
   ItemDescription,
   // ItemMedia,
   ItemTitle,
-} from "@/components/ui/item"
-import { Label } from "@/components/ui/label"
+} from "#components/ui/item"
+import { Label } from "#components/ui/label"
 import {
   Sidebar,
   SidebarContent,
@@ -34,8 +34,8 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/sidebar"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function SidebarExample() {
   const data = {

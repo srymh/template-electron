@@ -1,7 +1,7 @@
 import { Example, ExampleWrapper } from './helper/example'
-import { Badge } from "@/components/ui/badge"
-import { Spinner } from "@/components/ui/spinner"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+import { Badge } from "#components/ui/badge"
+import { Spinner } from "#components/ui/spinner"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function BadgeExample() {
   return (

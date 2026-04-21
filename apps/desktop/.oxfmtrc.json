@@ -19,6 +19,10 @@
         "groupName": "vite",
         "elementNamePattern": ["vite", "vitest"],
         "selector": "external"
+      },
+      {
+        "groupName": "workspace",
+        "elementNamePattern": ["@repo/**"]
       }
     ],
     "groups": [
@@ -27,6 +31,7 @@
       ["vite"],
       { "newlinesBetween": false },
       "external",
+      "workspace",
       ["internal", "subpath"],
       ["parent", "sibling", "index"],
       "style",

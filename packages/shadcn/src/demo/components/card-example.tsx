@@ -7,8 +7,8 @@ import {
   AvatarGroup,
   AvatarGroupCount,
   AvatarImage,
-} from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+} from "#components/ui/avatar"
+import { Button } from "#components/ui/button"
 import {
   Card,
   CardAction,
@@ -17,10 +17,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/card"
+import { Field, FieldGroup, FieldLabel } from "#components/ui/field"
+import { Input } from "#components/ui/input"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function CardExample() {
   return (

@@ -16,10 +16,11 @@ import {
 import type { Table as TanStackTable } from '@tanstack/react-table'
 import { Square, Table } from 'lucide-react'
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/shadcn/ui/tabs'
+
 import { kakeibo } from '@/api'
 import { BasicTable } from '@/components/table/basic-table'
 import { fuzzyFilter } from '@/components/table/tableUtils'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export type Entry = Awaited<ReturnType<typeof kakeibo.entries>>[number]
 

@@ -2,8 +2,9 @@ import React from 'react'
 
 import type { Column } from '@tanstack/react-table'
 
+import { NativeSelect, NativeSelectOption } from '@repo/shadcn/ui/native-select'
+
 import { DebouncedInput } from '@/components/table/debounced-input'
-import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 
 export function Filter({ column }: { column: Column<any, unknown> }) {
   'use no memo'

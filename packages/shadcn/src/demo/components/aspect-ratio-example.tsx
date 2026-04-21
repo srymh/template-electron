@@ -1,7 +1,7 @@
 import Image from "./helper/image"
 
 import { Example, ExampleWrapper } from './helper/example'
-import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { AspectRatio } from "#components/ui/aspect-ratio"
 
 export default function AspectRatioExample() {
   return (

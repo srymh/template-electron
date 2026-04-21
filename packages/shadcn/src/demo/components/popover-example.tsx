@@ -1,5 +1,5 @@
 import { Example, ExampleWrapper } from './helper/example'
-import { Button } from "@/components/ui/button"
+import { Button } from "#components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -7,9 +7,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "#components/ui/dialog"
+import { Field, FieldGroup, FieldLabel } from "#components/ui/field"
+import { Input } from "#components/ui/input"
 import {
   Popover,
   PopoverContent,
@@ -17,7 +17,7 @@ import {
   PopoverHeader,
   PopoverTitle,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "#components/ui/popover"
 
 export default function PopoverExample() {
   return (

@@ -3,12 +3,12 @@ import {
   Field,
   FieldDescription,
   FieldLabel,
-} from "@/components/ui/field"
+} from "#components/ui/field"
 import {
   NativeSelect,
   NativeSelectOptGroup,
   NativeSelectOption,
-} from "@/components/ui/native-select"
+} from "#components/ui/native-select"
 
 export default function NativeSelectExample() {
   return (

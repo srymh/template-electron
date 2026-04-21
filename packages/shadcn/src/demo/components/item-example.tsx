@@ -1,7 +1,7 @@
 import Image from "./helper/image"
 
 import { Example, ExampleWrapper } from './helper/example'
-import { Button } from "@/components/ui/button"
+import { Button } from "#components/ui/button"
 import {
   Item,
   ItemActions,
@@ -13,8 +13,8 @@ import {
   ItemMedia,
   ItemSeparator,
   ItemTitle,
-} from "@/components/ui/item"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/item"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function ItemExample() {
   return (

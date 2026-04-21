@@ -30,14 +30,14 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "#components/ui/card"
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/chart"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 const areaChartData = [
   { month: "January", desktop: 186 },

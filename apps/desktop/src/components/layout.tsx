@@ -1,8 +1,9 @@
 import React from 'react'
 
+import { cn } from '@repo/shadcn/lib/utils'
+import { SidebarInset, SidebarProvider, SidebarTrigger, useSidebar } from '@repo/shadcn/ui/sidebar'
+
 import { AppSidebar } from '@/components/app-sidebar'
-import { SidebarInset, SidebarProvider, SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
-import { cn } from '@/lib/utils'
 
 import { Breadcrumbs } from './breadcrumbs'
 

@@ -1,5 +1,5 @@
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { cn } from '@/lib/utils'
+import { cn } from '@repo/shadcn/lib/utils'
+import { ToggleGroup, ToggleGroupItem } from '@repo/shadcn/ui/toggle-group'
 
 import { useTheme } from '../api/use-theme'
 import { THEMES } from './themes'

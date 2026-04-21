@@ -1,6 +1,6 @@
 import { Example, ExampleWrapper } from './helper/example'
-import { Button } from '@/components/ui/button'
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+import { Button } from '#components/ui/button'
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function ButtonExample() {
   return (

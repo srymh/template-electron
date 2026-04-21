@@ -4,11 +4,11 @@ import { useState } from "react"
 import { toast } from "sonner"
 
 import { Example, ExampleWrapper } from './helper/example'
-import { Button } from "@/components/ui/button"
+import { Button } from "#components/ui/button"
 import {
   ButtonGroup,
   ButtonGroupText,
-} from "@/components/ui/button-group"
+} from "#components/ui/button-group"
 import {
   Card,
   CardContent,
@@ -16,20 +16,20 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "#components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "#components/ui/dropdown-menu"
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "#components/ui/field"
+import { Input } from "#components/ui/input"
 import {
   InputGroup,
   InputGroupAddon,
@@ -37,8 +37,8 @@ import {
   InputGroupInput,
   InputGroupText,
   InputGroupTextarea,
-} from "@/components/ui/input-group"
-import { Kbd, KbdGroup } from "@/components/ui/kbd"
+} from "#components/ui/input-group"
+import { Kbd, KbdGroup } from "#components/ui/kbd"
 import {
   Popover,
   PopoverContent,
@@ -46,15 +46,15 @@ import {
   PopoverHeader,
   PopoverTitle,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { Spinner } from "@/components/ui/spinner"
-import { Textarea } from "@/components/ui/textarea"
+} from "#components/ui/popover"
+import { Spinner } from "#components/ui/spinner"
+import { Textarea } from "#components/ui/textarea"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/tooltip"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function InputGroupExample() {
   const [country, setCountry] = useState("+1")

@@ -3,9 +3,9 @@
 import * as React from "react"
 import { Dialog as DialogPrimitive } from "radix-ui"
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { IconPlaceholder } from "@/components/ui/helper/icon-placeholder"
+import { cn } from "#lib/utils"
+import { Button } from "#components/ui/button"
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 function Dialog({
   ...props

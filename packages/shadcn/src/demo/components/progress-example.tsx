@@ -3,7 +3,7 @@
 import * as React from "react"
 
 import { Example, ExampleWrapper } from './helper/example'
-import { Field, FieldLabel } from "@/components/ui/field"
+import { Field, FieldLabel } from "#components/ui/field"
 import {
   Item,
   ItemActions,
@@ -11,10 +11,10 @@ import {
   ItemGroup,
   ItemMedia,
   ItemTitle,
-} from "@/components/ui/item"
-import { Progress } from "@/components/ui/progress"
-import { Slider } from "@/components/ui/slider"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/item"
+import { Progress } from "#components/ui/progress"
+import { Slider } from "#components/ui/slider"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function ProgressExample() {
   return (

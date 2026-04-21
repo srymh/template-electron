@@ -19,17 +19,17 @@ import {
   PinOffIcon,
 } from 'lucide-react'
 
+import { cn } from '@repo/shadcn/lib/utils'
+import { Button } from '@repo/shadcn/ui/button'
+import { Checkbox } from '@repo/shadcn/ui/checkbox'
+import { Input } from '@repo/shadcn/ui/input'
+import { Label } from '@repo/shadcn/ui/label'
+import { NativeSelect, NativeSelectOption } from '@repo/shadcn/ui/native-select'
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/shadcn/ui/popover'
+import { Separator } from '@repo/shadcn/ui/separator'
+
 import { DebouncedInput } from '@/components/table/debounced-input'
 import { Filter } from '@/components/table/filter'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Label } from '@/components/ui/label'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
-
-import { Input } from '../ui/input'
-import { NativeSelect, NativeSelectOption } from '../ui/native-select'
-import { Separator } from '../ui/separator'
 
 export function BasicTable<T>(props: {
   table: Table<T>

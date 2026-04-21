@@ -4,16 +4,16 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion'
-import { Button } from '@/components/ui/button'
+} from '#components/ui/accordion'
+import { Button } from '#components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from '#components/ui/card'
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function AccordionExample() {
   return (

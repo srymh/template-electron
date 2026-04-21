@@ -4,8 +4,8 @@ import { useState } from "react"
 import { REGEXP_ONLY_DIGITS } from "input-otp"
 
 import { Example, ExampleWrapper } from './helper/example'
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Badge } from "#components/ui/badge"
+import { Checkbox } from "#components/ui/checkbox"
 import {
   Field,
   FieldContent,
@@ -15,33 +15,33 @@ import {
   FieldLegend,
   FieldSet,
   FieldTitle,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "#components/ui/field"
+import { Input } from "#components/ui/input"
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from "@/components/ui/input-otp"
+} from "#components/ui/input-otp"
 import {
   NativeSelect,
   NativeSelectOptGroup,
   NativeSelectOption,
-} from "@/components/ui/native-select"
+} from "#components/ui/native-select"
 import {
   RadioGroup,
   RadioGroupItem,
-} from "@/components/ui/radio-group"
+} from "#components/ui/radio-group"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
-import { Textarea } from "@/components/ui/textarea"
+} from "#components/ui/select"
+import { Slider } from "#components/ui/slider"
+import { Switch } from "#components/ui/switch"
+import { Textarea } from "#components/ui/textarea"
 
 export default function FieldExample() {
   return (

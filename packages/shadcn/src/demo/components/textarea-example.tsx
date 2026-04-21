@@ -3,8 +3,8 @@ import {
   Field,
   FieldDescription,
   FieldLabel,
-} from "@/components/ui/field"
-import { Textarea } from "@/components/ui/textarea"
+} from "#components/ui/field"
+import { Textarea } from "#components/ui/textarea"
 
 export default function TextareaExample() {
   return (

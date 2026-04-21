@@ -2,9 +2,7 @@ import * as React from 'react'
 
 import { BotIcon, XIcon } from 'lucide-react'
 
-import type { Model } from '#/main/features/chat/ollama/models'
-import { MODELS, modelSchema } from '#/main/features/chat/ollama/models'
-import { Button } from '@/components/ui/button'
+import { Button } from '@repo/shadcn/ui/button'
 import {
   Dialog,
   DialogClose,
@@ -12,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@repo/shadcn/ui/dialog'
 import {
   Select,
   SelectContent,
@@ -20,8 +18,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
+} from '@repo/shadcn/ui/select'
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@repo/shadcn/ui/sidebar'
+
+import type { Model } from '#/main/features/chat/ollama/models'
+import { MODELS, modelSchema } from '#/main/features/chat/ollama/models'
 import { Chat } from '@/features/chat/components/chat'
 import { ChatSessionProvider } from '@/features/chat/components/chat-session-provider'
 

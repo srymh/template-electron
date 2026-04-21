@@ -4,10 +4,10 @@ import {
   AlertAction,
   AlertDescription,
   AlertTitle,
-} from "@/components/ui/alert"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { IconPlaceholder } from '@/components/ui/helper/icon-placeholder'
+} from "#components/ui/alert"
+import { Badge } from "#components/ui/badge"
+import { Button } from "#components/ui/button"
+import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
 
 export default function AlertExample() {
   return (
