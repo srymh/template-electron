@@ -1,8 +1,7 @@
 import type { WebContents } from 'electron'
 
 import type { ApiInterface, WithWebContentsApi } from '@repo/ipc'
-
-import type { DataBase } from '../features/db/db'
+import type { DataBase } from '@repo/sqlite'
 
 // -----------------------------------------------------------------------------
 // 型定義

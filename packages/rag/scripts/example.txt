@@ -283,7 +283,7 @@ electron/shared/lib/tanstack-ai-mcp/index.ts には mcpToTanStackAiTools ユー�
 
 アプリケーションデータには better-sqlite3 を使用する。データベースファイルは data/kakeibo.db に配置される。
 
-electron/main/features/db/db.ts に DataBase クラスが定義されている。これは better-sqlite3 の薄いラッパーで、以下のメソッドを提供する。
+packages/sqlite/src/index.ts に DataBase クラスが定義されている。apps/desktop/electron/main/infra/db.ts は better-sqlite3 をその抽象へ接続する adapter である。DataBase は以下のメソッドを提供する。
 
 - query(): SELECT クエリを実行し結果の配列を返す。
 - get(): 単一行を取得する。

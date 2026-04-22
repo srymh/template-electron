@@ -1,6 +1,6 @@
 import crypto from 'node:crypto'
 
-import type { DataBase } from '../db/db'
+import type { DataBase } from '@repo/sqlite'
 
 export type AuthUser = {
   username: string

@@ -75,40 +75,33 @@ pnpm prettier --write src/routes/(app)/demo.table.tsx
 
 ```
 template-electron/
-├── data/                        # DB ファイル・マイグレーション SQL
-├── electron/
-│   ├── main/                    # Electron メインプロセス
-│   │   ├── index.ts             # エントリ・AppContext 定義
-│   │   ├── app/startApp.ts      # アプリライフサイクル管理
-│   │   ├── api/                 # IPC API ハンドラー（7モジュール）
-│   │   ├── features/            # 機能実装（auth, chat, db, mcp）
-│   │   ├── infra/               # パス解決・カスタムプロトコル
-│   │   ├── ipc/                 # IPC 登録（registerIpc.ts）
-│   │   └── windows/             # ウィンドウ生成・コンテキストメニュー
-│   ├── preload/index.ts         # contextBridge で window.api を公開
-│   ├── shared/lib/              # メイン・レンダラー共有ライブラリ
-│   │   ├── ipc/                 # 型安全 IPC フレームワーク
-│   │   ├── tanstack-ai-mcp/     # MCP ↔ TanStack AI ブリッジ
-│   │   └── rag/                 # RAG ライブラリ（ingest / retrieve）
-│   └── electron-env.d.ts        # Window.api 型宣言
-├── scripts/rag/                 # RAG サンプルスクリプト・テストデータ
-├── src/                         # レンダラー（React アプリケーション）
-│   ├── main.tsx                 # エントリ（プロバイダー群のネスト）
-│   ├── api.ts                   # デュアル API レイヤー（Electron / ブラウザ）
-│   ├── router.tsx               # TanStack Router（Hash History）
-│   ├── routeTree.gen.ts         # 自動生成ルートツリー（編集禁止）
-│   ├── components/ui/           # shadcn/ui ベンダーコード（56 種類）
-│   ├── features/                # auth, chat, style, ui-demo
-│   ├── lib/                     # fetchIpcEvents, frame-rpc, utils
-│   ├── routes/                  # ファイルベースルート定義
-│   └── styles/                  # スタイルテーマ CSS
+├── apps/
+│   └── desktop/
+│       ├── electron/            # Electron main / preload
+│       │   ├── main/
+│       │   │   ├── api/         # IPC API ハンドラー
+│       │   │   ├── app/         # アプリライフサイクル管理
+│       │   │   ├── features/    # auth, chat, mcp
+│       │   │   ├── infra/       # パス解決・カスタムプロトコル・DB adapter
+│       │   │   ├── ipc/         # IPC 登録
+│       │   │   └── windows/     # ウィンドウ生成・コンテキストメニュー
+│       │   ├── preload/index.ts # contextBridge で window.api を公開
+│       │   └── electron-env.d.ts
+│       ├── src/                 # レンダラー（React アプリケーション）
+│       ├── data/                # DB ファイル・マイグレーション SQL
+│       ├── package.json
+│       ├── vite.config.ts
+│       └── electron-builder.json5
+├── packages/
+│   ├── ipc/                     # 型安全 IPC フレームワーク
+│   ├── rag/                     # RAG ライブラリ
+│   ├── shadcn/                  # UI 共有コード
+│   ├── sqlite/                  # 同期 SQLite 抽象（driver 非依存）
+│   └── tanstack-ai-mcp/         # MCP ↔ TanStack AI ブリッジ
+├── docs/
 ├── package.json
-├── vite.config.ts
-├── tsconfig.json
-├── eslint.config.js
-├── prettier.config.js
-├── electron-builder.json5
-└── index.html
+├── pnpm-workspace.yaml
+└── AGENTS.md
 ```
 
 ### パスエイリアス
@@ -128,7 +121,7 @@ template-electron/
 
 1. `startApp` が `AppContext`（グローバル共有状態）を初期化する。
    - `windowsById`: ウィンドウ管理用 Map
-   - `db`: better-sqlite3 ラッパー
+  - `db`: `@repo/sqlite` の `DataBase`（open は desktop 側 adapter 経由）
    - `authRuntime`: 認証ランタイム
    - `mcpServer`: MCP サーバーインスタンス
 2. `createWindow()` で BrowserWindow を生成する。
@@ -225,11 +218,12 @@ WebContents をキーにした WeakMap により、ウィンドウ破棄時に�
 
 | 用途 | ライブラリ | ファイルパス | 備考 |
 |---|---|---|---|
-| アプリデータ（家計簿等） | better-sqlite3 | `data/kakeibo.db` | `DataBase` ラッパークラス経由 |
-| 認証 | node:sqlite (`DatabaseSync`) | `userData/auth.db` | 動的 import で読み込み |
+| アプリデータ（家計簿等） | better-sqlite3 + `@repo/sqlite` | `data/kakeibo.db` | desktop adapter が `@repo/sqlite` の `DataBase` を生成 |
+| 認証 | better-sqlite3 + `@repo/sqlite` | `userData/auth.db` | `createAuthDb()` から desktop adapter 経由で生成 |
 | RAG embedding | node:sqlite (`DatabaseSync`) | `data/example.db` | RAG ライブラリ内蔵ハンドラー |
 
 - `data/` 配下のマイグレーション: `0001_init.sql`, `0002_sample.sql`。
+- 再利用可能な同期 DB 抽象は `packages/sqlite` に置き、`apps/desktop/electron/main/infra/db.ts` は better-sqlite3 を接続する adapter に限定する。
 - `electron-builder.json5` の `extraResources` で DB ファイルを asar 外に配置する。better-sqlite3 は asar 内のファイルにアクセスできないため。
 - `electron/main/infra/paths.ts` で dev / prod / asar 環境のパス解決を統一的に処理する。
 

@@ -2,7 +2,9 @@ import path from 'node:path'
 
 import { app } from 'electron'
 
-import { DataBase } from '../db/db'
+import type { DataBase } from '@repo/sqlite'
+
+import { createAppDataBase } from '../../infra/db'
 
 function getAuthDbPath() {
   return path.join(app.getPath('userData'), 'auth.db')
@@ -13,7 +15,7 @@ export function createAuthDb(): DataBase {
 
   console.log(`Auth DB Path: ${dbPath}`)
 
-  return new DataBase(dbPath)
+  return createAppDataBase(dbPath)
 }
 
 export function ensureAuthDb(db: DataBase): void {

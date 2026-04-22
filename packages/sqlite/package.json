@@ -1,0 +1,21 @@
+{
+  "name": "@repo/sqlite",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "lint": "tsgo --noEmit && oxlint"
+  },
+  "devDependencies": {
+    "@typescript/native-preview": "7.0.0-dev.20260418.1",
+    "oxlint": "^1.60.0",
+    "typescript": "^6.0.3"
+  },
+  "packageManager": "pnpm@10.33.0"
+}

@@ -29,6 +29,9 @@ importers:
       '@repo/shadcn':
         specifier: workspace:*
         version: link:../../packages/shadcn
+      '@repo/sqlite':
+        specifier: workspace:*
+        version: link:../../packages/sqlite
       '@repo/tanstack-ai-mcp':
         specifier: workspace:*
         version: link:../../packages/tanstack-ai-mcp
@@ -287,6 +290,18 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260418.1
         version: 7.0.0-dev.20260418.1
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  packages/sqlite:
+    devDependencies:
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20260418.1
+        version: 7.0.0-dev.20260418.1
+      oxlint:
+        specifier: ^1.60.0
+        version: 1.60.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
