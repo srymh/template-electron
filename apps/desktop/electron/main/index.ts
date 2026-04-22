@@ -6,13 +6,13 @@ import type { WebContents, BrowserWindow } from 'electron'
 
 import type { ServerTool } from '@tanstack/ai'
 
+import type { AuthRuntime } from '@repo/auth'
+import { createAuthRuntime } from '@repo/auth'
 import type { DataBase } from '@repo/sqlite'
 import { mcpToTanStackAiTools } from '@repo/tanstack-ai-mcp'
 
 import { startApp } from './app/startApp'
 import type { AppRuntime } from './app/startApp'
-import type { AuthRuntime } from './features/auth/authRuntime'
-import { createAuthRuntime } from './features/auth/authRuntime'
 import type { McpServer } from './features/mcp'
 import { createAppDataBase } from './infra/db'
 import { resolveMainPaths } from './infra/paths'
@@ -234,7 +234,21 @@ function createWindowContext(
           return runtime
         }
 
-        const newRuntime = createAuthRuntime()
+        /**
+         * desktop app 用に auth.db の実体を開く factory。
+         * 認証スキーマ初期化は @repo/auth 側で行う。
+         */
+        function createAuthDb(): DataBase {
+          const dbPath = path.join(app.getPath('userData'), 'auth.db')
+
+          console.log(`Auth DB Path: ${dbPath}`)
+
+          return createAppDataBase(dbPath)
+        }
+
+        const newRuntime = createAuthRuntime({
+          createDb: createAuthDb,
+        })
         appContext.authRuntime = newRuntime
         appRuntime.addDispose(() => newRuntime.dispose())
         return newRuntime

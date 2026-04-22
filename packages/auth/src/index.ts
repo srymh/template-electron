@@ -11,6 +11,25 @@ export type AuthStatus = {
   user: AuthUser | null
 }
 
+export type AuthRuntime = {
+  getStatus: () => AuthStatus
+  login: (username: string, password: string) => AuthStatus
+  logout: () => void
+  dispose: () => void
+}
+
+export type CreateAuthRuntimeOptions =
+  | {
+      db: DataBase
+      createDb?: never
+      closeDbOnDispose?: boolean
+    }
+  | {
+      db?: never
+      createDb: () => DataBase
+      closeDbOnDispose?: boolean
+    }
+
 type DbAuthUser = {
   id: number
   username: string
@@ -119,6 +138,56 @@ function readCurrentSessionUser(db: DataBase): DbAuthSessionWithUser | undefined
   )
 }
 
+function resolveRuntimeDb(options: CreateAuthRuntimeOptions): {
+  db: DataBase
+  closeDbOnDispose: boolean
+} {
+  if (options.createDb) {
+    return {
+      db: options.createDb(),
+      closeDbOnDispose: options.closeDbOnDispose ?? true,
+    }
+  }
+
+  return {
+    db: options.db,
+    closeDbOnDispose: options.closeDbOnDispose ?? false,
+  }
+}
+
+export function ensureAuthDb(db: DataBase): void {
+  db.exec(
+    [
+      'PRAGMA foreign_keys = ON;',
+      'PRAGMA journal_mode = WAL;',
+      'PRAGMA synchronous = NORMAL;',
+      `CREATE TABLE IF NOT EXISTS auth_users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password_hash TEXT NOT NULL,
+        password_salt BLOB NOT NULL,
+        password_kdf TEXT NOT NULL,
+        password_kdf_params TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        disabled_at TEXT
+      );`,
+      `CREATE TABLE IF NOT EXISTS auth_sessions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        is_current INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL,
+        last_used_at TEXT,
+        expires_at TEXT NOT NULL,
+        revoked_at TEXT,
+        FOREIGN KEY(user_id) REFERENCES auth_users(id) ON DELETE CASCADE
+      );`,
+      'CREATE UNIQUE INDEX IF NOT EXISTS ux_auth_sessions_current ON auth_sessions(is_current) WHERE is_current = 1;',
+      'CREATE INDEX IF NOT EXISTS ix_auth_sessions_user_id ON auth_sessions(user_id);',
+    ].join('\n'),
+  )
+}
+
 export function getAuthStatus(db: DataBase): AuthStatus {
   const row = readCurrentSessionUser(db)
   if (!row) {
@@ -221,4 +290,43 @@ export function login(db: DataBase, username: string, password: string): AuthSta
 
 export function logout(db: DataBase): void {
   revokeCurrentSession(db, nowIso())
+}
+
+export function createAuthRuntime(options: CreateAuthRuntimeOptions): AuthRuntime {
+  const { db, closeDbOnDispose } = resolveRuntimeDb(options)
+  ensureAuthDb(db)
+
+  let disposed = false
+
+  const ensureNotDisposed = () => {
+    if (disposed) {
+      throw new Error('AuthRuntime is disposed')
+    }
+  }
+
+  return {
+    getStatus: () => {
+      ensureNotDisposed()
+      return getAuthStatus(db)
+    },
+
+    login: (username, password) => {
+      ensureNotDisposed()
+      return login(db, username, password)
+    },
+
+    logout: () => {
+      ensureNotDisposed()
+      return logout(db)
+    },
+
+    dispose: () => {
+      if (disposed) return
+      disposed = true
+
+      if (closeDbOnDispose) {
+        db.close()
+      }
+    },
+  }
 }

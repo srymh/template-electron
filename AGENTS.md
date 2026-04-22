@@ -93,6 +93,7 @@ template-electron/
 │       ├── vite.config.ts
 │       └── electron-builder.json5
 ├── packages/
+│   ├── auth/                    # 認証ロジックとランタイム
 │   ├── ipc/                     # 型安全 IPC フレームワーク
 │   ├── rag/                     # RAG ライブラリ
 │   ├── shadcn/                  # UI 共有コード
@@ -193,7 +194,8 @@ WebContents をキーにした WeakMap により、ウィンドウ破棄時に�
 - **パスワード**: `crypto.scrypt` でハッシュ化、ランダムソルト、`timingSafeEqual` で比較。
 - **セッション**: `auth_sessions` テーブル、`is_current` フラグで管理。有効期限 10 年。
 - **自動登録**: 初回ログイン時にユーザーが存在しなければ自動作成。
-- **AuthRuntime パターン**: `dispose()` で DB 接続を解放。
+- **パッケージ境界**: 認証ロジックと `AuthRuntime` は `packages/auth` に置き、desktop 側は `createAuthDb()` を `createAuthRuntime({ createDb })` に注入する。
+- **AuthRuntime パターン**: `createDb` 注入時は package 側が DB を初期化し、`dispose()` で接続を解放する。
 - **ルートガード**: TanStack Router の `beforeLoad` で `/(app)/` レイアウトルートを保護。未認証時は `/login` にリダイレクト。
 
 ### AI チャットとツール
@@ -219,11 +221,12 @@ WebContents をキーにした WeakMap により、ウィンドウ破棄時に�
 | 用途 | ライブラリ | ファイルパス | 備考 |
 |---|---|---|---|
 | アプリデータ（家計簿等） | better-sqlite3 + `@repo/sqlite` | `data/kakeibo.db` | desktop adapter が `@repo/sqlite` の `DataBase` を生成 |
-| 認証 | better-sqlite3 + `@repo/sqlite` | `userData/auth.db` | `createAuthDb()` から desktop adapter 経由で生成 |
+| 認証 | `@repo/auth` + better-sqlite3 + `@repo/sqlite` | `userData/auth.db` | desktop 側が `createAuthDb()` を package auth に注入 |
 | RAG embedding | node:sqlite (`DatabaseSync`) | `data/example.db` | RAG ライブラリ内蔵ハンドラー |
 
 - `data/` 配下のマイグレーション: `0001_init.sql`, `0002_sample.sql`。
 - 再利用可能な同期 DB 抽象は `packages/sqlite` に置き、`apps/desktop/electron/main/infra/db.ts` は better-sqlite3 を接続する adapter に限定する。
+- 再利用可能な認証ロジックは `packages/auth` に置き、desktop 側は DB 実体または作成関数を注入する。
 - `electron-builder.json5` の `extraResources` で DB ファイルを asar 外に配置する。better-sqlite3 は asar 内のファイルにアクセスできないため。
 - `electron/main/infra/paths.ts` で dev / prod / asar 環境のパス解決を統一的に処理する。
 
