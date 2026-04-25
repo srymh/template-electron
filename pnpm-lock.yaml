@@ -17,15 +17,15 @@ importers:
       '@faker-js/faker':
         specifier: ^10.3.0
         version: 10.4.0
-      '@modelcontextprotocol/sdk':
-        specifier: ^1.26.0
-        version: 1.29.0(zod@4.3.6)
       '@repo/auth':
         specifier: workspace:*
         version: link:../../packages/auth
       '@repo/ipc':
         specifier: workspace:*
         version: link:../../packages/ipc
+      '@repo/mcp-server-example':
+        specifier: workspace:*
+        version: link:../../packages/mcp-server-example
       '@repo/rag':
         specifier: workspace:*
         version: link:../../packages/rag
@@ -220,6 +220,37 @@ importers:
       vitest:
         specifier: ^4.1.4
         version: 4.1.4(@types/node@24.12.2)(jsdom@29.0.2)(vite@8.0.9(@types/node@24.12.2)(esbuild@0.27.7)(jiti@2.6.1)(tsx@4.21.0))
+
+  packages/mcp-server-example:
+    dependencies:
+      '@modelcontextprotocol/sdk':
+        specifier: ^1.26.0
+        version: 1.29.0(zod@4.3.6)
+      electron:
+        specifier: ^41.2.1
+        version: 41.2.1
+      express:
+        specifier: ^5.2.1
+        version: 5.2.1
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
+    devDependencies:
+      '@types/express':
+        specifier: ^5.0.6
+        version: 5.0.6
+      '@types/node':
+        specifier: ^24.12.2
+        version: 24.12.2
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20260418.1
+        version: 7.0.0-dev.20260418.1
+      oxlint:
+        specifier: ^1.60.0
+        version: 1.60.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
 
   packages/rag:
     dependencies:

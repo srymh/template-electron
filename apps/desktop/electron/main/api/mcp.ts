@@ -1,9 +1,8 @@
 import type { WebContents } from 'electron'
 
 import type { ApiInterface, WithWebContents, WithWebContentsApi } from '@repo/ipc'
-
-import { startServer as startMcpServer } from '../features/mcp'
-import type { McpServer } from '../features/mcp'
+import { startServer as startMcpServer } from '@repo/mcp-server-example'
+import type { McpServer } from '@repo/mcp-server-example'
 
 // -----------------------------------------------------------------------------
 // 型定義

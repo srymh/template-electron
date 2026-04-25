@@ -8,12 +8,12 @@ import type { ServerTool } from '@tanstack/ai'
 
 import type { AuthRuntime } from '@repo/auth'
 import { createAuthRuntime } from '@repo/auth'
+import type { McpServer } from '@repo/mcp-server-example'
 import type { DataBase } from '@repo/sqlite'
 import { mcpToTanStackAiTools } from '@repo/tanstack-ai-mcp'
 
 import { startApp } from './app/startApp'
 import type { AppRuntime } from './app/startApp'
-import type { McpServer } from './features/mcp'
 import { createAppDataBase } from './infra/db'
 import { resolveMainPaths } from './infra/paths'
 import type { MainPaths } from './infra/paths'

@@ -14,9 +14,9 @@
   },
   "dependencies": {
     "@faker-js/faker": "^10.3.0",
-    "@modelcontextprotocol/sdk": "^1.26.0",
     "@repo/auth": "workspace:*",
     "@repo/ipc": "workspace:*",
+    "@repo/mcp-server-example": "workspace:*",
     "@repo/rag": "workspace:*",
     "@repo/shadcn": "workspace:*",
     "@repo/sqlite": "workspace:*",
