@@ -2,6 +2,8 @@ import * as React from 'react'
 
 import { BotIcon, XIcon } from 'lucide-react'
 
+import type { Model } from '@repo/ai-chat/shared'
+import { MODELS, modelSchema } from '@repo/ai-chat/shared'
 import { Button } from '@repo/shadcn/ui/button'
 import {
   Dialog,
@@ -21,13 +23,18 @@ import {
 } from '@repo/shadcn/ui/select'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@repo/shadcn/ui/sidebar'
 
-import type { Model } from '#/main/features/chat/ollama/models'
-import { MODELS, modelSchema } from '#/main/features/chat/ollama/models'
 import { Chat } from '@/features/chat/components/chat'
 import { ChatSessionProvider } from '@/features/chat/components/chat-session-provider'
 
 export function OpenChat() {
   const [selectedModel, setSelectedModel] = React.useState<Model>('gpt-oss:20b-cloud')
+
+  // AIチャット機能が利用可能かどうかを判定する
+  // const isAiChatAvailable = (window.api as unknown) !== undefined
+
+  // if (!isAiChatAvailable) {
+  //   return null
+  // }
 
   return (
     <SidebarMenu>

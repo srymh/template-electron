@@ -39,7 +39,8 @@ export function Chat() {
   } = useAuth()
   const username = user?.username || 'あなた'
 
-  const { input, setInput, messages, sendMessage, isLoading, stop, status } = useChatSession()
+  const { isNotAvailable, input, setInput, messages, sendMessage, isLoading, stop, status } =
+    useChatSession()
 
   const { scrollContainerRef, scrollBottomRef, onScroll } = useAutoScrollToBottom([messages])
 
@@ -196,7 +197,7 @@ export function Chat() {
               className="min-h-[120px] max-h-[200px]"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              disabled={isLoading}
+              disabled={isLoading || isNotAvailable}
             />
             <InputGroupAddon align="block-end">
               <InputGroupButton
@@ -204,7 +205,7 @@ export function Chat() {
                 size="sm"
                 type="submit"
                 className="ml-auto"
-                disabled={disabled}
+                disabled={disabled || isNotAvailable}
               >
                 {isLoading ? <SquareIcon className="fill-primary-foreground" /> : <ArrowUpIcon />}
               </InputGroupButton>

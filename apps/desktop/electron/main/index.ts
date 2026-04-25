@@ -6,6 +6,7 @@ import type { WebContents, BrowserWindow } from 'electron'
 
 import type { ServerTool } from '@tanstack/ai'
 
+import type { AiChatSession } from '@repo/ai-chat-session'
 import type { AuthRuntime } from '@repo/auth'
 import { createAuthRuntime } from '@repo/auth'
 import type { McpServer } from '@repo/mcp-server-example'
@@ -39,6 +40,7 @@ type AppContext = {
   db: DataBase | null
   toolsByMcp: ServerTool[] | null
   authRuntime: AuthRuntime | null
+  aiChatSession: AiChatSession | null
 
   registerIpcCache: WeakMap<WebContents, Map<string, () => void>>
   paths: MainPaths
@@ -156,6 +158,7 @@ startApp<AppContext>({
       db: null,
       toolsByMcp: null,
       authRuntime: null,
+      aiChatSession: null,
       registerIpcCache: new WeakMap(),
       paths: resolveMainPaths({
         isPackaged: app.isPackaged,
@@ -207,6 +210,10 @@ function createWindowContext(
       },
       getSearchProjectDetailDbPath: () => {
         return path.join(appContext.paths.dataPath, 'example.db')
+      },
+      getAiChatSession: () => appContext.aiChatSession,
+      setAiChatSession: (session) => {
+        appContext.aiChatSession = session
       },
     },
     kakeibo: {

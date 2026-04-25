@@ -4,13 +4,15 @@ import { clientTools } from '@tanstack/ai-client'
 import type { UIMessage } from '@tanstack/ai-client'
 import { useChat } from '@tanstack/ai-react'
 
-import type { Model } from '#/main/features/chat/ollama/models'
-import { mcp } from '@/api'
-import { fetchIpcEvents } from '@/lib/fetchIpcEvents'
+import { aiChatAdapter } from '@repo/ai-chat/react-adapter'
+import type { Model } from '@repo/ai-chat/shared'
+
+import { mcp, aiChat } from '@/api'
 
 import { clockTool } from '../api/tools/tools'
 
 type ChatSessionValue = {
+  isNotAvailable: boolean
   input: string
   setInput: React.Dispatch<React.SetStateAction<string>>
   // ツールのジェネリクスをアプリ全体に配管することなく変更できるように、
@@ -32,7 +34,24 @@ export type ChatSessionProviderProps = {
 export function ChatSessionProvider(props: ChatSessionProviderProps) {
   const { model = 'gpt-oss:20b-cloud', children } = props
 
-  const connection = React.useMemo(() => fetchIpcEvents(), [])
+  const isNotAvailable = React.useRef(false)
+
+  const connection = React.useMemo(() => {
+    try {
+      const {
+        chat,
+        on: { chunk },
+      } = aiChat
+      return aiChatAdapter({ chat, addListener: chunk })
+    } catch {
+      isNotAvailable.current = true
+      return {
+        async *connect() {
+          // 何も生成しないジェネレーター
+        },
+      }
+    }
+  }, [])
   const tools = React.useMemo(() => clientTools(clockTool), [])
 
   React.useEffect(() => {
@@ -56,6 +75,7 @@ export function ChatSessionProvider(props: ChatSessionProviderProps) {
 
   const value = React.useMemo<ChatSessionValue>(() => {
     return {
+      isNotAvailable: isNotAvailable.current,
       input,
       setInput,
       messages: chat.messages as Array<UIMessage>,

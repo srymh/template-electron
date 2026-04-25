@@ -1,18 +1,11 @@
 import { chat as tanstackChat } from '@tanstack/ai'
-import type { ModelMessage, StreamChunk, TextOptions } from '@tanstack/ai'
+import type { TextOptions } from '@tanstack/ai'
 
 import { adapters } from './ollama/adapters'
 import { modelSchema } from './ollama/models'
 import { isOllamaModelMessage } from './ollama/ollama'
 import type { OllamaModelMessage } from './ollama/ollama'
-
-export type ChatRequest = {
-  messages: ModelMessage[]
-  data: unknown
-}
-export type OnChunk = (chunk: StreamChunk) => void
-export type OnDone = () => void
-export type OnError = (error: Error) => void
+import type { ChatRequest, OnChunk, OnDone, OnError } from './types'
 
 export async function chat(options: {
   request: ChatRequest
@@ -74,22 +67,15 @@ export async function chat(options: {
 
     /** ------------------------------------------------------------------------
      *
-     * 非同期イテレータをIIFEで実行して、チャットストリームをIPCでクライアントに送信
+     * チャットストリームを最後まで待機しながら、IPC でクライアントに送信
      *
      * ---------------------------------------------------------------------- */
-    ;(async () => {
-      for await (const chunk of stream) {
-        // クライアントにチャットの応答を送信
-        onChunk(chunk)
-      }
-      // チャットの完了を通知
-      onDone()
-    })().catch((err) => {
-      // try-catch では捕捉できないエラーをキャッチ
-      console.error(`${new Date().toISOString()} Error in AiChatApi chat stream:`, err)
-      // エラーを通知
-      onError(err)
-    })
+    for await (const chunk of stream) {
+      // クライアントにチャットの応答を送信
+      onChunk(chunk)
+    }
+    // チャットの完了を通知
+    onDone()
   } catch (error) {
     const err = error instanceof Error ? error : new Error(String(error))
     console.error(`${new Date().toISOString()} Error in AiChatApi chat:`, err)

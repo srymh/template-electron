@@ -1,22 +1,29 @@
 import { convertMessagesToModelMessages } from '@tanstack/ai'
 import type { ConnectionAdapter } from '@tanstack/ai-react'
 
-import type { AIChatApiResponse } from '#/main/api/aiChat'
-import { aiChat } from '@/api'
+import { createAsyncQueue } from '@repo/async-queue'
+
+import type { ChatRequest, ChatResponse } from '../types'
 
 /**
  * https://tanstack.com/ai/latest/docs/guides/connection-adapters#custom-adapters
  * @returns
  */
-export function fetchIpcEvents() {
+export function aiChatAdapter({
+  chat,
+  addListener,
+}: {
+  chat: (args: ChatRequest & { id: string }) => Promise<void>
+  addListener: (listener: (resp: ChatResponse) => void) => () => void
+}) {
   const connection: ConnectionAdapter = {
     async *connect(messages, data, abortSignal) {
       const id = crypto.randomUUID()
       const modelMessages = convertMessagesToModelMessages(messages)
-      const queue = createAsyncQueue<AIChatApiResponse>()
+      const queue = createAsyncQueue<ChatResponse>()
 
       // IPC イベントリスナーを登録
-      const removeListener = aiChat.on.chunk((resp) => {
+      const removeListener = addListener((resp) => {
         // id が一致するものだけ処理する
         if (resp.id !== id) return
         // ここでは yield できないのでキューに追加する
@@ -25,15 +32,13 @@ export function fetchIpcEvents() {
 
       // IPC 経由でチャットを開始
       // 次の for を実行したいので、ここでは await しない
-      aiChat
-        .chat({
-          messages: modelMessages,
-          data,
-          id,
-        })
-        .catch((error) => {
-          queue.error(error)
-        })
+      chat({
+        messages: modelMessages,
+        data,
+        id,
+      }).catch((error) => {
+        queue.error(error)
+      })
 
       let removeAbortListener: () => void = () => {}
       if (abortSignal) {
@@ -66,48 +71,4 @@ export function fetchIpcEvents() {
   }
 
   return connection
-}
-
-type AsyncQueue<T> = {
-  push: (value: T) => void
-  close: () => void
-  error: (err: unknown) => void
-  shift: () => Promise<T | undefined> // undefined = closed & drained
-}
-
-function createAsyncQueue<T>(): AsyncQueue<T> {
-  const values: Array<T> = []
-  const waiters: Array<(v: T | undefined) => void> = []
-  let closed = false
-  let failure: unknown | undefined
-
-  const push = (value: T) => {
-    if (closed) return
-    const w = waiters.shift()
-    if (w) w(value)
-    else values.push(value)
-  }
-
-  const close = () => {
-    if (closed) return
-    closed = true
-    while (waiters.length) waiters.shift()?.(undefined)
-  }
-
-  const error = (err: unknown) => {
-    failure = err
-    close()
-  }
-
-  const shift = async (): Promise<T | undefined> => {
-    if (failure) throw failure
-    const v = values.shift()
-    if (v !== undefined) return v
-    if (closed) return undefined
-    return await new Promise<T | undefined>((resolve) => {
-      waiters.push(resolve)
-    })
-  }
-
-  return { push, close, error, shift }
 }

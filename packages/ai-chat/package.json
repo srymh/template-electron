@@ -1,0 +1,41 @@
+{
+  "name": "@repo/ai-chat",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    },
+    "./shared": {
+      "types": "./src/shared/index.ts",
+      "import": "./src/shared/index.ts"
+    },
+    "./react-adapter": {
+      "types": "./src/react-adapter/index.ts",
+      "import": "./src/react-adapter/index.ts"
+    }
+  },
+  "scripts": {
+    "lint": "tsgo --noEmit && oxlint",
+    "build": "tsdown src/index.ts",
+    "example": "node example/index.ts"
+  },
+  "dependencies": {
+    "@repo/async-queue": "workspace:*",
+    "@standard-schema/spec": "^1.1.0",
+    "@tanstack/ai": "^0.5.1",
+    "@tanstack/ai-ollama": "^0.5.0",
+    "@tanstack/ai-react": "^0.5.4",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.2",
+    "@typescript/native-preview": "7.0.0-dev.20260418.1",
+    "oxlint": "^1.60.0",
+    "tsdown": "^0.21.10",
+    "typescript": "^6.0.3"
+  },
+  "packageManager": "pnpm@10.33.0"
+}

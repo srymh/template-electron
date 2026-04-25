@@ -2,15 +2,23 @@ import type { WebContents } from 'electron'
 
 import type { ModelMessage, ServerTool, StreamChunk } from '@tanstack/ai'
 
+import { chat } from '@repo/ai-chat'
+import type { ChatResponse } from '@repo/ai-chat'
+import {
+  attachAiChatListener,
+  clearAiChatSession,
+  markAiChatSessionCompleted,
+  markAiChatSessionRunning,
+  prepareAiChatSessionForChat,
+} from '@repo/ai-chat-session'
+import type { AiChatSession } from '@repo/ai-chat-session'
 import type { AddListener, ApiInterface, WithWebContents, WithWebContentsApi } from '@repo/ipc'
-import { createResponseChannel } from '@repo/ipc'
 
-import { chat } from '#/main/features/chat/chat'
 import {
   createSearchProjectDetailTool,
   switchThemeDarkTool,
   switchThemeLightTool,
-} from '#/main/features/chat/tools/tools'
+} from '#/main/features/ai-tools/tools'
 import { clockToolDef } from '@/features/chat/api/tools/definitions'
 
 // -----------------------------------------------------------------------------
@@ -22,16 +30,9 @@ export type AIChatApiKey = typeof AI_CHAT_API_KEY
 export type AiChatContext = {
   getToolsByMcp: () => Promise<ServerTool[]>
   getSearchProjectDetailDbPath: () => string
+  getAiChatSession: () => AiChatSession | null
+  setAiChatSession: (session: AiChatSession | null) => void
 }
-
-export type AIChatApiResponse =
-  | {
-      type: 'chunk'
-      id: string
-      chunk: StreamChunk
-    }
-  | { type: 'done'; id: string }
-  | { type: 'error'; id: string; error: string }
 
 // -----------------------------------------------------------------------------
 // インターフェイス定義
@@ -44,7 +45,7 @@ export type AiChatApi = ApiInterface<{
     id: string
   }) => Promise<void>
   on: {
-    chunk: AddListener<AIChatApiResponse>
+    chunk: AddListener<ChatResponse>
   }
 }>
 
@@ -54,9 +55,40 @@ export type AiChatApi = ApiInterface<{
 const createChat =
   (getContext: (wc: WebContents) => AiChatContext): WithWebContents<AiChatApi['chat']> =>
   async (request, webContents) => {
-    const { getToolsByMcp, getSearchProjectDetailDbPath } = getContext(webContents)
+    const { getToolsByMcp, getSearchProjectDetailDbPath, getAiChatSession, setAiChatSession } =
+      getContext(webContents)
     const { messages, data, id } = request
-    const { sendChunk, sendDone, sendError } = createSendFn(webContents, id)
+
+    const sessionStore = {
+      getSession: getAiChatSession,
+      setSession: setAiChatSession,
+    }
+    const session = prepareAiChatSessionForChat(sessionStore)
+    markAiChatSessionRunning(session)
+
+    let settled = false
+
+    const sendChunk = (chunk: StreamChunk) => {
+      session.queue.push({ type: 'chunk', id, chunk })
+    }
+    const sendDone = () => {
+      if (settled) return
+      settled = true
+      session.queue.push({ type: 'done', id })
+      markAiChatSessionCompleted(session)
+      session.queue.close()
+    }
+    const sendError = (error: unknown) => {
+      if (settled) return
+      settled = true
+      session.queue.push({
+        type: 'error',
+        id,
+        error: error instanceof Error ? error.message : String(error),
+      })
+      markAiChatSessionCompleted(session)
+      session.queue.close()
+    }
 
     const createTools = async () => {
       const toolsByMcp = await getToolsByMcp()
@@ -76,13 +108,18 @@ const createChat =
       ]
     }
 
-    await chat({
-      request: { messages, data },
-      onChunk: sendChunk,
-      onDone: sendDone,
-      onError: sendError,
-      createTools,
-    })
+    try {
+      await chat({
+        request: { messages, data },
+        onChunk: sendChunk,
+        onDone: sendDone,
+        onError: sendError,
+        createTools,
+      })
+    } catch (error) {
+      console.error(`${new Date().toISOString()} Error in AiChatApi chat:`, error)
+      sendError(error)
+    }
   }
 
 export function getAiChatApi(
@@ -91,36 +128,33 @@ export function getAiChatApi(
   return {
     chat: createChat(getContext),
     on: {
-      chunk: () => () => {}, // イベントリスナーの登録は不要
-    },
-  }
-}
+      chunk: (listener, wc) => {
+        const { getAiChatSession, setAiChatSession } = getContext(wc)
+        const sessionStore = {
+          getSession: getAiChatSession,
+          setSession: setAiChatSession,
+        }
+        const session = attachAiChatListener(sessionStore)
 
-function createSendFn(webContents: WebContents, id: string) {
-  const channel = createResponseChannel('aiChat.on.chunk')
-  const send = (response: AIChatApiResponse) => {
-    try {
-      webContents.send(channel, response)
-    } catch (error) {
-      console.error(`${new Date().toISOString()} Error sending AiChatApi chunk:`, error)
-    }
-  }
-  const sendChunk = (chunk: StreamChunk) => {
-    send({ type: 'chunk', id, chunk })
-  }
-  const sendDone = () => {
-    send({ type: 'done', id })
-  }
-  const sendError = (error: unknown) => {
-    send({
-      type: 'error',
-      id,
-      error: error instanceof Error ? error.message : String(error),
-    })
-  }
-  return {
-    sendChunk,
-    sendDone,
-    sendError,
+        ;(async () => {
+          for (;;) {
+            const resp = await session.queue.shift()
+            if (resp == null) {
+              break
+            }
+            listener(resp)
+          }
+        })().catch((error) => {
+          console.error(`${new Date().toISOString()} Error in AiChatApi chunk listener:`, error)
+        })
+
+        let disposed = false
+        return () => {
+          if (disposed) return
+          disposed = true
+          clearAiChatSession(sessionStore, session)
+        }
+      },
+    },
   }
 }
