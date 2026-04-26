@@ -6,10 +6,9 @@ import { useChat } from '@tanstack/ai-react'
 
 import { aiChatAdapter } from '@repo/ai-chat/react-adapter'
 import type { Model } from '@repo/ai-chat/shared'
+import { clockTool } from '@repo/ai-tools/client/tools'
 
 import { mcp, aiChat } from '@/api'
-
-import { clockTool } from '../api/tools/tools'
 
 type ChatSessionValue = {
   isNotAvailable: boolean

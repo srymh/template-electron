@@ -12,14 +12,13 @@ import {
   prepareAiChatSessionForChat,
 } from '@repo/ai-chat-session'
 import type { AiChatSession } from '@repo/ai-chat-session'
-import type { AddListener, ApiInterface, WithWebContents, WithWebContentsApi } from '@repo/ipc'
-
+import { clockToolDef } from '@repo/ai-tools/client/definitions'
 import {
   createSearchProjectDetailTool,
   switchThemeDarkTool,
   switchThemeLightTool,
-} from '#/main/features/ai-tools/tools'
-import { clockToolDef } from '@/features/chat/api/tools/definitions'
+} from '@repo/ai-tools/server/tools'
+import type { AddListener, ApiInterface, WithWebContents, WithWebContentsApi } from '@repo/ipc'
 
 // -----------------------------------------------------------------------------
 // 型定義
