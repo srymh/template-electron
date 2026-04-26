@@ -15,7 +15,7 @@ import { THEME_API_KEY, getThemeApi } from '#/main/api/theme'
 import type { ThemeContext } from '#/main/api/theme'
 import { getWebApi } from '#/main/api/web'
 
-import type { ElectronMainApi } from './electronApi'
+import type { ElectronMainApi } from './electronMainApi'
 
 export type Context = {
   [THEME_API_KEY]: ThemeContext
@@ -39,22 +39,13 @@ export const registerIpc = createRegisterIpc<ElectronMainApi, Context>(
       // 'this.should.cause.a.type.error': { type: 'invoke', method: () => {} },
       'fs.joinPath': { type: 'invoke', method: fs.joinPath },
       'fs.readFileAsText': { type: 'invoke', method: fs.readFileAsText },
-      'fs.readFileAsArrayBuffer': {
-        type: 'invoke',
-        method: fs.readFileAsArrayBuffer,
-      },
+      'fs.readFileAsArrayBuffer': { type: 'invoke', method: fs.readFileAsArrayBuffer },
       'fs.writeFileAsText': { type: 'invoke', method: fs.writeFileAsText },
-      'fs.writeFileAsArrayBuffer': {
-        type: 'invoke',
-        method: fs.writeFileAsArrayBuffer,
-      },
+      'fs.writeFileAsArrayBuffer': { type: 'invoke', method: fs.writeFileAsArrayBuffer },
       'fs.showOpenDialog': { type: 'invoke', method: fs.showOpenDialog },
       'fs.showSaveDialog': { type: 'invoke', method: fs.showSaveDialog },
       'fs.readDirectory': { type: 'invoke', method: fs.readDirectory },
-      'fs.openFileByDefaultApp': {
-        type: 'invoke',
-        method: fs.openFileByDefaultApp,
-      },
+      'fs.openFileByDefaultApp': { type: 'invoke', method: fs.openFileByDefaultApp },
       'fs.getFileDetails': { type: 'invoke', method: fs.getFileDetails },
       'theme.getTheme': { type: 'invoke', method: theme.getTheme },
       'theme.setTheme': { type: 'invoke', method: theme.setTheme },
@@ -68,10 +59,7 @@ export const registerIpc = createRegisterIpc<ElectronMainApi, Context>(
       'web.stopFindInPage': { type: 'invoke', method: web.stopFindInPage },
       'web.on.blur': { type: 'event', addEventListener: web.on.blur },
       'web.on.focus': { type: 'event', addEventListener: web.on.focus },
-      'web.on.foundInPage': {
-        type: 'event',
-        addEventListener: web.on.foundInPage,
-      },
+      'web.on.foundInPage': { type: 'event', addEventListener: web.on.foundInPage },
       'mcp.getServerStatus': { type: 'invoke', method: mcp.getServerStatus },
       'mcp.startServer': { type: 'invoke', method: mcp.startServer },
       'mcp.stopServer': { type: 'invoke', method: mcp.stopServer },

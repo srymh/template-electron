@@ -2,34 +2,18 @@ import { ipcRenderer } from 'electron'
 
 import { createResponseChannel } from '../shared/createResponseChannel'
 import type { Api, RecursiveMethodKeys, ExtractMethod, Listener } from '../shared/types'
-import { deepMergeRecord } from './deepMerge'
+import type { CreateFn, CreateRendererOnlyFn } from './types'
 
-type UseChannel<TElectronApi extends Api> = {
-  <TChannel extends RecursiveMethodKeys<TElectronApi>>(
-    channel: TChannel,
-  ): ExtractMethod<TElectronApi, TChannel>
-}
-
-type CreateElectronMainApi<TElectronMainApi extends Api> = (helpers: {
-  defineHelper: (api: TElectronMainApi) => TElectronMainApi
-  useChannelAsInvoke: UseChannel<TElectronMainApi>
-  useChannelAsEvent: UseChannel<TElectronMainApi>
-}) => TElectronMainApi
-
-type CreateElectronRendererApi<TElectronRendererApi extends Api> = (helpers: {
-  defineHelper: (api: TElectronRendererApi) => TElectronRendererApi
-}) => TElectronRendererApi
-
-const useChannelAsInvoke = <TElectronMainApi extends Api>(
-  channel: RecursiveMethodKeys<TElectronMainApi>,
+const useChannelAsInvoke = <TElectronApi extends Api>(
+  channel: RecursiveMethodKeys<TElectronApi>,
 ) => {
   const invoke = (...args: any[]) => ipcRenderer.invoke(channel, ...args)
-  return invoke as ExtractMethod<TElectronMainApi, typeof channel>
+  return invoke as ExtractMethod<TElectronApi, typeof channel>
 }
 
 const useChannelAsEvent =
   (map: Map<string, () => void>) =>
-  <TElectronMainApi extends Api>(channel: RecursiveMethodKeys<TElectronMainApi>) => {
+  <TElectronApi extends Api>(channel: RecursiveMethodKeys<TElectronApi>) => {
     const responseChannel = createResponseChannel(channel)
     const addListener = (listener: Listener<any>) => {
       if (map.has(channel)) {
@@ -88,7 +72,7 @@ const useChannelAsEvent =
       return removeListener
     }
 
-    return addListener as ExtractMethod<TElectronMainApi, typeof channel>
+    return addListener as ExtractMethod<TElectronApi, typeof channel>
   }
 
 /**
@@ -98,39 +82,33 @@ const useChannelAsEvent =
  * - renderer process: OK
  * - main process: NG
  *
- * @param createElectronMainApi Electron Main API 作成関数
+ * @param create Electron API 作成関数
  * @param options オプション
  * @returns 不変の Electron API オブジェクト
  */
-export const createElectronApi = <
-  TElectronMainApi extends Api,
-  // Renderer API が不要な場合のためにデフォルトを追加
-  // しかし、省略時に defineHelper がすべてのオブジェクトを受け入れるようになるため、型安全性が若干低下する
-  TElectronRendererApi extends Api = {},
->(
-  createElectronMainApi: CreateElectronMainApi<TElectronMainApi>,
-  createElectronRendererApi: CreateElectronRendererApi<TElectronRendererApi>,
+export const createElectronApi = <TElectronApi extends Api>(
+  createFn: CreateFn<TElectronApi>,
   options: {
     registeredEventMap: Map<string, () => void>
   },
-) => {
-  const { registeredEventMap } = options
+): Readonly<TElectronApi> => {
+  const { registeredEventMap } = options ?? {}
 
-  const electronMainApi = createElectronMainApi({
-    defineHelper: <T extends TElectronMainApi>(api: T) => api,
-    useChannelAsInvoke: useChannelAsInvoke<TElectronMainApi>,
-    useChannelAsEvent: useChannelAsEvent(registeredEventMap)<TElectronMainApi>,
+  const electronApi = createFn({
+    defineHelper: <T extends TElectronApi>(api: T) => api,
+    useChannelAsInvoke: useChannelAsInvoke<TElectronApi>,
+    useChannelAsEvent: useChannelAsEvent(registeredEventMap)<TElectronApi>,
   })
 
-  const electronRendererApi = createElectronRendererApi({
-    // TElectronRendererApi の指定が省略されたとき
-    // {} にフォールバックするが、このとき defineHelper はすべてのオブジェクトを
-    // 受け入れるようになる。そのため、型安全性が若干低下する
-    defineHelper: <T extends TElectronRendererApi>(api: T) => api,
-  })
+  // 不変オブジェクトとして返す
+  return Object.freeze(electronApi)
+}
 
-  // 両方の API をマージして不変オブジェクトとして返す
-  // 同名キーが「プレーンオブジェクト」同士の場合のみ、再帰的にマージする
-  // （例: main.fs と renderer.fs を統合）。関数/配列などは後勝ちで上書き。
-  return Object.freeze(deepMergeRecord(electronMainApi, electronRendererApi))
+export const createRendererOnlyElectronApi = <TElectronApi extends Api>(
+  createFn: CreateRendererOnlyFn<TElectronApi>,
+): Readonly<TElectronApi> => {
+  const electronApi = createFn({ defineHelper: <T extends TElectronApi>(api: T) => api })
+
+  // 不変オブジェクトとして返す
+  return Object.freeze(electronApi)
 }

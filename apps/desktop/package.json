@@ -18,6 +18,7 @@
     "@repo/ai-chat-session": "workspace:*",
     "@repo/ai-tools": "workspace:*",
     "@repo/auth": "workspace:*",
+    "@repo/deep-merge": "workspace:*",
     "@repo/ipc": "workspace:*",
     "@repo/mcp-server-example": "workspace:*",
     "@repo/shadcn": "workspace:*",

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 
-import { deepMergeRecord } from './deepMerge'
+import { deepMergeRecord } from '.'
 
 describe('deepMerge', () => {
   it('deepMergeRecord はオブジェクトをマージできる', () => {
