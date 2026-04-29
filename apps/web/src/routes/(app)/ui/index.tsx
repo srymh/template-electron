@@ -30,7 +30,7 @@ import {
 } from '@repo/shadcn/ui/popover'
 import { ToggleGroup, ToggleGroupItem } from '@repo/shadcn/ui/toggle-group'
 
-import type { Theme as AppearanceMode } from '#/main/api/theme'
+import type { ThemeApi } from '@/api'
 import { useTheme as useAppearanceMode } from '@/components/theme-provider'
 import { ThemeSwitcher as ModeSwitcher } from '@/components/theme-switcher'
 import { useStyle } from '@/features/style/api/use-style'
@@ -44,6 +44,8 @@ import { THEMES } from '@/features/style/components/themes'
 import { useIframeMessage } from '@/hooks/use-iframe-message'
 import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
 import { getPaginationItems } from '@/lib/pagination'
+
+export type AppearanceMode = Awaited<ReturnType<ThemeApi['getTheme']>>
 
 const SearchSchema = z.object({
   page: z.number().default(0).optional(),

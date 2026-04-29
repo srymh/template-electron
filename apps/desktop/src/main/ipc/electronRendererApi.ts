@@ -2,7 +2,7 @@ import { webUtils } from 'electron'
 
 import { createRendererOnlyElectronApi } from '@repo/ipc/browser'
 
-import type { FileSystemRendererApi, FS_API_KEY } from '#/main/api/fs'
+import type { FileSystemRendererApi, FS_API_KEY } from '../api/fs'
 
 type Api = {
   [FS_API_KEY]: FileSystemRendererApi

@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "pnpm --filter your-app-name run dev",
-    "build": "pnpm --filter your-app-name run build",
+    "dev": "pnpm --parallel --filter @your-app-name/web --filter your-app-name run dev",
+    "build": "pnpm --filter @your-app-name/web run build && pnpm --filter your-app-name run build",
     "test": "pnpm -r run test",
     "lint": "pnpm -r run lint",
     "format": "oxfmt",

@@ -1,6 +1,6 @@
 // Used in Renderer process, expose in `preload/index.ts`
 interface Window {
-  api: import('#/main/ipc/electronApi').ElectronApi
+  api: import('your-app-name/api').ElectronApi
 }
 
 // Injected by Vite `define` at build time (see vite.config.ts)

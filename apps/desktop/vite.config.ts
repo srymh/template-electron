@@ -1,14 +1,8 @@
 import { defineConfig } from 'vite'
-import babel from '@rolldown/plugin-babel'
 import { electron } from '@srymh/vite-plugin-electron'
-import tailwindcss from '@tailwindcss/vite'
-import { devtools } from '@tanstack/devtools-vite'
-import { tanstackRouter } from '@tanstack/router-plugin/vite'
-import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const base = mode === 'production' ? './' : '/'
   const minify = mode === 'production'
   const sourcemap = mode !== 'production'
 
@@ -19,51 +13,40 @@ export default defineConfig(({ mode }) => {
   const nativeModules = ['better-sqlite3']
   const external = nativeModules
 
-  // React Compiler を使用するとデバッグ時にブレークポイントが正しく動作しないため、
-  // ソースマップを有効にしたい場合には React Compiler を無効化します。
-  const reactCompilerPlugin = !sourcemap ? [babel({ presets: [reactCompilerPreset()] })] : []
-
   return {
-    base,
+    server: {
+      port: 5174,
+      strictPort: true,
+    },
     plugins: [
-      devtools(),
-      tanstackRouter({
-        target: 'react',
-        // true にするとデバッグ時にブレークポイントが正しく動作しないため、
-        // sourcemap を有効にしたい場合には自動コード分割を無効化します。
-        // autoCodeSplitting: sourcemap ? false : true,
-        autoCodeSplitting: sourcemap ? false : true,
-      }),
-      react(),
-      ...reactCompilerPlugin,
-      tailwindcss(),
       electron({
         main: {
-          entry: 'electron/main/index.ts',
+          entry: 'src/main/index.ts',
           vite: {
             build: {
               sourcemap,
               minify,
-              outDir: 'dist-electron/main',
+              outDir: 'dist/main',
               rolldownOptions: { external },
             },
             resolve: { tsconfigPaths: true },
           },
         },
         preload: {
-          entry: 'electron/preload/index.ts',
+          entry: 'src/preload/index.ts',
           vite: {
             build: {
               sourcemap: sourcemap ? 'inline' : false,
               minify,
-              outDir: 'dist-electron/preload',
+              outDir: 'dist/preload',
               rolldownOptions: { external },
             },
             resolve: { tsconfigPaths: true },
           },
         },
         renderer: {
-          mode: 'internal',
+          mode: 'external',
+          devUrl: 'http://localhost:5173',
         },
         debug: {
           enabled: true,
@@ -73,13 +56,6 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     clearScreen: false,
-    define: {
-      __PLATFORM__: JSON.stringify(process.env.TARGET_PLATFORM ?? process.platform),
-    },
     resolve: { tsconfigPaths: true },
-    test: {
-      environment: 'jsdom',
-      globals: true,
-    },
   }
 })

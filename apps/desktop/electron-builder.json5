@@ -6,9 +6,15 @@
   productName: 'YourAppName',
   directories: {
     output: 'release/${version}',
-    buildResources: 'dist',
   },
-  files: ['dist', 'dist-electron', 'node_modules/**', 'data/**'],
+  files: [
+    'dist',
+    {
+      from: '../web/dist',
+      to: 'web/dist',
+      filter: ['**/*'],
+    },
+  ],
 
   // better-sqlite3 は asar アーカイブ内のファイルを直接開けないため、
   // data/**.db のようなファイルを明示的にリソースとしてコピーする指示が必要。
@@ -34,7 +40,7 @@
   mac: {
     target: ['dmg'],
     artifactName: '${productName}-Mac-${version}-Installer.${ext}',
-    icon: 'dist/app.icns',
+    icon: 'public/app.icns',
   },
   win: {
     target: [
@@ -44,12 +50,12 @@
       },
     ],
     artifactName: '${productName}-Windows-${version}-Setup.${ext}',
-    icon: 'dist/app.ico',
+    icon: 'public/app.ico',
   },
   nsis: {
-    installerIcon: 'dist/app.ico',
-    uninstallerIcon: 'dist/app.ico',
-    installerHeaderIcon: 'dist/app.ico',
+    installerIcon: 'public/app.ico',
+    uninstallerIcon: 'public/app.ico',
+    installerHeaderIcon: 'public/app.ico',
     oneClick: false,
     perMachine: false,
     allowToChangeInstallationDirectory: true,

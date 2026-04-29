@@ -40,7 +40,7 @@
       "request": "attach",
       "address": "localhost",
       "port": 9222,
-      "webRoot": "${workspaceFolder}/apps/desktop",
+      "webRoot": "${workspaceFolder}/apps/web",
       "sourceMaps": true,
       "restart": true,
       "timeout": 300000

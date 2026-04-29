@@ -1,12 +1,12 @@
 import { createElectronApi } from '@repo/ipc/browser'
 
-import type { AiChatApi, AI_CHAT_API_KEY } from '#/main/api/aiChat'
-import type { AuthApi, AUTH_API_KEY } from '#/main/api/auth'
-import type { FileSystemApi, FS_API_KEY } from '#/main/api/fs'
-import type { KakeiboApi, Kakeibo_API_KEY } from '#/main/api/kakeibo'
-import type { McpApi, MCP_API_KEY } from '#/main/api/mcp'
-import type { ThemeApi, THEME_API_KEY } from '#/main/api/theme'
-import type { WebApi, WEB_API_KEY } from '#/main/api/web'
+import type { AiChatApi, AI_CHAT_API_KEY } from '../api/aiChat'
+import type { AuthApi, AUTH_API_KEY } from '../api/auth'
+import type { FileSystemApi, FS_API_KEY } from '../api/fs'
+import type { KakeiboApi, Kakeibo_API_KEY } from '../api/kakeibo'
+import type { McpApi, MCP_API_KEY } from '../api/mcp'
+import type { ThemeApi, THEME_API_KEY } from '../api/theme'
+import type { WebApi, WEB_API_KEY } from '../api/web'
 
 type Api = {
   [FS_API_KEY]: FileSystemApi
