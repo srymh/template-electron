@@ -1,6 +1,8 @@
-import { registerAuthStatusResponder, requestAuthStatusFromParent } from '@/lib/frame-rpc'
+import type { ElectronApi } from 'your-app-name/api'
 
-export type Api = typeof window.api
+import { registerAuthStatusResponder, requestAuthStatusFromParent } from '@repo/frame-rpc'
+
+export type Api = ElectronApi
 export type AiChatApi = Api['aiChat']
 export type AuthApi = Api['auth']
 export type FsApi = Api['fs']
@@ -9,7 +11,15 @@ export type McpApi = Api['mcp']
 export type ThemeApi = Api['theme']
 export type WebApi = Api['web']
 
+type BrowserWindowWithApi = Window & {
+  api?: ElectronApi
+}
+
 let mockUser: { username: string } | null = null
+
+function getElectronApi(windowObject: BrowserWindowWithApi): ElectronApi | null {
+  return windowObject.api ?? null
+}
 
 function registerAuthFrameRpcResponder() {
   if (window.self !== window.top) return
@@ -20,8 +30,9 @@ function registerAuthFrameRpcResponder() {
   w.__authFrameRpcResponder = true
 
   registerAuthStatusResponder(async () => {
-    if ((window.api as unknown) !== undefined) {
-      return await window.api.auth.getStatus()
+    const electronApi = getElectronApi(window)
+    if (electronApi) {
+      return await electronApi.auth.getStatus()
     }
     return {
       isAuthenticated: Boolean(mockUser),
@@ -33,9 +44,9 @@ function registerAuthFrameRpcResponder() {
 registerAuthFrameRpcResponder()
 
 const api: Api = (() => {
-  const isElectron = (window.api as unknown) !== undefined
-  if (isElectron) {
-    return window.api
+  const electronApi = getElectronApi(window)
+  if (electronApi) {
+    return electronApi
   }
 
   const isIframe = window.self !== window.top

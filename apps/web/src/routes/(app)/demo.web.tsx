@@ -2,14 +2,13 @@ import React from 'react'
 
 import { createFileRoute } from '@tanstack/react-router'
 
+import { web } from '@repo/api'
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@repo/shadcn/ui/context-menu'
-
-import { web } from '@/api'
 
 export const Route = createFileRoute('/(app)/demo/web')({
   component: RouteComponent,

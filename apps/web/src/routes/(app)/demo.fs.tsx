@@ -3,10 +3,9 @@ import React from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
+import { fs } from '@repo/api'
 import { Label } from '@repo/shadcn/ui/label'
 import { RadioGroup, RadioGroupItem } from '@repo/shadcn/ui/radio-group'
-
-import { fs } from '@/api'
 
 export const Route = createFileRoute('/(app)/demo/fs')({
   component: RouteComponent,
