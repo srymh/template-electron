@@ -1,5 +1,5 @@
 {
-  "name": "@repo/api",
+  "name": "@your-app-name/api",
   "version": "0.2.0-alpha.1",
   "private": true,
   "type": "module",

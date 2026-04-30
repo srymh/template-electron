@@ -51,7 +51,7 @@
 - 各 workspace の `tsconfig.json` に従う。`strict`、`noUnusedLocals`、`noUnusedParameters`、`noFallthroughCasesInSwitch`、`noUncheckedSideEffectImports` は有効。
 - ESM import を使い、型だけの import には `import type` を使う。
 - 同じ責務を app 側に複製せず、既存の workspace package を優先して再利用する。
-- `apps/web` から Electron module を直接 import しない。renderer からの呼び出しは `@repo/api` を通す。
+- `apps/web` から Electron module を直接 import しない。renderer からの呼び出しは `@your-app-name/api` を通す。
 - `window.api` への直接アクセスは preload か `apps/api/src/api.ts` に閉じ込める。iframe fallback もそこに集約する。
 - `apps/web/src/routeTree.gen.ts` は生成ファイルなので編集しない。
 - `apps/desktop/src/main/windows/createWindow.ts` の BrowserWindow セキュリティ設定は維持する。`contextIsolation`、`sandbox`、`webviewTag` は固定し、`nodeIntegration` は無効のままにする。
@@ -83,7 +83,7 @@
 
 - 変更前に担当 workspace と近傍実装を読み、既存パターンを踏襲する。
 - 最小の差分で編集し、直後に最も狭い検証を実行する。
-- renderer 機能では新しい bridge を足す前に `@repo/api` の既存面を確認する。
+- renderer 機能では新しい bridge を足す前に `@your-app-name/api` の既存面を確認する。
 - desktop/native 変更では `apps/desktop/src/main/infra` と `apps/desktop/vite.config.ts` の path/packaging 実装を確認する。
 - 最終報告には、変更ファイル、実行した検証、未実行の検証と理由、TODO/残リスクを含める。
 

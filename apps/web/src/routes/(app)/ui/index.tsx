@@ -4,7 +4,6 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { MoonIcon, SunIcon } from 'lucide-react'
 import { z } from 'zod'
 
-import type { ThemeApi } from '@repo/api'
 import { components } from '@repo/shadcn/demo/constants'
 import { cn } from '@repo/shadcn/lib/utils'
 import { Button } from '@repo/shadcn/ui/button'
@@ -30,6 +29,7 @@ import {
   PopoverTrigger,
 } from '@repo/shadcn/ui/popover'
 import { ToggleGroup, ToggleGroupItem } from '@repo/shadcn/ui/toggle-group'
+import type { ThemeApi } from '@your-app-name/api'
 
 import { useTheme as useAppearanceMode } from '@/components/theme-provider'
 import { ThemeSwitcher as ModeSwitcher } from '@/components/theme-switcher'

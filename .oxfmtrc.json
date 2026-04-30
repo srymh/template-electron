@@ -22,7 +22,7 @@
       },
       {
         "groupName": "workspace",
-        "elementNamePattern": ["@repo/**"]
+        "elementNamePattern": ["@repo/**", "@your-app-name/**"]
       }
     ],
     "groups": [

@@ -2,7 +2,7 @@
 
 ## 呼び出し境界
 
-- `apps/web` から Electron API を使うときは `@repo/api` を入口にする。
+- `apps/web` から Electron API を使うときは `@your-app-name/api` を入口にする。
 - Electron 実行時の経路は `apps/web` → `apps/api/src/api.ts` → `window.api` → `apps/desktop/src/preload/index.ts` → `apps/desktop/src/main/ipc/electronApi.ts` → `apps/desktop/src/main/ipc/registerIpc.ts` → `apps/desktop/src/main/api/*`。
 - iframe は preload を継承しないため `window.api` は使えない。iframe 向けの fallback や親画面との bridge は `apps/api/src/api.ts` と `@repo/frame-rpc` に集約する。
 

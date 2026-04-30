@@ -4,7 +4,7 @@
 
 - 再利用可能なロジックは `packages/*` に置き、desktop 固有の I/O や native 依存は `apps/desktop` に残す。
 - 新しい shared package では Electron runtime への直接依存を増やさず、callback や adapter 注入を優先する。
-- renderer から見える公開面は `@repo/api` に集約し、`apps/web` から `window.api` を直接触らない。
+- renderer から見える公開面は `@your-app-name/api` に集約し、`apps/web` から `window.api` を直接触らない。
 
 ## auth と sqlite
 

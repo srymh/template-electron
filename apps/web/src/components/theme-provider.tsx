@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { theme as themeApi } from '@repo/api'
+import { theme as themeApi } from '@your-app-name/api'
 
 type Theme = 'dark' | 'light' | 'system'
 
