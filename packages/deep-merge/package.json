@@ -10,6 +10,7 @@
     }
   },
   "scripts": {
+    "test": "tsgo --noEmit && vitest run",
     "lint": "tsgo --noEmit && oxlint"
   },
   "devDependencies": {

@@ -132,43 +132,45 @@ export async function ingestDocuments(text: string, options: IngestDocumentsOpti
 
   const { initialize, insert, finalize } = await createHandlers(dbPath, docName)
 
-  // 初期化する（データベース接続とテーブル作成、既存ドキュメントの削除）
-  await initialize()
+  try {
+    // 初期化する（データベース接続とテーブル作成、既存ドキュメントの削除）
+    await initialize()
 
-  // テキストをチャンクに分割する
-  const chunks = chunkText(text, chunkSize, overlap)
-  if (chunks.length === 0) {
-    throw new Error('テキストをチャンクに分割できませんでした。')
+    // テキストをチャンクに分割する
+    const chunks = chunkText(text, chunkSize, overlap)
+    if (chunks.length === 0) {
+      throw new Error('テキストをチャンクに分割できませんでした。')
+    }
+
+    // チャンクごとに処理する
+    for (let idx = 0; idx < chunks.length; idx++) {
+      const content = chunks[idx].trim()
+      if (!content) {
+        continue
+      }
+
+      const subChunks = splitForEmbedding(content, maxEmbeddingChars, embeddingOverlap)
+
+      // サブチャンクごとに処理する
+      for (let subIdx = 0; subIdx < subChunks.length; subIdx++) {
+        const part = subChunks[subIdx]
+
+        // テキストを埋め込みベクトルに変換する
+        const embedding = await embedText(part, { model, prefix })
+
+        // データベースに保存する
+        await insert(docName, idx, subIdx, part, JSON.stringify(embedding))
+      }
+
+      // 進捗を通知する
+      if ((idx + 1) % 10 === 0 || idx + 1 === chunks.length) {
+        onProgress?.(idx + 1, chunks.length)
+      }
+    }
+  } finally {
+    // 途中で失敗してもデータベース接続を閉じる
+    await finalize()
   }
-
-  // チャンクごとに処理する
-  for (let idx = 0; idx < chunks.length; idx++) {
-    const content = chunks[idx].trim()
-    if (!content) {
-      continue
-    }
-
-    const subChunks = splitForEmbedding(content, maxEmbeddingChars, embeddingOverlap)
-
-    // サブチャンクごとに処理する
-    for (let subIdx = 0; subIdx < subChunks.length; subIdx++) {
-      const part = subChunks[subIdx]
-
-      // テキストを埋め込みベクトルに変換する
-      const embedding = await embedText(part, { model, prefix })
-
-      // データベースに保存する
-      await insert(docName, idx, subIdx, part, JSON.stringify(embedding))
-    }
-
-    // 進捗を通知する
-    if ((idx + 1) % 10 === 0 || idx + 1 === chunks.length) {
-      onProgress?.(idx + 1, chunks.length)
-    }
-  }
-
-  // データベース接続を閉じる
-  await finalize()
 }
 
 // -----------------------------------------------------------------------------

@@ -36,6 +36,7 @@ export function ThemeProvider({
   useEffect(() => {
     // 初期化フラグを設定
     let initializing = true
+    const root = window.document.documentElement
 
     // 初期テーマをメインプロセスに通知
     themeApi.setTheme({ theme }).finally(() => {
@@ -48,8 +49,6 @@ export function ThemeProvider({
       setTheme(newTheme)
     })
 
-    const root = window.document.documentElement
-
     root.classList.remove('light', 'dark')
 
     if (theme === 'system') {
@@ -58,10 +57,11 @@ export function ThemeProvider({
         : 'light'
 
       root.classList.add(systemTheme)
-      return
     }
 
-    root.classList.add(theme)
+    if (theme !== 'system') {
+      root.classList.add(theme)
+    }
 
     return () => {
       unsubscribe()
