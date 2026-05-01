@@ -1,0 +1,13 @@
+node_modules
+.DS_Store
+release
+dist
+dist-electron
+dist-ssr
+*.local
+count.txt
+.env
+.debug.env
+.nitro
+.tanstack
+.wrangler

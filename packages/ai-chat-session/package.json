@@ -1,0 +1,29 @@
+{
+  "name": "@repo/ai-chat-session",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/aiChatSession.ts",
+      "import": "./src/aiChatSession.ts"
+    }
+  },
+  "scripts": {
+    "lint": "tsgo --noEmit && oxlint",
+    "test": "tsgo --noEmit && vitest run"
+  },
+  "dependencies": {
+    "@repo/ai-chat": "workspace:*",
+    "@repo/async-queue": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.2",
+    "@typescript/native-preview": "7.0.0-dev.20260418.1",
+    "oxlint": "^1.60.0",
+    "tsdown": "^0.21.10",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.4"
+  },
+  "packageManager": "pnpm@10.33.0"
+}

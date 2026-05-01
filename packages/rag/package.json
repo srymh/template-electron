@@ -1,0 +1,27 @@
+{
+  "name": "@repo/rag",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "test": "tsgo --noEmit && vitest run",
+    "lint": "tsgo --noEmit && oxlint"
+  },
+  "dependencies": {
+    "ollama": "^0.6.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.12.2",
+    "@typescript/native-preview": "7.0.0-dev.20260418.1",
+    "oxlint": "^1.60.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.4"
+  },
+  "packageManager": "pnpm@10.33.0"
+}

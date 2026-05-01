@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "unicorn", "oxc", "import"],
+  "jsPlugins": ["eslint-plugin-use-no-memo"],
+  "categories": {
+    "correctness": "error"
+  },
+  "env": {
+    "builtin": true
+  },
+  "ignorePatterns": ["**/*.d.ts", "**/coverage/**", "**/dist/**"],
+  "rules": {
+    "use-no-memo/react-hook-form": "error",
+    "use-no-memo/tanstack-table": "error",
+    "react/rules-of-hooks": "error",
+    "react/exhaustive-deps": "warn",
+    "import/no-duplicates": "error",
+    "typescript/consistent-type-imports": [
+      "error",
+      {
+        "prefer": "type-imports",
+        "fixStyle": "separate-type-imports"
+      }
+    ],
+    "import/consistent-type-specifier-style": ["error", "prefer-top-level"]
+  }
+}

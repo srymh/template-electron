@@ -1,0 +1,51 @@
+{
+  "name": "your-app-name",
+  "version": "0.2.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "main": "dist/main/index.js",
+  "exports": {
+    "./api": {
+      "types": "./src/main/ipc/electronApi.ts"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "pnpm lint && vite build && electron-builder",
+    "lint": "tsgo --noEmit && oxlint",
+    "check": "tsgo --noEmit && oxlint --fix",
+    "postinstall": "electron-rebuild -f -w better-sqlite3"
+  },
+  "dependencies": {
+    "@repo/ai-chat": "workspace:*",
+    "@repo/ai-chat-session": "workspace:*",
+    "@repo/ai-tools": "workspace:*",
+    "@repo/auth": "workspace:*",
+    "@repo/deep-merge": "workspace:*",
+    "@repo/ipc": "workspace:*",
+    "@repo/mcp-server-example": "workspace:*",
+    "@repo/sqlite": "workspace:*",
+    "@repo/tanstack-ai-mcp": "workspace:*",
+    "@standard-schema/spec": "^1.1.0",
+    "@tanstack/ai": "^0.5.1",
+    "better-sqlite3": "^12.9.0",
+    "express": "^5.2.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.0.3",
+    "@srymh/vite-plugin-electron": "0.2.0-beta.4",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.12.2",
+    "@typescript/native-preview": "7.0.0-dev.20260418.1",
+    "electron": "^41.2.1",
+    "electron-builder": "^26.8.1",
+    "oxlint": "^1.60.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.8",
+    "vitest": "^4.1.4",
+    "web-vitals": "^5.2.0"
+  },
+  "packageManager": "pnpm@10.33.0"
+}
