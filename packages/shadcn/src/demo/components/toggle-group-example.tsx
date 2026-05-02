@@ -1,4 +1,16 @@
-import { Example, ExampleWrapper } from './helper/example'
+"use client"
+
+import * as React from "react"
+
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
+import {
+  Field,
+  FieldDescription,
+  FieldLabel,
+} from "#components/ui/field"
 import { Input } from "#components/ui/input"
 import {
   Select,
@@ -12,7 +24,7 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "#components/ui/toggle-group"
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 export default function ToggleGroupExample() {
   return (
@@ -31,6 +43,7 @@ export default function ToggleGroupExample() {
       <ToggleGroupVerticalOutline />
       <ToggleGroupVerticalOutlineWithIcons />
       <ToggleGroupVerticalWithSpacing />
+      <ToggleGroupFontWeightSelector />
     </ExampleWrapper>
   )
 }
@@ -198,7 +211,7 @@ function ToggleGroupWithIcons() {
         <ToggleGroupItem
           value="star"
           aria-label="Toggle star"
-          className="aria-pressed:*:[svg]:fill-foreground aria-pressed:*:[svg]:stroke-foregfill-foreground aria-pressed:bg-transparent"
+          className="aria-pressed:*:[svg]:stroke-foregfill-foreground aria-pressed:bg-transparent aria-pressed:*:[svg]:fill-foreground"
         >
           <IconPlaceholder
             lucide="StarIcon"
@@ -206,13 +219,14 @@ function ToggleGroupWithIcons() {
             hugeicons="StarIcon"
             phosphor="StarIcon"
             remixicon="RiStarLine"
+            data-icon="inline-start"
           />
           Star
         </ToggleGroupItem>
         <ToggleGroupItem
           value="heart"
           aria-label="Toggle heart"
-          className="aria-pressed:*:[svg]:fill-foreground aria-pressed:*:[svg]:stroke-foreground aria-pressed:bg-transparent"
+          className="aria-pressed:bg-transparent aria-pressed:*:[svg]:fill-foreground aria-pressed:*:[svg]:stroke-foreground"
         >
           <IconPlaceholder
             lucide="HeartIcon"
@@ -220,13 +234,14 @@ function ToggleGroupWithIcons() {
             hugeicons="FavouriteIcon"
             phosphor="HeartIcon"
             remixicon="RiHeartLine"
+            data-icon="inline-start"
           />
           Heart
         </ToggleGroupItem>
         <ToggleGroupItem
           value="bookmark"
           aria-label="Toggle bookmark"
-          className="aria-pressed:*:[svg]:fill-foreground aria-pressed:*:[svg]:stroke-foreground aria-pressed:bg-transparent"
+          className="aria-pressed:bg-transparent aria-pressed:*:[svg]:fill-foreground aria-pressed:*:[svg]:stroke-foreground"
         >
           <IconPlaceholder
             lucide="BookmarkIcon"
@@ -234,6 +249,7 @@ function ToggleGroupWithIcons() {
             hugeicons="BookmarkIcon"
             phosphor="BookmarkIcon"
             remixicon="RiBookmarkLine"
+            data-icon="inline-start"
           />
           Bookmark
         </ToggleGroupItem>
@@ -306,6 +322,7 @@ function ToggleGroupSort() {
             hugeicons="ArrowDownIcon"
             phosphor="ArrowDownIcon"
             remixicon="RiArrowDownLine"
+            data-icon="inline-start"
           />
           Newest
         </ToggleGroupItem>
@@ -316,6 +333,7 @@ function ToggleGroupSort() {
             hugeicons="ArrowUpIcon"
             phosphor="ArrowUpIcon"
             remixicon="RiArrowUpLine"
+            data-icon="inline-start"
           />
           Oldest
         </ToggleGroupItem>
@@ -326,6 +344,7 @@ function ToggleGroupSort() {
             hugeicons="TradeUpIcon"
             phosphor="TrendUpIcon"
             remixicon="RiLineChartLine"
+            data-icon="inline-start"
           />
           Popular
         </ToggleGroupItem>
@@ -464,6 +483,65 @@ function ToggleGroupVerticalOutlineWithIcons() {
           />
         </ToggleGroupItem>
       </ToggleGroup>
+    </Example>
+  )
+}
+
+function ToggleGroupFontWeightSelector() {
+  const [fontWeight, setFontWeight] = React.useState("normal")
+  return (
+    <Example title="Font Weight Selector">
+      <Field>
+        <FieldLabel>Font Weight</FieldLabel>
+        <ToggleGroup
+          type="single"
+          value={fontWeight}
+          onValueChange={(value) => setFontWeight(value)}
+          variant="outline"
+          spacing={2}
+          size="lg"
+        >
+          <ToggleGroupItem
+            value="light"
+            aria-label="Light"
+            className="flex size-16 flex-col items-center justify-center rounded-xl"
+          >
+            <span className="text-2xl leading-none font-light">Aa</span>
+            <span className="text-xs text-muted-foreground">Light</span>
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="normal"
+            aria-label="Normal"
+            className="flex size-16 flex-col items-center justify-center rounded-xl"
+          >
+            <span className="text-2xl leading-none font-normal">Aa</span>
+            <span className="text-xs text-muted-foreground">Normal</span>
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="medium"
+            aria-label="Medium"
+            className="flex size-16 flex-col items-center justify-center rounded-xl"
+          >
+            <span className="text-2xl leading-none font-medium">Aa</span>
+            <span className="text-xs text-muted-foreground">Medium</span>
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="bold"
+            aria-label="Bold"
+            className="flex size-16 flex-col items-center justify-center rounded-xl"
+          >
+            <span className="text-2xl leading-none font-bold">Aa</span>
+            <span className="text-xs text-muted-foreground">Bold</span>
+          </ToggleGroupItem>
+        </ToggleGroup>
+        <FieldDescription>
+          Use{" "}
+          <code className="rounded-md bg-muted px-1 py-0.5 font-mono">
+            font-{fontWeight}
+          </code>{" "}
+          to set the font weight.
+        </FieldDescription>
+      </Field>
     </Example>
   )
 }

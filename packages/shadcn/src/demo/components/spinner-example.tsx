@@ -1,4 +1,7 @@
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import { Badge } from "#components/ui/badge"
 import { Button } from "#components/ui/button"
 import {
@@ -16,7 +19,7 @@ import {
   InputGroupInput,
 } from "#components/ui/input-group"
 import { Spinner } from "#components/ui/spinner"
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 export default function SpinnerExample() {
   return (

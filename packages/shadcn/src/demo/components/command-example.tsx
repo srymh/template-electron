@@ -2,8 +2,12 @@
 
 import * as React from "react"
 
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import { Button } from "#components/ui/button"
+import { Card, CardContent } from "#components/ui/card"
 import {
   Command,
   CommandDialog,
@@ -15,16 +19,102 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "#components/ui/command"
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 export default function CommandExample() {
   return (
     <ExampleWrapper>
+      <CommandInline />
       <CommandBasic />
       <CommandWithShortcuts />
       <CommandWithGroups />
       <CommandManyItems />
     </ExampleWrapper>
+  )
+}
+
+function CommandInline() {
+  return (
+    <Example title="Inline">
+      <Card className="w-full p-0">
+        <CardContent className="p-0">
+          <Command>
+            <CommandInput placeholder="Type a command or search..." />
+            <CommandList>
+              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandGroup heading="Suggestions">
+                <CommandItem>
+                  <IconPlaceholder
+                    lucide="CalendarIcon"
+                    tabler="IconCalendar"
+                    hugeicons="CalendarIcon"
+                    phosphor="CalendarBlankIcon"
+                    remixicon="RiCalendarLine"
+                  />
+                  <span>Calendar</span>
+                </CommandItem>
+                <CommandItem>
+                  <IconPlaceholder
+                    lucide="SmileIcon"
+                    tabler="IconMoodSmile"
+                    hugeicons="SmileIcon"
+                    phosphor="SmileyIcon"
+                    remixicon="RiEmotionLine"
+                  />
+                  <span>Search Emoji</span>
+                </CommandItem>
+                <CommandItem>
+                  <IconPlaceholder
+                    lucide="CalculatorIcon"
+                    tabler="IconCalculator"
+                    hugeicons="CalculatorIcon"
+                    phosphor="CalculatorIcon"
+                    remixicon="RiCalculatorLine"
+                  />
+                  <span>Calculator</span>
+                </CommandItem>
+              </CommandGroup>
+              <CommandSeparator />
+              <CommandGroup heading="Settings">
+                <CommandItem>
+                  <IconPlaceholder
+                    lucide="UserIcon"
+                    tabler="IconUser"
+                    hugeicons="UserIcon"
+                    phosphor="UserIcon"
+                    remixicon="RiUserLine"
+                  />
+                  <span>Profile</span>
+                  <CommandShortcut>⌘P</CommandShortcut>
+                </CommandItem>
+                <CommandItem>
+                  <IconPlaceholder
+                    lucide="CreditCardIcon"
+                    tabler="IconCreditCard"
+                    hugeicons="CreditCardIcon"
+                    phosphor="CreditCardIcon"
+                    remixicon="RiBankCardLine"
+                  />
+                  <span>Billing</span>
+                  <CommandShortcut>⌘B</CommandShortcut>
+                </CommandItem>
+                <CommandItem>
+                  <IconPlaceholder
+                    lucide="SettingsIcon"
+                    tabler="IconSettings"
+                    hugeicons="SettingsIcon"
+                    phosphor="GearIcon"
+                    remixicon="RiSettingsLine"
+                  />
+                  <span>Settings</span>
+                  <CommandShortcut>⌘S</CommandShortcut>
+                </CommandItem>
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </CardContent>
+      </Card>
+    </Example>
   )
 }
 

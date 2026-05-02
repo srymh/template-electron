@@ -1,21 +1,26 @@
-https://github.com/shadcn-ui/ui/tree/9676c8f4ee4499da5714c4d1f9e630950b9192fa
-
 shadcn create のデザインを反映するために [https://github.com/shadcn-ui/ui](https://github.com/shadcn-ui/ui) を手動でコピー・調整しました。
 
-Commit Hash: `9676c8f4ee4499da5714c4d1f9e630950b9192fa`
+- Source: https://github.com/shadcn-ui/ui/tree/c2e1a5793fe93c44cc6128b5603c8452ca4a84bc
+- Tag: `shadcn@4.6.0`
+- Commit Hash: `c2e1a5793fe93c44cc6128b5603c8452ca4a84bc`
 
-- `apps/v4/styles/globals.css` -> `src/styles.css`
-- `apps/v4/styles/legacy-themes.css` -> `src/styles/legacy-themes.css`
-- `apps/v4/registry/themes.ts` -> `src/features/style/components/themes.ts`
-- `apps/v4/registry/bases/radix/ui/*.tsx` -> `src/components/ui/*.tsx`
-- `apps/v4/registry/bases/radix/examples/*-example.tsx` -> `src/features/ui-demo/*-example.tsx`
-- `apps/v4/registry/styles/style-vega.css` -> `src/styles/style-vega.css`
-- `apps/v4/registry/styles/style-nova.css` -> `src/styles/style-nova.css`
-- `apps/v4/registry/styles/style-lyra.css` -> `src/styles/style-lyra.css`
-- `apps/v4/registry/styles/style-maia.css` -> `src/styles/style-maia.css`
-- `apps/v4/registry/styles/style-mira.css` -> `src/styles/style-mira.css`
-- `packages/shadcn/src/tailwind.css` -> `src/styles/tailwind.css`
-- など
+```plain
+apps/v4/registry/bases/radix/ui/*.tsx                    -> src/components/ui/*.tsx
+apps/v4/registry/bases/radix/lib/utils.ts                -> src/lib/utils.ts
+apps/v4/app/(app)/create/components/icon-placeholder.tsx -> src/components/ui/helper/icon-placeholder.tsx
+apps/v4/registry/bases/radix/hooks/use-mobile.ts         -> src/hooks/use-mobile.ts
+
+apps/v4/registry/bases/radix/examples/*.tsx              -> src/demo/components/*.tsx
+apps/v4/registry/themes.ts                               -> src/themes.ts
+
+apps/v4/app/globals.css                                  -> src/styles.css
+apps/v4/app/legacy-themes.css                            -> src/styles/legacy-themes.css
+apps/v4/registry/styles/style-*.css                      -> src/styles/style-*.css
+packages/shadcn/src/tailwind.css                         -> src/styles/tailwind.css
+
+apps/v4/registry/icons/*.{ts,tsx}                        -> src/icons/*.{ts,tsx}
+packages/shadcn/src/icons/libraries.ts                   -> src/icons/libraries.ts
+```
 
 ```plain
 MIT License

@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { use } from "react"
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
 
 const iconPromiseCaches = new Map<string, Map<string, Promise<any>>>()
 
@@ -11,12 +13,11 @@ function getCache(libraryName: string) {
   return iconPromiseCaches.get(libraryName)!
 }
 
+function isIconData(data: any): data is IconSvgElement {
+  return Array.isArray(data)
+}
 
 export function createIconLoader(libraryName: string) {
-  if (libraryName !== 'lucide') {
-    throw new Error(`Unsupported library: ${libraryName}`)
-  }
-
   const cache = getCache(libraryName)
 
   return function IconLoader({
@@ -27,7 +28,7 @@ export function createIconLoader(libraryName: string) {
     name: string
   } & React.ComponentProps<"svg">) {
     if (!cache.has(name)) {
-      const promise = import("./lucide-react").then((mod) => {
+      const promise = import(`./__${libraryName}__`).then((mod) => {
         const icon = mod[name as keyof typeof mod]
         return icon || null
       })
@@ -38,6 +39,10 @@ export function createIconLoader(libraryName: string) {
 
     if (!iconData) {
       return null
+    }
+
+    if (isIconData(iconData)) {
+      return <HugeiconsIcon icon={iconData} strokeWidth={2} {...props} />
     }
 
     const IconComponent = iconData

@@ -1,7 +1,7 @@
 import { createContext, useState } from 'react'
 import type { ReactNode } from 'react'
 
-export const STYLES = ['lyra', 'maia', 'mira', 'nova', 'vega'] as const
+export const STYLES = ['lyra', 'maia', 'mira', 'nova', 'vega', 'sera', 'luma'] as const
 
 export type Style = (typeof STYLES)[number]
 

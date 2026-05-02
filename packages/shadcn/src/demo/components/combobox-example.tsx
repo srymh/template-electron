@@ -3,7 +3,10 @@
 import * as React from "react"
 import { toast } from "sonner"
 
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import { Button } from "#components/ui/button"
 import { Card, CardContent, CardFooter } from "#components/ui/card"
 import {
@@ -60,7 +63,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "#components/ui/select"
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 export default function ComboboxExample() {
   return (
@@ -83,6 +86,7 @@ export default function ComboboxExample() {
       <ComboboxWithCustomItems />
       <ComboboxInDialog />
       <ComboboxWithOtherInputs />
+      <ComboboxDisabledItems />
     </ExampleWrapper>
   )
 }
@@ -572,6 +576,32 @@ function ComboboxDisabled() {
           <ComboboxList>
             {(item) => (
               <ComboboxItem key={item} value={item}>
+                {item}
+              </ComboboxItem>
+            )}
+          </ComboboxList>
+        </ComboboxContent>
+      </Combobox>
+    </Example>
+  )
+}
+
+const disabledFrameworks = ["Nuxt.js", "Remix"]
+
+function ComboboxDisabledItems() {
+  return (
+    <Example title="Disabled Items">
+      <Combobox items={frameworks}>
+        <ComboboxInput placeholder="Select a framework" />
+        <ComboboxContent>
+          <ComboboxEmpty>No items found.</ComboboxEmpty>
+          <ComboboxList>
+            {(item) => (
+              <ComboboxItem
+                key={item}
+                value={item}
+                disabled={disabledFrameworks.includes(item)}
+              >
                 {item}
               </ComboboxItem>
             )}
@@ -1190,7 +1220,7 @@ function ComboboxWithOtherInputs() {
       </Select>
       <Button
         variant="outline"
-        className="text-muted-foreground w-52 justify-between font-normal"
+        className="w-52 justify-between font-normal text-muted-foreground style-sera:hidden"
       >
         Select a framework
         <IconPlaceholder

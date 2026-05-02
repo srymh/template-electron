@@ -1,6 +1,6 @@
 "use client"
 
-// import * as React from "react"
+import * as React from "react"
 import {
   Area,
   AreaChart,
@@ -10,8 +10,8 @@ import {
   Label,
   Line,
   LineChart,
-  // Pie,
-  // PieChart,
+  Pie,
+  PieChart,
   PolarAngleAxis,
   PolarGrid,
   PolarRadiusAxis,
@@ -22,7 +22,10 @@ import {
   XAxis,
 } from "recharts"
 
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import {
   Card,
   CardContent,
@@ -37,7 +40,8 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "#components/ui/chart"
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
+import { useDesignSystemSearchParams } from "#design-system/index"
 
 const areaChartData = [
   { month: "January", desktop: 186 },
@@ -61,6 +65,7 @@ export default function ChartExample() {
       <ChartAreaExample />
       <ChartBarExample />
       <ChartLineExample />
+      <ChartPieExample />
       <ChartRadialExample />
       <ChartRadarExample />
     </ExampleWrapper>
@@ -123,7 +128,7 @@ function ChartAreaExample() {
                   className="size-4"
                 />
               </div>
-              <div className="text-muted-foreground flex items-center gap-2 leading-none">
+              <div className="flex items-center gap-2 leading-none text-muted-foreground">
                 January - June 2024
               </div>
             </div>
@@ -155,6 +160,9 @@ const barChartConfig = {
 } satisfies ChartConfig
 
 function ChartBarExample() {
+  const [params] = useDesignSystemSearchParams()
+  const isRounded = !["lyra", "sera"].includes(params.style)
+
   return (
     <Example title="Bar Chart">
       <Card className="w-full">
@@ -177,8 +185,16 @@ function ChartBarExample() {
                 cursor={false}
                 content={<ChartTooltipContent indicator="dashed" />}
               />
-              <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-              <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+              <Bar
+                dataKey="desktop"
+                fill="var(--color-desktop)"
+                radius={isRounded ? 4 : 0}
+              />
+              <Bar
+                dataKey="mobile"
+                fill="var(--color-mobile)"
+                radius={isRounded ? 4 : 0}
+              />
             </BarChart>
           </ChartContainer>
         </CardContent>
@@ -194,7 +210,7 @@ function ChartBarExample() {
               className="size-4"
             />
           </div>
-          <div className="text-muted-foreground leading-none">
+          <div className="leading-none text-muted-foreground">
             Showing total visitors for the last 6 months
           </div>
         </CardFooter>
@@ -281,7 +297,7 @@ function ChartLineExample() {
                   className="size-4"
                 />
               </div>
-              <div className="text-muted-foreground flex items-center gap-2 leading-none">
+              <div className="flex items-center gap-2 leading-none text-muted-foreground">
                 Showing total visitors for the last 6 months
               </div>
             </div>
@@ -292,122 +308,122 @@ function ChartLineExample() {
   )
 }
 
-// const pieChartData = [
-//   { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-//   { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-//   { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-//   { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-//   { browser: "other", visitors: 190, fill: "var(--color-other)" },
-// ]
+const pieChartData = [
+  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
+  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
+  { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
+  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
+  { browser: "other", visitors: 190, fill: "var(--color-other)" },
+]
 
-// const pieChartConfig = {
-//   visitors: {
-//     label: "Visitors",
-//   },
-//   chrome: {
-//     label: "Chrome",
-//     color: "var(--chart-1)",
-//   },
-//   safari: {
-//     label: "Safari",
-//     color: "var(--chart-2)",
-//   },
-//   firefox: {
-//     label: "Firefox",
-//     color: "var(--chart-3)",
-//   },
-//   edge: {
-//     label: "Edge",
-//     color: "var(--chart-4)",
-//   },
-//   other: {
-//     label: "Other",
-//     color: "var(--chart-5)",
-//   },
-// } satisfies ChartConfig
+const pieChartConfig = {
+  visitors: {
+    label: "Visitors",
+  },
+  chrome: {
+    label: "Chrome",
+    color: "var(--chart-1)",
+  },
+  safari: {
+    label: "Safari",
+    color: "var(--chart-2)",
+  },
+  firefox: {
+    label: "Firefox",
+    color: "var(--chart-3)",
+  },
+  edge: {
+    label: "Edge",
+    color: "var(--chart-4)",
+  },
+  other: {
+    label: "Other",
+    color: "var(--chart-5)",
+  },
+} satisfies ChartConfig
 
-// function ChartPieExample() {
-//   const totalVisitors = React.useMemo(() => {
-//     return pieChartData.reduce((acc, curr) => acc + curr.visitors, 0)
-//   }, [])
+function ChartPieExample() {
+  const totalVisitors = React.useMemo(() => {
+    return pieChartData.reduce((acc, curr) => acc + curr.visitors, 0)
+  }, [])
 
-//   return (
-//     <Example title="Pie Chart">
-//       <Card className="w-full">
-//         <CardHeader className="items-center pb-0">
-//           <CardTitle>Pie Chart - Donut with Text</CardTitle>
-//           <CardDescription>January - June 2024</CardDescription>
-//         </CardHeader>
-//         <CardContent className="flex-1 pb-0">
-//           <ChartContainer
-//             config={pieChartConfig}
-//             className="mx-auto aspect-square max-h-[250px]"
-//           >
-//             <PieChart>
-//               <ChartTooltip
-//                 cursor={false}
-//                 content={<ChartTooltipContent hideLabel />}
-//               />
-//               <Pie
-//                 data={pieChartData}
-//                 dataKey="visitors"
-//                 nameKey="browser"
-//                 innerRadius={60}
-//                 strokeWidth={5}
-//               >
-//                 <Label
-//                   content={({ viewBox }) => {
-//                     if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-//                       return (
-//                         <text
-//                           x={viewBox.cx}
-//                           y={viewBox.cy}
-//                           textAnchor="middle"
-//                           dominantBaseline="middle"
-//                         >
-//                           <tspan
-//                             x={viewBox.cx}
-//                             y={viewBox.cy}
-//                             className="fill-foreground text-3xl font-bold"
-//                           >
-//                             {totalVisitors.toLocaleString()}
-//                           </tspan>
-//                           <tspan
-//                             x={viewBox.cx}
-//                             y={(viewBox.cy || 0) + 24}
-//                             className="fill-muted-foreground"
-//                           >
-//                             Visitors
-//                           </tspan>
-//                         </text>
-//                       )
-//                     }
-//                   }}
-//                 />
-//               </Pie>
-//             </PieChart>
-//           </ChartContainer>
-//         </CardContent>
-//         <CardFooter className="flex-col gap-2">
-//           <div className="flex items-center gap-2 leading-none font-medium">
-//             Trending up by 5.2% this month{" "}
-//             <IconPlaceholder
-//               lucide="TrendingUpIcon"
-//               tabler="IconTrendingUp"
-//               hugeicons="ChartUpIcon"
-//               phosphor="TrendUpIcon"
-//               remixicon="RiLineChartLine"
-//               className="size-4"
-//             />
-//           </div>
-//           <div className="text-muted-foreground leading-none">
-//             Showing total visitors for the last 6 months
-//           </div>
-//         </CardFooter>
-//       </Card>
-//     </Example>
-//   )
-// }
+  return (
+    <Example title="Pie Chart">
+      <Card className="w-full">
+        <CardHeader className="items-center pb-0">
+          <CardTitle>Pie Chart - Donut with Text</CardTitle>
+          <CardDescription>January - June 2024</CardDescription>
+        </CardHeader>
+        <CardContent className="flex-1 pb-0">
+          <ChartContainer
+            config={pieChartConfig}
+            className="mx-auto aspect-square max-h-[250px]"
+          >
+            <PieChart>
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
+              <Pie
+                data={pieChartData}
+                dataKey="visitors"
+                nameKey="browser"
+                innerRadius={60}
+                strokeWidth={5}
+              >
+                <Label
+                  content={({ viewBox }) => {
+                    if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                      return (
+                        <text
+                          x={viewBox.cx}
+                          y={viewBox.cy}
+                          textAnchor="middle"
+                          dominantBaseline="middle"
+                        >
+                          <tspan
+                            x={viewBox.cx}
+                            y={viewBox.cy}
+                            className="fill-foreground text-3xl font-bold"
+                          >
+                            {totalVisitors.toLocaleString()}
+                          </tspan>
+                          <tspan
+                            x={viewBox.cx}
+                            y={(viewBox.cy || 0) + 24}
+                            className="fill-muted-foreground"
+                          >
+                            Visitors
+                          </tspan>
+                        </text>
+                      )
+                    }
+                  }}
+                />
+              </Pie>
+            </PieChart>
+          </ChartContainer>
+        </CardContent>
+        <CardFooter className="flex-col gap-2">
+          <div className="flex items-center gap-2 leading-none font-medium">
+            Trending up by 5.2% this month{" "}
+            <IconPlaceholder
+              lucide="TrendingUpIcon"
+              tabler="IconTrendingUp"
+              hugeicons="ChartUpIcon"
+              phosphor="TrendUpIcon"
+              remixicon="RiLineChartLine"
+              className="size-4"
+            />
+          </div>
+          <div className="leading-none text-muted-foreground">
+            Showing total visitors for the last 6 months
+          </div>
+        </CardFooter>
+      </Card>
+    </Example>
+  )
+}
 
 const radarChartData = [
   { month: "January", desktop: 186, mobile: 80 },
@@ -472,7 +488,7 @@ function ChartRadarExample() {
               className="size-4"
             />
           </div>
-          <div className="text-muted-foreground flex items-center gap-2 leading-none">
+          <div className="flex items-center gap-2 leading-none text-muted-foreground">
             January - June 2024
           </div>
         </CardFooter>
@@ -511,8 +527,8 @@ function ChartRadialExample() {
             <RadialBarChart
               data={radialChartData}
               endAngle={100}
-              innerRadius={80}
-              outerRadius={140}
+              innerRadius={64}
+              outerRadius={94}
             >
               <PolarGrid
                 gridType="circle"
@@ -568,7 +584,7 @@ function ChartRadialExample() {
               className="size-4"
             />
           </div>
-          <div className="text-muted-foreground leading-none">
+          <div className="leading-none text-muted-foreground">
             Showing total visitors for the last 6 months
           </div>
         </CardFooter>

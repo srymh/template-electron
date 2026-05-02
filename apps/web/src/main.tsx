@@ -4,6 +4,7 @@ import { RouterProvider, createHashHistory, createRouter } from '@tanstack/react
 import ReactDOM from 'react-dom/client'
 
 import { Toaster } from '@repo/shadcn/ui/sonner'
+import { TooltipProvider } from '@repo/shadcn/ui/tooltip'
 
 import { DevToolsProvider } from '@/components/devtools-provider.tsx'
 import { ThemeProvider } from '@/components/theme-provider'
@@ -81,13 +82,15 @@ if (rootElement && !rootElement.innerHTML) {
     <StrictMode>
       <ThemeProvider>
         <DesignProvider>
-          <DevToolsProvider defaultHidden={false}>
-            <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
-              <AuthProvider>
-                <InnerApp />
-              </AuthProvider>
-            </TanStackQueryProvider.Provider>
-          </DevToolsProvider>
+          <TooltipProvider>
+            <DevToolsProvider defaultHidden={false}>
+              <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
+                <AuthProvider>
+                  <InnerApp />
+                </AuthProvider>
+              </TanStackQueryProvider.Provider>
+            </DevToolsProvider>
+          </TooltipProvider>
           <Toaster />
         </DesignProvider>
       </ThemeProvider>

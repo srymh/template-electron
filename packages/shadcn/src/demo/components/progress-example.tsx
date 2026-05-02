@@ -2,7 +2,10 @@
 
 import * as React from "react"
 
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import { Field, FieldLabel } from "#components/ui/field"
 import {
   Item,
@@ -14,7 +17,7 @@ import {
 } from "#components/ui/item"
 import { Progress } from "#components/ui/progress"
 import { Slider } from "#components/ui/slider"
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 export default function ProgressExample() {
   return (
@@ -127,7 +130,7 @@ function FileUploadList() {
               <Progress value={file.progress} className="w-32" />
             </ItemContent>
             <ItemActions className="w-16 justify-end">
-              <span className="text-muted-foreground text-sm">
+              <span className="text-sm text-muted-foreground">
                 {file.timeRemaining}
               </span>
             </ItemActions>

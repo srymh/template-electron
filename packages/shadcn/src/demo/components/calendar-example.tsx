@@ -5,7 +5,10 @@ import { addDays, format } from "date-fns"
 import { type DateRange } from "react-day-picker"
 import { es } from "react-day-picker/locale"
 
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import { Button } from "#components/ui/button"
 import { Calendar, CalendarDayButton } from "#components/ui/calendar"
 import { Card, CardContent, CardFooter } from "#components/ui/card"
@@ -20,7 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "#components/ui/popover"
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 export default function CalendarExample() {
   return (
@@ -37,7 +40,46 @@ export default function CalendarExample() {
       <DatePickerSimple />
       <DataPickerWithDropdowns />
       <DatePickerWithRange />
+      <CalendarInCard />
+      <CalendarInPopover />
     </ExampleWrapper>
+  )
+}
+
+function CalendarInCard() {
+  return (
+    <Example title="In Card">
+      <Card className="mx-auto w-fit p-0">
+        <CardContent className="p-0">
+          <Calendar mode="single" />
+        </CardContent>
+      </Card>
+    </Example>
+  )
+}
+
+function CalendarInPopover() {
+  return (
+    <Example title="In Popover">
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline" className="px-2.5 font-normal">
+            <IconPlaceholder
+              lucide="CalendarIcon"
+              tabler="IconCalendar"
+              hugeicons="CalendarIcon"
+              phosphor="CalendarBlankIcon"
+              remixicon="RiCalendarLine"
+              data-icon="inline-start"
+            />
+            Open Calendar
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar mode="single" />
+        </PopoverContent>
+      </Popover>
+    </Example>
   )
 }
 
@@ -180,7 +222,7 @@ function CalendarWithTime() {
             className="p-0"
           />
         </CardContent>
-        <CardFooter className="bg-card border-t">
+        <CardFooter className="border-t bg-card">
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="time-from">Start Time</FieldLabel>

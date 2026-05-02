@@ -1,4 +1,7 @@
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import {
   Field,
   FieldContent,
@@ -14,6 +17,7 @@ export default function SwitchExample() {
     <ExampleWrapper>
       <SwitchBasic />
       <SwitchWithDescription />
+      <SwitchWithLabel />
       <SwitchDisabled />
       <SwitchSizes />
     </ExampleWrapper>
@@ -31,16 +35,16 @@ function SwitchBasic() {
   )
 }
 
-// function SwitchWithLabel() {
-//   return (
-//     <Example title="With Label">
-//       <div className="flex items-center gap-2">
-//         <Switch id="switch-bluetooth" defaultChecked />
-//         <Label htmlFor="switch-bluetooth">Bluetooth</Label>
-//       </div>
-//     </Example>
-//   )
-// }
+function SwitchWithLabel() {
+  return (
+    <Example title="With Label">
+      <div className="flex items-center gap-2">
+        <Switch id="switch-bluetooth" defaultChecked />
+        <Label htmlFor="switch-bluetooth">Bluetooth</Label>
+      </div>
+    </Example>
+  )
+}
 
 function SwitchWithDescription() {
   return (
