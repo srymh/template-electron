@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { THEMES } from './themes'
+import { THEMES } from '@repo/shadcn/themes'
 
 export type Theme = (typeof THEMES)[number]['name']
 

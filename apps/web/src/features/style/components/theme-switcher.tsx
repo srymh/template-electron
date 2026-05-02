@@ -1,8 +1,8 @@
 import { cn } from '@repo/shadcn/lib/utils'
+import { THEMES } from '@repo/shadcn/themes'
 import { ToggleGroup, ToggleGroupItem } from '@repo/shadcn/ui/toggle-group'
 
 import { useTheme } from '../api/use-theme'
-import { THEMES } from './themes'
 
 export function ThemeSwitcher({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()

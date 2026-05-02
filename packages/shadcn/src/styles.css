@@ -10,6 +10,7 @@
 @import "./styles/style-mira.css" layer(base);
 
 @source "./components/**/*.{ts,tsx}";
+@source "./demo/**/*.{ts,tsx}";
 
 @custom-variant style-vega (&:where(.style-vega *));
 @custom-variant style-nova (&:where(.style-nova *));

@@ -29,6 +29,10 @@
       "style": "./src/styles.css",
       "import": "./src/styles.css"
     },
+    "./themes": {
+      "style": "./src/themes.ts",
+      "import": "./src/themes.ts"
+    },
     "./demo/*": {
       "types": "./src/demo/components/*.tsx",
       "import": "./src/demo/components/*.tsx"
