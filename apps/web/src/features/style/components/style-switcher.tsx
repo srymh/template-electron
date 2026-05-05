@@ -1,10 +1,8 @@
+import { STYLES, useStyle } from '@repo/shadcn/design-system'
+import type { StyleName } from '@repo/shadcn/design-system'
 import { ToggleGroup, ToggleGroupItem } from '@repo/shadcn/ui/toggle-group'
 
 import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
-
-import { useStyle } from '../api/use-style'
-import { STYLES } from './style-provider'
-import type { Style } from './style-provider'
 
 export function StyleSwitcher({ className }: { className?: string }) {
   const { style, setStyle } = useStyle()
@@ -18,12 +16,12 @@ export function StyleSwitcher({ className }: { className?: string }) {
       onValueChange={(value) => {
         if (value === style) return
         if (value == '') return
-        setStyle(value as Style)
+        setStyle(value as StyleName)
       }}
     >
-      {STYLES.map((s) => (
-        <ToggleGroupItem key={s} value={s}>
-          {formatKebabAsTitle(s)}
+      {STYLES.map(({ name }) => (
+        <ToggleGroupItem key={name} value={name}>
+          {formatKebabAsTitle(name)}
         </ToggleGroupItem>
       ))}
     </ToggleGroup>

@@ -1,8 +1,6 @@
+import { THEMES, useTheme } from '@repo/shadcn/design-system'
 import { cn } from '@repo/shadcn/lib/utils'
-import { THEMES } from '@repo/shadcn/themes'
 import { ToggleGroup, ToggleGroupItem } from '@repo/shadcn/ui/toggle-group'
-
-import { useTheme } from '../api/use-theme'
 
 export function ThemeSwitcher({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme()
@@ -25,7 +23,7 @@ export function ThemeSwitcher({ className }: { className?: string }) {
           <div
             className="size-4 rounded-full"
             style={{
-              backgroundColor: t.cssVars['light']['primary'],
+              backgroundColor: t.cssVars!.light?.primary,
             }}
           ></div>
         </ToggleGroupItem>

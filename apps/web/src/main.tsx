@@ -3,13 +3,13 @@ import { StrictMode, useEffect, useRef } from 'react'
 import { RouterProvider, createHashHistory, createRouter } from '@tanstack/react-router'
 import ReactDOM from 'react-dom/client'
 
+import { DesignSystemProvider } from '@repo/shadcn/design-system'
 import { Toaster } from '@repo/shadcn/ui/sonner'
 import { TooltipProvider } from '@repo/shadcn/ui/tooltip'
 
 import { DevToolsProvider } from '@/components/devtools-provider.tsx'
 import { ThemeProvider } from '@/components/theme-provider'
 import { AuthProvider, useAuth } from '@/features/auth/api/auth'
-import { DesignProvider } from '@/features/style/components/design-provider'
 
 import * as TanStackQueryProvider from './integrations/tanstack-query/root-provider.tsx'
 import reportWebVitals from './reportWebVitals.ts'
@@ -81,7 +81,7 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <ThemeProvider>
-        <DesignProvider>
+        <DesignSystemProvider>
           <TooltipProvider>
             <DevToolsProvider defaultHidden={false}>
               <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
@@ -92,7 +92,7 @@ if (rootElement && !rootElement.innerHTML) {
             </DevToolsProvider>
           </TooltipProvider>
           <Toaster />
-        </DesignProvider>
+        </DesignSystemProvider>
       </ThemeProvider>
     </StrictMode>,
   )

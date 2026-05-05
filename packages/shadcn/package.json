@@ -31,10 +31,6 @@
       "style": "./src/styles.css",
       "import": "./src/styles.css"
     },
-    "./themes": {
-      "style": "./src/themes.ts",
-      "import": "./src/themes.ts"
-    },
     "./design-system": {
       "types": "./src/design-system/index.ts",
       "import": "./src/design-system/index.ts"
