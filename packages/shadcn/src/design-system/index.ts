@@ -1,11 +1,7 @@
-import type { IconLibraryName } from "../icons/libraries";
-
-export function useDesignSystemSearchParams(): [{
-    iconLibrary: IconLibraryName,
-    style: string,
-}] {
-    return [{
-        iconLibrary: 'lucide',
-        style: 'lyra'
-    }] as const
-}
+export * from './design-system-provider'
+export * from './design-system'
+export * from './themes'
+export * from './styles'
+export * from './use-theme'
+export * from './use-style'
+export * from './config'

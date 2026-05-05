@@ -9,15 +9,23 @@ apps/v4/registry/bases/radix/ui/*.tsx                    -> src/components/ui/*.
 apps/v4/registry/bases/radix/lib/utils.ts                -> src/lib/utils.ts
 apps/v4/app/(app)/create/components/icon-placeholder.tsx -> src/components/ui/helper/icon-placeholder.tsx
 apps/v4/registry/bases/radix/hooks/use-mobile.ts         -> src/hooks/use-mobile.ts
-
 apps/v4/registry/bases/radix/examples/*.tsx              -> src/demo/components/*.tsx
-apps/v4/registry/themes.ts                               -> src/themes.ts
+
+packages/shadcn/src/registry/schema.ts                         -> src/design-system/schema.ts
+apps/v4/registry/base-colors.ts                                -> src/design-system/base-colors.ts
+apps/v4/registry/bases.ts                                      -> src/design-system/bases.ts
+apps/v4/registry/fonts.ts                                      -> src/design-system/fonts.ts
+apps/v4/lib/font-definitions.ts                                -> src/design-system/font-definitions.ts
+apps/v4/registry/themes.ts                                     -> src/design-system/themes.ts
+apps/v4/registry/styles.tsx                                    -> src/design-system/styles.tsx
+apps/v4/registry/config.ts                                     -> src/design-system/config.ts
+apps/v4/app/(app)/create/lib/search-params.ts                  -> src/design-system/search-params.ts
+apps/v4/app/(app)/create/components/design-system-provider.tsx -> src/design-system/design-system-provider.tsx
 
 apps/v4/app/globals.css                                  -> src/styles.css
 apps/v4/app/legacy-themes.css                            -> src/styles/legacy-themes.css
 apps/v4/registry/styles/style-*.css                      -> src/styles/style-*.css
 packages/shadcn/src/tailwind.css                         -> src/styles/tailwind.css
-
 apps/v4/registry/icons/*.{ts,tsx}                        -> src/icons/*.{ts,tsx}
 packages/shadcn/src/icons/libraries.ts                   -> src/icons/libraries.ts
 ```
