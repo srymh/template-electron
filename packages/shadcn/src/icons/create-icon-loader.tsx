@@ -1,24 +1,41 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import { use } from "react"
+import { use, type ComponentProps, type ComponentType } from "react"
 import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
 
-const iconPromiseCaches = new Map<string, Map<string, Promise<any>>>()
+import type { IconLibraryName } from "./libraries"
 
-function getCache(libraryName: string) {
+type IconComponent = ComponentType<ComponentProps<"svg">>
+type LoadedIcon = IconSvgElement | IconComponent | null
+type IconModule = Record<string, Exclude<LoadedIcon, null>>
+
+const iconModuleLoaders = {
+  lucide: () => import("./__lucide__"),
+  tabler: () => import("./__tabler__"),
+  hugeicons: () => import("./__hugeicons__"),
+  phosphor: () => import("./__phosphor__"),
+  remixicon: () => import("./__remixicon__"),
+} satisfies Record<IconLibraryName, () => Promise<object>>
+
+const iconPromiseCaches = new Map<
+  IconLibraryName,
+  Map<string, Promise<LoadedIcon>>
+>()
+
+function getCache(libraryName: IconLibraryName) {
   if (!iconPromiseCaches.has(libraryName)) {
     iconPromiseCaches.set(libraryName, new Map())
   }
   return iconPromiseCaches.get(libraryName)!
 }
 
-function isIconData(data: any): data is IconSvgElement {
+function isIconData(data: LoadedIcon): data is IconSvgElement {
   return Array.isArray(data)
 }
 
-export function createIconLoader(libraryName: string) {
+export function createIconLoader(libraryName: IconLibraryName) {
   const cache = getCache(libraryName)
+  const loadIconModule = iconModuleLoaders[libraryName]
 
   return function IconLoader({
     name,
@@ -26,11 +43,16 @@ export function createIconLoader(libraryName: string) {
     ...props
   }: {
     name: string
-  } & React.ComponentProps<"svg">) {
+  } & ComponentProps<"svg">) {
+    const hugeiconsStrokeWidth =
+      typeof strokeWidth === "number"
+        ? strokeWidth
+        : Number.parseFloat(String(strokeWidth))
+
     if (!cache.has(name)) {
-      const promise = import(`./__${libraryName}__`).then((mod) => {
-        const icon = mod[name as keyof typeof mod]
-        return icon || null
+      const promise = loadIconModule().then((mod) => {
+        const icon = (mod as IconModule)[name]
+        return icon ?? null
       })
       cache.set(name, promise)
     }
@@ -42,10 +64,16 @@ export function createIconLoader(libraryName: string) {
     }
 
     if (isIconData(iconData)) {
-      return <HugeiconsIcon icon={iconData} strokeWidth={2} {...props} />
+      return (
+        <HugeiconsIcon
+          icon={iconData}
+          strokeWidth={Number.isFinite(hugeiconsStrokeWidth) ? hugeiconsStrokeWidth : undefined}
+          {...props}
+        />
+      )
     }
 
     const IconComponent = iconData
-    return <IconComponent {...props} />
+    return <IconComponent strokeWidth={strokeWidth} {...props} />
   }
 }
