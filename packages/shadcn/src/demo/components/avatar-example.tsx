@@ -1,4 +1,7 @@
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import {
   Avatar,
   AvatarBadge,
@@ -16,7 +19,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "#components/ui/empty"
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 export default function AvatarExample() {
   return (

@@ -1,6 +1,9 @@
 "use client"
 
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import { Button } from "#components/ui/button"
 import { Kbd } from "#components/ui/kbd"
 import {
@@ -8,7 +11,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "#components/ui/tooltip"
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 export default function TooltipExample() {
   return (
@@ -49,7 +52,10 @@ function TooltipSides() {
         {(["top", "right", "bottom", "left"] as const).map((side) => (
           <Tooltip key={side}>
             <TooltipTrigger asChild>
-              <Button variant="outline" className="w-fit capitalize">
+              <Button
+                variant="outline"
+                className="w-fit capitalize style-sera:uppercase"
+              >
                 {side}
               </Button>
             </TooltipTrigger>
@@ -139,10 +145,8 @@ function TooltipWithKeyboard() {
             />
           </Button>
         </TooltipTrigger>
-        <TooltipContent className="pr-1.5">
-          <div className="flex items-center gap-2">
-            Save Changes <Kbd>S</Kbd>
-          </div>
+        <TooltipContent>
+          Save Changes <Kbd>S</Kbd>
         </TooltipContent>
       </Tooltip>
     </Example>
@@ -156,7 +160,7 @@ function TooltipOnLink() {
         <TooltipTrigger asChild>
           <a
             href="#"
-            className="text-primary w-fit text-sm underline-offset-4 hover:underline"
+            className="w-fit text-sm text-primary underline-offset-4 hover:underline"
             onClick={(e) => e.preventDefault()}
           >
             Learn more

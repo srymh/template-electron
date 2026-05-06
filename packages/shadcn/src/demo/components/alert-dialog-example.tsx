@@ -1,4 +1,7 @@
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,7 +24,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "#components/ui/dialog"
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 export default function AlertDialogExample() {
   return (

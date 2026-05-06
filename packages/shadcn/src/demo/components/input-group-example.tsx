@@ -3,12 +3,11 @@
 import { useState } from "react"
 import { toast } from "sonner"
 
-import { Example, ExampleWrapper } from './helper/example'
-import { Button } from "#components/ui/button"
 import {
-  ButtonGroup,
-  ButtonGroupText,
-} from "#components/ui/button-group"
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
+import { Button } from "#components/ui/button"
 import {
   Card,
   CardContent,
@@ -54,7 +53,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "#components/ui/tooltip"
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 export default function InputGroupExample() {
   const [country, setCountry] = useState("+1")
@@ -192,7 +191,7 @@ function InputGroupWithAddons() {
                 hugeicons="AlertCircleIcon"
                 phosphor="InfoIcon"
                 remixicon="RiInformationLine"
-                className="text-muted-foreground ml-auto"
+                className="ml-auto text-muted-foreground"
               />
             </InputGroupAddon>
           </InputGroup>
@@ -209,7 +208,7 @@ function InputGroupWithAddons() {
                 hugeicons="AlertCircleIcon"
                 phosphor="InfoIcon"
                 remixicon="RiInformationLine"
-                className="text-muted-foreground ml-auto"
+                className="ml-auto text-muted-foreground"
               />
             </InputGroupAddon>
           </InputGroup>
@@ -455,7 +454,7 @@ function InputGroupWithTooltip({
                 </PopoverHeader>
               </PopoverContent>
             </Popover>
-            <InputGroupAddon className="text-muted-foreground pl-1">
+            <InputGroupAddon className="pl-1 text-muted-foreground">
               https://
             </InputGroupAddon>
             <InputGroupInput id="input-secure-19" />
@@ -474,28 +473,6 @@ function InputGroupWithTooltip({
               </InputGroupButton>
             </InputGroupAddon>
           </InputGroup>
-          <FieldDescription>
-            This is a description of the input group.
-          </FieldDescription>
-        </Field>
-        <Field>
-          <FieldLabel htmlFor="url">Button Group</FieldLabel>
-          <ButtonGroup>
-            <ButtonGroupText>https://</ButtonGroupText>
-            <InputGroup>
-              <InputGroupInput id="url" />
-              <InputGroupAddon align="inline-end">
-                <IconPlaceholder
-                  lucide="InfoIcon"
-                  tabler="IconInfoCircle"
-                  hugeicons="AlertCircleIcon"
-                  phosphor="InfoIcon"
-                  remixicon="RiInformationLine"
-                />
-              </InputGroupAddon>
-            </InputGroup>
-            <ButtonGroupText>.com</ButtonGroupText>
-          </ButtonGroup>
           <FieldDescription>
             This is a description of the input group.
           </FieldDescription>
@@ -802,7 +779,7 @@ function InputGroupTextareaExamples() {
                 hugeicons="AlertCircleIcon"
                 phosphor="InfoIcon"
                 remixicon="RiInformationLine"
-                className="text-muted-foreground ml-auto"
+                className="ml-auto text-muted-foreground"
               />
             </InputGroupAddon>
           </InputGroup>

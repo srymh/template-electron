@@ -5,6 +5,8 @@ import { MoonIcon, SunIcon } from 'lucide-react'
 import { z } from 'zod'
 
 import { components } from '@repo/shadcn/demo/constants'
+import { THEMES, useStyle, useTheme, STYLES } from '@repo/shadcn/design-system'
+import type { StyleName, ThemeName } from '@repo/shadcn/design-system'
 import { cn } from '@repo/shadcn/lib/utils'
 import { Button } from '@repo/shadcn/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@repo/shadcn/ui/card'
@@ -33,19 +35,21 @@ import type { ThemeApi } from '@your-app-name/api'
 
 import { useTheme as useAppearanceMode } from '@/components/theme-provider'
 import { ThemeSwitcher as ModeSwitcher } from '@/components/theme-switcher'
-import { useStyle } from '@/features/style/api/use-style'
-import { useTheme } from '@/features/style/api/use-theme'
-import type { Style } from '@/features/style/components/style-provider'
-import { STYLES } from '@/features/style/components/style-provider'
 import { StyleSwitcher } from '@/features/style/components/style-switcher'
-import { applyTheme } from '@/features/style/components/theme-provider'
 import { ThemeSwitcher } from '@/features/style/components/theme-switcher'
-import { THEMES } from '@/features/style/components/themes'
 import { useIframeMessage } from '@/hooks/use-iframe-message'
 import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
 import { getPaginationItems } from '@/lib/pagination'
 
 export type AppearanceMode = Awaited<ReturnType<ThemeApi['getTheme']>>
+
+type IframeDesignMessage = {
+  mode: AppearanceMode
+  theme: ThemeName
+  style: StyleName
+}
+
+const DESIGN_FRAME_MESSAGE_TYPE = 'design'
 
 const SearchSchema = z.object({
   page: z.number().default(0).optional(),
@@ -238,60 +242,7 @@ function PaginationHoverPreview({
 
 function Content({ title, src, to }: { title: string; src: string; to: string }) {
   const navigate = useNavigate()
-
-  const { theme: currentMode } = useAppearanceMode()
-  const [mode, setMode] = React.useState<AppearanceMode>(currentMode)
-
-  const { theme: currentTheme } = useTheme()
-  const [theme, setTheme] = React.useState<string>(currentTheme)
-
-  const { style: currentStyle } = useStyle()
-  const [style, setStyle] = React.useState<Style>(currentStyle)
-
-  const handleMessage = React.useCallback(
-    (window: Window, data: { mode?: AppearanceMode; theme?: string; style?: Style }) => {
-      const html = window.document.documentElement
-
-      if (data.style) {
-        applyStyle(html, data.style)
-      }
-
-      if (data.theme) {
-        applyTheme(window.document, data.theme)
-      }
-
-      if (data.mode) {
-        applyMode(html, data.mode)
-      }
-    },
-    [],
-  )
-
-  const { ref, sendToIframe } = useIframeMessage(handleMessage)
-
-  const handleModeChange = React.useCallback(
-    (value: AppearanceMode) => {
-      setMode(value)
-      sendToIframe({ mode: value })
-    },
-    [sendToIframe],
-  )
-
-  const handleThemeChange = React.useCallback(
-    (value: string) => {
-      setTheme(value)
-      sendToIframe({ theme: value })
-    },
-    [sendToIframe],
-  )
-
-  const handleStyleChange = React.useCallback(
-    (value: Style) => {
-      setStyle(value)
-      sendToIframe({ style: value })
-    },
-    [sendToIframe],
-  )
+  const { ref, config, setMode, setTheme, setStyle, handleIframeLoad } = useDesignPreviewFrame()
 
   return (
     <Card className="h-max w-max">
@@ -299,14 +250,21 @@ function Content({ title, src, to }: { title: string; src: string; to: string })
         <CardTitle className="flex flex-col gap-2">
           <div className="text-lg font-semibold">{title}</div>
           <div className="flex gap-2">
-            <DemoModeSwitcher value={mode} onValueChange={handleModeChange} />
-            <DemoStyleSwitcher value={style} onValueChange={handleStyleChange} />
-            <DemoThemeSwitcher value={theme} onValueChange={handleThemeChange} />
+            <DemoModeSwitcher value={config.mode} onValueChange={setMode} />
+            <DemoStyleSwitcher value={config.style} onValueChange={setStyle} />
+            <DemoThemeSwitcher value={config.theme} onValueChange={setTheme} />
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <iframe ref={ref} src={src} width={550} height={550} className="border rounded-xl" />
+        <iframe
+          ref={ref}
+          src={src}
+          width={550}
+          height={550}
+          className="border rounded-xl"
+          onLoad={handleIframeLoad}
+        />
       </CardContent>
       <CardFooter>
         <Button variant="link" onClick={() => navigate({ to })}>
@@ -315,6 +273,68 @@ function Content({ title, src, to }: { title: string; src: string; to: string })
       </CardFooter>
     </Card>
   )
+}
+
+function useDesignPreviewFrame() {
+  const { theme: currentMode } = useAppearanceMode()
+  const { theme: currentTheme } = useTheme()
+  const { style: currentStyle } = useStyle()
+  const [config, setConfig] = React.useState<IframeDesignMessage>({
+    mode: currentMode,
+    theme: currentTheme,
+    style: currentStyle,
+  })
+  const { ref, sendToIframe, handleLoad, isReady } =
+    useIframeMessage<IframeDesignMessage>(DESIGN_FRAME_MESSAGE_TYPE)
+
+  React.useEffect(() => {
+    setConfig((current) =>
+      current.mode === currentMode ? current : { ...current, mode: currentMode },
+    )
+  }, [currentMode])
+
+  React.useEffect(() => {
+    setConfig((current) =>
+      current.theme === currentTheme ? current : { ...current, theme: currentTheme },
+    )
+  }, [currentTheme])
+
+  React.useEffect(() => {
+    setConfig((current) =>
+      current.style === currentStyle ? current : { ...current, style: currentStyle },
+    )
+  }, [currentStyle])
+
+  React.useEffect(() => {
+    if (!isReady) return
+    sendToIframe(config)
+  }, [config, isReady, sendToIframe])
+
+  const handleIframeLoad = React.useCallback(() => {
+    handleLoad()
+    sendToIframe(config)
+  }, [config, handleLoad, sendToIframe])
+
+  const handleModeChange = React.useCallback((value: AppearanceMode) => {
+    setConfig((current) => ({ ...current, mode: value }))
+  }, [])
+
+  const handleThemeChange = React.useCallback((value: ThemeName) => {
+    setConfig((current) => ({ ...current, theme: value }))
+  }, [])
+
+  const handleStyleChange = React.useCallback((value: StyleName) => {
+    setConfig((current) => ({ ...current, style: value }))
+  }, [])
+
+  return {
+    ref,
+    config,
+    setMode: handleModeChange,
+    setTheme: handleThemeChange,
+    setStyle: handleStyleChange,
+    handleIframeLoad,
+  }
 }
 
 function DemoModeSwitcher({
@@ -354,8 +374,8 @@ function DemoThemeSwitcher({
   onValueChange = () => {},
 }: {
   className?: string
-  value?: string
-  onValueChange?: (value: string) => void
+  value?: ThemeName
+  onValueChange?: (value: ThemeName) => void
 }) {
   return (
     <Popover>
@@ -365,7 +385,7 @@ function DemoThemeSwitcher({
           <div
             className="size-4 rounded-full"
             style={{
-              backgroundColor: THEMES.find((t) => t.name === value)?.cssVars['light']['primary'],
+              backgroundColor: THEMES.find((t) => t.name === value)?.cssVars!.light?.primary,
             }}
           ></div>
         </Button>
@@ -383,7 +403,7 @@ function DemoThemeSwitcher({
             onValueChange={(val) => {
               if (val === value) return
               if (val == '') return
-              onValueChange(val)
+              onValueChange(val as ThemeName)
             }}
           >
             {THEMES.map((theme) => (
@@ -396,7 +416,7 @@ function DemoThemeSwitcher({
                 <div
                   className="size-4 rounded-full"
                   style={{
-                    backgroundColor: theme.cssVars['light']['primary'],
+                    backgroundColor: theme.cssVars!.light?.primary,
                   }}
                 ></div>
               </ToggleGroupItem>
@@ -414,8 +434,8 @@ function DemoStyleSwitcher({
   onValueChange = () => {},
 }: {
   className?: string
-  value?: Style
-  onValueChange?: (value: Style) => void
+  value?: StyleName
+  onValueChange?: (value: StyleName) => void
 }) {
   return (
     <ToggleGroup
@@ -426,32 +446,14 @@ function DemoStyleSwitcher({
       onValueChange={(val) => {
         if (val === value) return
         if (val == '') return
-        onValueChange(val as Style)
+        onValueChange(val as StyleName)
       }}
     >
-      {STYLES.map((style) => (
+      {STYLES.map(({ name: style }) => (
         <ToggleGroupItem key={style} value={style}>
           {formatKebabAsTitle(style)}
         </ToggleGroupItem>
       ))}
     </ToggleGroup>
   )
-}
-
-/** mode を適用する */
-function applyMode(el: HTMLElement, mode: AppearanceMode) {
-  const modes = ['light', 'dark', 'system'] as const
-  modes.forEach((m) => {
-    el.classList.remove(m)
-  })
-
-  el.classList.add(mode)
-}
-
-/** style を適用する */
-function applyStyle(el: HTMLElement, style: Style) {
-  STYLES.forEach((s) => {
-    el.classList.remove(`style-${s}`)
-  })
-  el.classList.add(`style-${style}`)
 }

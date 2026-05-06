@@ -1,4 +1,7 @@
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import { Button } from "#components/ui/button"
 import {
   InputGroup,
@@ -11,7 +14,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "#components/ui/tooltip"
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 export default function KbdExample() {
   return (

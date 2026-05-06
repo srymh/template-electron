@@ -1,6 +1,9 @@
-import { Example, ExampleWrapper } from './helper/example'
-import { Button } from '#components/ui/button'
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
+import { Button } from "#components/ui/button"
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 export default function ButtonExample() {
   return (
@@ -89,7 +92,7 @@ function ButtonIconRight() {
     <Example title="Icon Right">
       <div className="flex flex-wrap items-center gap-2">
         <Button size="xs">
-          Default{' '}
+          Default{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -100,7 +103,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button size="xs" variant="secondary">
-          Secondary{' '}
+          Secondary{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -111,7 +114,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button size="xs" variant="outline">
-          Outline{' '}
+          Outline{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -122,7 +125,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button size="xs" variant="ghost">
-          Ghost{' '}
+          Ghost{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -133,7 +136,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button size="xs" variant="destructive">
-          Destructive{' '}
+          Destructive{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -144,7 +147,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button size="xs" variant="link">
-          Link{' '}
+          Link{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -168,7 +171,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button size="sm" variant="secondary">
-          Secondary{' '}
+          Secondary{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -179,7 +182,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button size="sm" variant="outline">
-          Outline{' '}
+          Outline{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -190,7 +193,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button size="sm" variant="ghost">
-          Ghost{' '}
+          Ghost{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -201,7 +204,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button size="sm" variant="destructive">
-          Destructive{' '}
+          Destructive{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -212,7 +215,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button size="sm" variant="link">
-          Link{' '}
+          Link{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -225,7 +228,7 @@ function ButtonIconRight() {
       </div>
       <div className="flex flex-wrap items-center gap-2">
         <Button>
-          Default{' '}
+          Default{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -236,7 +239,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button variant="secondary">
-          Secondary{' '}
+          Secondary{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -247,7 +250,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button variant="outline">
-          Outline{' '}
+          Outline{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -258,7 +261,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button variant="ghost">
-          Ghost{' '}
+          Ghost{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -269,7 +272,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button variant="destructive">
-          Destructive{' '}
+          Destructive{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -280,7 +283,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button variant="link">
-          Link{' '}
+          Link{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -293,7 +296,7 @@ function ButtonIconRight() {
       </div>
       <div className="flex flex-wrap items-center gap-2">
         <Button size="lg">
-          Default{' '}
+          Default{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -304,7 +307,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button size="lg" variant="secondary">
-          Secondary{' '}
+          Secondary{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -315,7 +318,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button size="lg" variant="outline">
-          Outline{' '}
+          Outline{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -326,7 +329,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button size="lg" variant="ghost">
-          Ghost{' '}
+          Ghost{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -337,7 +340,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button size="lg" variant="destructive">
-          Destructive{' '}
+          Destructive{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -348,7 +351,7 @@ function ButtonIconRight() {
           />
         </Button>
         <Button size="lg" variant="link">
-          Link{' '}
+          Link{" "}
           <IconPlaceholder
             lucide="ArrowRightIcon"
             tabler="IconArrowRight"
@@ -375,7 +378,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Default
         </Button>
         <Button size="xs" variant="secondary">
@@ -386,7 +389,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Secondary
         </Button>
         <Button size="xs" variant="outline">
@@ -397,7 +400,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Outline
         </Button>
         <Button size="xs" variant="ghost">
@@ -408,7 +411,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Ghost
         </Button>
         <Button size="xs" variant="destructive">
@@ -419,7 +422,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Destructive
         </Button>
         <Button size="xs" variant="link">
@@ -430,7 +433,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Link
         </Button>
       </div>
@@ -443,7 +446,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Default
         </Button>
         <Button size="sm" variant="secondary">
@@ -454,7 +457,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Secondary
         </Button>
         <Button size="sm" variant="outline">
@@ -465,7 +468,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Outline
         </Button>
         <Button size="sm" variant="ghost">
@@ -476,7 +479,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Ghost
         </Button>
         <Button size="sm" variant="destructive">
@@ -487,7 +490,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Destructive
         </Button>
         <Button size="sm" variant="link">
@@ -498,7 +501,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Link
         </Button>
       </div>
@@ -511,7 +514,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Default
         </Button>
         <Button variant="secondary">
@@ -522,7 +525,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Secondary
         </Button>
         <Button variant="outline">
@@ -533,7 +536,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Outline
         </Button>
         <Button variant="ghost">
@@ -544,7 +547,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Ghost
         </Button>
         <Button variant="destructive">
@@ -555,7 +558,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Destructive
         </Button>
         <Button variant="link">
@@ -566,7 +569,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Link
         </Button>
       </div>
@@ -579,7 +582,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Default
         </Button>
         <Button size="lg" variant="secondary">
@@ -590,7 +593,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Secondary
         </Button>
         <Button size="lg" variant="outline">
@@ -601,7 +604,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Outline
         </Button>
         <Button size="lg" variant="ghost">
@@ -612,7 +615,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Ghost
         </Button>
         <Button size="lg" variant="destructive">
@@ -623,7 +626,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Destructive
         </Button>
         <Button size="lg" variant="link">
@@ -634,7 +637,7 @@ function ButtonIconLeft() {
             phosphor="ArrowCircleLeftIcon"
             remixicon="RiArrowLeftCircleLine"
             data-icon="inline-start"
-          />{' '}
+          />{" "}
           Link
         </Button>
       </div>
@@ -880,7 +883,7 @@ function ButtonExamples() {
         <div className="flex items-center gap-2">
           <Button variant="outline">Cancel</Button>
           <Button>
-            Submit{' '}
+            Submit{" "}
             <IconPlaceholder
               lucide="ArrowRightIcon"
               tabler="IconArrowRight"

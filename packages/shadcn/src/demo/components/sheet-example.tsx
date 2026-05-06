@@ -1,4 +1,7 @@
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import { Button } from "#components/ui/button"
 import { Field, FieldGroup, FieldLabel } from "#components/ui/field"
 import { Input } from "#components/ui/input"
@@ -38,7 +41,7 @@ function SheetWithForm() {
               done.
             </SheetDescription>
           </SheetHeader>
-          <div className="style-vega:px-4 style-maia:px-6 style-mira:px-6 style-lyra:px-4 style-nova:px-4">
+          <div className="style-vega:px-4 style-nova:px-4 style-lyra:px-4 style-maia:px-6 style-mira:px-6 style-luma:px-6 style-sera:px-8">
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="sheet-demo-name">Name</FieldLabel>
@@ -92,7 +95,10 @@ function SheetWithSides() {
         {SHEET_SIDES.map((side) => (
           <Sheet key={side}>
             <SheetTrigger asChild>
-              <Button variant="outline" className="capitalize">
+              <Button
+                variant="outline"
+                className="capitalize style-sera:uppercase"
+              >
                 {side}
               </Button>
             </SheetTrigger>
@@ -107,11 +113,11 @@ function SheetWithSides() {
                   done.
                 </SheetDescription>
               </SheetHeader>
-              <div className="no-scrollbar style-vega:px-4 style-maia:px-6 style-mira:px-6 style-lyra:px-4 style-nova:px-4 overflow-y-auto">
+              <div className="no-scrollbar overflow-y-auto style-vega:px-4 style-nova:px-4 style-lyra:px-4 style-maia:px-6 style-mira:px-6 style-luma:px-6 style-sera:px-8">
                 {Array.from({ length: 10 }).map((_, index) => (
                   <p
                     key={index}
-                    className="style-lyra:mb-2 style-lyra:leading-relaxed mb-4 leading-normal"
+                    className="mb-4 leading-normal style-lyra:mb-2 style-lyra:leading-relaxed style-sera:leading-relaxed"
                   >
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
                     do eiusmod tempor incididunt ut labore et dolore magna

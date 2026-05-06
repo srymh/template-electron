@@ -1,6 +1,9 @@
 import Link from "./helper/link"
 
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import {
   Breadcrumb,
   BreadcrumbEllipsis,

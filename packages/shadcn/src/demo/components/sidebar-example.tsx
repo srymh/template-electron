@@ -2,7 +2,6 @@
 
 import * as React from "react"
 
-// import { Button } from "#components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +14,6 @@ import {
   ItemActions,
   ItemContent,
   ItemDescription,
-  // ItemMedia,
   ItemTitle,
 } from "#components/ui/item"
 import { Label } from "#components/ui/label"
@@ -35,7 +33,7 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "#components/ui/sidebar"
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 export default function SidebarExample() {
   const data = {
@@ -56,7 +54,7 @@ export default function SidebarExample() {
         ],
       },
       {
-        title: "Building Your Application",
+        title: "Build Your Application",
         url: "#",
         items: [
           {
@@ -274,11 +272,11 @@ export default function SidebarExample() {
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
           <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
           </div>
-          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
+          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
         </div>
       </SidebarInset>
     </SidebarProvider>

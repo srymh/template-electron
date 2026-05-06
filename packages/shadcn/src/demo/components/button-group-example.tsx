@@ -2,7 +2,10 @@
 
 import { useState } from "react"
 
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import { Button } from "#components/ui/button"
 import {
   ButtonGroup,
@@ -27,6 +30,7 @@ import { Label } from "#components/ui/label"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -36,7 +40,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "#components/ui/tooltip"
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 export default function ButtonGroupExample() {
   return (
@@ -104,7 +108,11 @@ function ButtonGroupWithText() {
           <ButtonGroupText asChild>
             <Label htmlFor="input-text">GPU Size</Label>
           </ButtonGroupText>
-          <Input id="input-text" placeholder="Type something here..." />
+          <Input
+            id="input-text"
+            placeholder="Type something here..."
+            className="style-luma:border-border"
+          />
         </ButtonGroup>
       </div>
     </Example>
@@ -248,9 +256,11 @@ function ButtonGroupWithSelect() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent align="start">
-              <SelectItem value="$">$</SelectItem>
-              <SelectItem value="€">€</SelectItem>
-              <SelectItem value="£">£</SelectItem>
+              <SelectGroup>
+                <SelectItem value="$">$</SelectItem>
+                <SelectItem value="€">€</SelectItem>
+                <SelectItem value="£">£</SelectItem>
+              </SelectGroup>
             </SelectContent>
           </Select>
           <Input placeholder="Enter amount to send" />
@@ -407,9 +417,11 @@ function ButtonGroupWithSelectAndInput() {
             <SelectValue placeholder="Select duration" />
           </SelectTrigger>
           <SelectContent align="start">
-            <SelectItem value="hours">Hours</SelectItem>
-            <SelectItem value="days">Days</SelectItem>
-            <SelectItem value="weeks">Weeks</SelectItem>
+            <SelectGroup>
+              <SelectItem value="hours">Hours</SelectItem>
+              <SelectItem value="days">Days</SelectItem>
+              <SelectItem value="weeks">Weeks</SelectItem>
+            </SelectGroup>
           </SelectContent>
         </Select>
         <Input />

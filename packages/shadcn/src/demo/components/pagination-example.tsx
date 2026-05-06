@@ -1,4 +1,7 @@
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import { Field, FieldLabel } from "#components/ui/field"
 import {
   Pagination,
@@ -89,7 +92,7 @@ function PaginationSimple() {
 
 function PaginationIconsOnly() {
   return (
-    <Example title="With Select">
+    <Example title="With Select" containerClassName="col-span-2">
       <div className="flex items-center justify-between gap-4">
         <Field orientation="horizontal" className="w-fit">
           <FieldLabel htmlFor="select-rows-per-page">Rows per page</FieldLabel>

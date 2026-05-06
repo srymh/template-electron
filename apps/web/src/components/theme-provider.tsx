@@ -2,7 +2,13 @@ import { createContext, useContext, useEffect, useState } from 'react'
 
 import { theme as themeApi } from '@your-app-name/api'
 
+import { useParentWindowMessage } from '@/hooks/use-iframe-message'
+
 type Theme = 'dark' | 'light' | 'system'
+
+type DesignFrameMessageData = {
+  mode?: unknown
+}
 
 type ThemeProviderProps = {
   children: React.ReactNode
@@ -20,7 +26,14 @@ const initialState: ThemeProviderState = {
   setTheme: () => null,
 }
 
+const THEMES = ['dark', 'light', 'system'] as const
+
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
+
+function toTheme(value: unknown): Theme | undefined {
+  if (typeof value !== 'string') return undefined
+  return THEMES.includes(value as Theme) ? (value as Theme) : undefined
+}
 
 export function ThemeProvider({
   children,
@@ -67,6 +80,14 @@ export function ThemeProvider({
       unsubscribe()
     }
   }, [theme])
+
+  useParentWindowMessage<DesignFrameMessageData>({
+    type: 'design',
+    onMessage: (data) => {
+      const nextTheme = toTheme(data?.mode)
+      if (nextTheme) setTheme(nextTheme)
+    },
+  })
 
   const value = {
     theme,

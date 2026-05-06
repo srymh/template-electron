@@ -2,7 +2,10 @@
 
 import * as React from "react"
 
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import { Checkbox } from "#components/ui/checkbox"
 import {
   Field,

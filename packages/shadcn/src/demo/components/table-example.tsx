@@ -1,4 +1,7 @@
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import { Button } from "#components/ui/button"
 import {
   DropdownMenu,
@@ -26,7 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from "#components/ui/table"
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 const invoices = [
   {

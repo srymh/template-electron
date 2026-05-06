@@ -1,19 +1,22 @@
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '#components/ui/accordion'
-import { Button } from '#components/ui/button'
+} from "#components/ui/accordion"
+import { Button } from "#components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '#components/ui/card'
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+} from "#components/ui/card"
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 export default function AccordionExample() {
   return (
@@ -30,19 +33,19 @@ export default function AccordionExample() {
 function AccordionBasic() {
   const items = [
     {
-      value: 'item-1',
-      trigger: 'Is it accessible?',
-      content: 'Yes. It adheres to the WAI-ARIA design pattern.',
+      value: "item-1",
+      trigger: "Is it accessible?",
+      content: "Yes. It adheres to the WAI-ARIA design pattern.",
     },
     {
-      value: 'item-2',
-      trigger: 'Is it styled?',
+      value: "item-2",
+      trigger: "Is it styled?",
       content:
         "Yes. It comes with default styles that matches the other components' aesthetic.",
     },
     {
-      value: 'item-3',
-      trigger: 'Is it animated?',
+      value: "item-3",
+      trigger: "Is it animated?",
       content:
         "Yes. It's animated by default, but you can disable it if you prefer.",
     },
@@ -65,16 +68,16 @@ function AccordionBasic() {
 function AccordionMultiple() {
   const items = [
     {
-      value: 'item-1',
+      value: "item-1",
       trigger:
-        'What are the key considerations when implementing a comprehensive enterprise-level authentication system?',
+        "What are the key considerations when implementing a comprehensive enterprise-level authentication system?",
       content:
         "Implementing a robust enterprise authentication system requires careful consideration of multiple factors. This includes secure password hashing and storage, multi-factor authentication (MFA) implementation, session management, OAuth2 and SSO integration, regular security audits, rate limiting to prevent brute force attacks, and maintaining detailed audit logs. Additionally, you'll need to consider scalability, performance impact, and compliance with relevant data protection regulations such as GDPR or HIPAA.",
     },
     {
-      value: 'item-2',
+      value: "item-2",
       trigger:
-        'How does modern distributed system architecture handle eventual consistency and data synchronization across multiple regions?',
+        "How does modern distributed system architecture handle eventual consistency and data synchronization across multiple regions?",
       content:
         "Modern distributed systems employ various strategies to maintain data consistency across regions. This often involves using techniques like CRDT (Conflict-Free Replicated Data Types), vector clocks, and gossip protocols. Systems might implement event sourcing patterns, utilize message queues for asynchronous updates, and employ sophisticated conflict resolution strategies. Popular solutions like Amazon's DynamoDB and Google's Spanner demonstrate different approaches to solving these challenges, balancing between consistency, availability, and partition tolerance as described in the CAP theorem.",
     },
@@ -97,26 +100,26 @@ function AccordionMultiple() {
 function AccordionWithBorders() {
   const items = [
     {
-      value: 'billing',
-      trigger: 'How does billing work?',
+      value: "billing",
+      trigger: "How does billing work?",
       content:
-        'We offer monthly and annual subscription plans. Billing is charged at the beginning of each cycle, and you can cancel anytime. All plans include automatic backups, 24/7 support, and unlimited team members. There are no hidden fees or setup costs.',
+        "We offer monthly and annual subscription plans. Billing is charged at the beginning of each cycle, and you can cancel anytime. All plans include automatic backups, 24/7 support, and unlimited team members. There are no hidden fees or setup costs.",
     },
     {
-      value: 'security',
-      trigger: 'Is my data secure?',
+      value: "security",
+      trigger: "Is my data secure?",
       content:
-        'Yes. We use end-to-end encryption, SOC 2 Type II compliance, and regular third-party security audits. All data is encrypted at rest and in transit using industry-standard protocols. We also offer optional two-factor authentication and single sign-on for enterprise customers.',
+        "Yes. We use end-to-end encryption, SOC 2 Type II compliance, and regular third-party security audits. All data is encrypted at rest and in transit using industry-standard protocols. We also offer optional two-factor authentication and single sign-on for enterprise customers.",
     },
     {
-      value: 'integration',
-      trigger: 'What integrations do you support?',
+      value: "integration",
+      trigger: "What integrations do you support?",
       content: (
         <>
           <p>
             We integrate with 500+ popular tools including Slack, Zapier,
             Salesforce, HubSpot, and more. You can also build custom
-            integrations using our REST API and webhooks.{' '}
+            integrations using our REST API and webhooks.{" "}
           </p>
           <p>
             Our API documentation includes code examples in 10+ programming
@@ -129,17 +132,21 @@ function AccordionWithBorders() {
 
   return (
     <Example title="With Borders">
-      <Accordion type="single" collapsible className="gap-2 mx-auto max-w-lg">
+      <Accordion
+        type="single"
+        collapsible
+        className="mx-auto max-w-lg style-vega:gap-2 style-nova:gap-2 style-lyra:gap-2"
+      >
         {items.map((item) => (
           <AccordionItem
             key={item.value}
             value={item.value}
-            className="border rounded-lg"
+            className="style-vega:rounded-lg style-vega:border style-nova:rounded-lg style-nova:border style-lyra:border"
           >
-            <AccordionTrigger className="text-sm px-4 font-medium">
+            <AccordionTrigger className="font-medium style-vega:px-4 style-vega:text-sm style-nova:px-2.5 style-nova:text-sm style-lyra:px-2 style-lyra:text-xs style-maia:text-sm style-mira:text-xs style-luma:text-sm">
               {item.trigger}
             </AccordionTrigger>
-            <AccordionContent className="text-muted-foreground px-4">
+            <AccordionContent className="text-muted-foreground style-vega:px-4 style-nova:px-2.5 style-nova:text-sm style-lyra:px-2 style-lyra:text-xs style-maia:px-0 style-mira:px-0 style-luma:px-0">
               {item.content}
             </AccordionContent>
           </AccordionItem>
@@ -152,8 +159,8 @@ function AccordionWithBorders() {
 function AccordionInCard() {
   const items = [
     {
-      value: 'plans',
-      trigger: 'What subscription plans do you offer?',
+      value: "plans",
+      trigger: "What subscription plans do you offer?",
       content: (
         <>
           <p>
@@ -180,8 +187,8 @@ function AccordionInCard() {
       ),
     },
     {
-      value: 'billing',
-      trigger: 'How does billing work?',
+      value: "billing",
+      trigger: "How does billing work?",
       content: (
         <>
           <p>
@@ -199,8 +206,8 @@ function AccordionInCard() {
       ),
     },
     {
-      value: 'upgrade',
-      trigger: 'Can I upgrade or downgrade my plan?',
+      value: "upgrade",
+      trigger: "Can I upgrade or downgrade my plan?",
       content: (
         <>
           <p>
@@ -217,8 +224,8 @@ function AccordionInCard() {
       ),
     },
     {
-      value: 'cancel',
-      trigger: 'How do I cancel my subscription?',
+      value: "cancel",
+      trigger: "How do I cancel my subscription?",
       content: (
         <>
           <p>
@@ -236,8 +243,8 @@ function AccordionInCard() {
       ),
     },
     {
-      value: 'refund',
-      trigger: 'What is your refund policy?',
+      value: "refund",
+      trigger: "What is your refund policy?",
       content: (
         <>
           <p>
@@ -270,7 +277,7 @@ function AccordionInCard() {
             type="single"
             collapsible
             defaultValue="plans"
-            className=""
+            className="style-maia:rounded-md style-mira:rounded-md"
           >
             {items.map((item) => (
               <AccordionItem key={item.value} value={item.value}>
@@ -288,22 +295,22 @@ function AccordionInCard() {
 function AccordionWithDisabled() {
   const items = [
     {
-      value: 'item-1',
-      trigger: 'Can I access my account history?',
+      value: "item-1",
+      trigger: "Can I access my account history?",
       content:
-        'Yes, you can view your complete account history including all transactions, plan changes, and support tickets in the Account History section of your dashboard.',
+        "Yes, you can view your complete account history including all transactions, plan changes, and support tickets in the Account History section of your dashboard.",
       disabled: false,
     },
     {
-      value: 'item-2',
-      trigger: 'Premium feature information',
+      value: "item-2",
+      trigger: "Premium feature information",
       content:
-        'This section contains information about premium features. Upgrade your plan to access this content.',
+        "This section contains information about premium features. Upgrade your plan to access this content.",
       disabled: true,
     },
     {
-      value: 'item-3',
-      trigger: 'How do I update my email address?',
+      value: "item-3",
+      trigger: "How do I update my email address?",
       content:
         "You can update your email address in your account settings. You'll receive a verification email at your new address to confirm the change.",
       disabled: false,
@@ -315,17 +322,21 @@ function AccordionWithDisabled() {
       <Accordion
         type="single"
         collapsible
-        className="rounded-lg mx-auto max-w-lg overflow-hidden border"
+        className="mx-auto max-w-lg overflow-hidden border style-vega:rounded-lg style-nova:rounded-lg style-lyra:rounded-none style-maia:rounded-lg style-mira:rounded-lg style-luma:rounded-xl style-sera:rounded-none"
       >
         {items.map((item) => (
           <AccordionItem
             key={item.value}
             value={item.value}
             disabled={item.disabled}
-            className="data-open:bg-muted/50 p-1"
+            className="p-1 data-open:bg-muted/50 style-sera:p-0"
           >
-            <AccordionTrigger className="px-4">{item.trigger}</AccordionTrigger>
-            <AccordionContent className="px-4">{item.content}</AccordionContent>
+            <AccordionTrigger className="style-vega:px-4 style-nova:px-2.5 style-lyra:px-2 style-sera:px-4">
+              {item.trigger}
+            </AccordionTrigger>
+            <AccordionContent className="style-vega:px-4 style-nova:px-2.5 style-lyra:px-2 style-sera:px-4">
+              {item.content}
+            </AccordionContent>
           </AccordionItem>
         ))}
       </Accordion>

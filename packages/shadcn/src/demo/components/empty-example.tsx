@@ -1,4 +1,7 @@
-import { Example, ExampleWrapper } from './helper/example'
+import {
+  Example,
+  ExampleWrapper,
+} from "./helper/example"
 import { Button } from "#components/ui/button"
 import {
   Empty,
@@ -14,11 +17,11 @@ import {
   InputGroupInput,
 } from "#components/ui/input-group"
 import { Kbd } from "#components/ui/kbd"
-import { IconPlaceholder } from '#components/ui/helper/icon-placeholder'
+import { IconPlaceholder } from "#components/ui/helper/icon-placeholder"
 
 export default function EmptyExample() {
   return (
-    <ExampleWrapper>
+    <ExampleWrapper className="grid-cols-1!">
       <EmptyBasic />
       <EmptyWithMutedBackground />
       <EmptyWithBorder />
