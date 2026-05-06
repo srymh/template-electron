@@ -20,6 +20,7 @@ import {
 
 const THEME_STYLE_ELEMENT_ID = "design-system-theme-vars"
 const MANAGED_BODY_CLASS_PREFIXES = ["style-", "base-color-"] as const
+const NO_RADIUS_STYLES = new Set<StyleName>(["lyra", "sera"])
 const POINTER_CURSOR_CSS = `@layer base {
   ${POINTER_CURSOR_SELECTOR} {
     cursor: pointer;
@@ -157,7 +158,7 @@ export function DesignSystemProvider({
     pointer,
     radius,
   } = searchParams
-  const effectiveRadius = style === "lyra" ? "none" : radius
+  const effectiveRadius = NO_RADIUS_STYLES.has(style) ? "none" : radius
   // const selectedFont = React.useMemo(
   //   () => FONTS.find((fontOption) => fontOption.value === font),
   //   [font]
@@ -201,12 +202,6 @@ export function DesignSystemProvider({
       }
     }
   }, [])
-
-  React.useEffect(() => {
-    if (style === "lyra" || (style === "sera" && radius !== "none")) {
-      setSearchParams({ radius: "none" })
-    }
-  }, [style, radius, setSearchParams])
 
   React.useEffect(() => {
     if (typeof window === "undefined" || !isInIframe()) {
