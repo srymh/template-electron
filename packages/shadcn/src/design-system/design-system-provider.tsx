@@ -5,6 +5,7 @@ import * as React from "react"
 import {
   buildRegistryTheme,
   DEFAULT_CONFIG,
+  designSystemConfigSchema,
   POINTER_CURSOR_SELECTOR,
   STYLES,
   THEMES,
@@ -19,6 +20,7 @@ import {
 } from "./design-system"
 
 const THEME_STYLE_ELEMENT_ID = "design-system-theme-vars"
+const DESIGN_SYSTEM_STORAGE_KEY = "design-system-config"
 const MANAGED_BODY_CLASS_PREFIXES = ["style-", "base-color-"] as const
 const NO_RADIUS_STYLES = new Set<StyleName>(["lyra", "sera"])
 const POINTER_CURSOR_CSS = `@layer base {
@@ -47,6 +49,55 @@ const THEME_NAMES = new Set<string>(THEMES.map(({ name }) => name))
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object"
+}
+
+function getLocalStorage(): Storage | null {
+  if (typeof window === "undefined") return null
+
+  try {
+    return window.localStorage
+  } catch {
+    return null
+  }
+}
+
+function getDefaultConfig(): DesignSystemConfig {
+  return { ...DEFAULT_CONFIG }
+}
+
+function readStoredDesignSystemConfig(): DesignSystemConfig {
+  const storage = getLocalStorage()
+  if (!storage) return getDefaultConfig()
+
+  try {
+    const storedValue = storage.getItem(DESIGN_SYSTEM_STORAGE_KEY)
+    if (!storedValue) return getDefaultConfig()
+
+    const parsedValue: unknown = JSON.parse(storedValue)
+    const result = designSystemConfigSchema.safeParse({
+      ...DEFAULT_CONFIG,
+      ...(isRecord(parsedValue) ? parsedValue : {}),
+    })
+
+    if (result.success) {
+      return result.data
+    }
+  } catch {
+    // Ignore malformed persisted settings and fall back to defaults.
+  }
+
+  return getDefaultConfig()
+}
+
+function writeStoredDesignSystemConfig(config: DesignSystemConfig) {
+  const storage = getLocalStorage()
+  if (!storage) return
+
+  try {
+    storage.setItem(DESIGN_SYSTEM_STORAGE_KEY, JSON.stringify(config))
+  } catch {
+    // Persistence is best-effort; in-memory state still drives the UI.
+  }
 }
 
 function isInIframe() {
@@ -128,7 +179,7 @@ export function DesignSystemProvider({
   children: React.ReactNode
 }) {
   const [searchParams, setSearchParamsState] =
-    React.useState<DesignSystemConfig>(() => ({ ...DEFAULT_CONFIG }))
+    React.useState<DesignSystemConfig>(readStoredDesignSystemConfig)
   const setSearchParams = React.useCallback<DesignSystemSearchParamsSetter>(
     (newConfig) => {
       setSearchParamsState((currentConfig) => ({
@@ -172,6 +223,10 @@ export function DesignSystemProvider({
   // }, [font, fontHeading, selectedFont])
   const initialFontSansRef = React.useRef<string | null>(null)
   const initialFontHeadingRef = React.useRef<string | null>(null)
+
+  React.useEffect(() => {
+    writeStoredDesignSystemConfig(searchParams)
+  }, [searchParams])
 
   React.useEffect(() => {
     initialFontSansRef.current =
