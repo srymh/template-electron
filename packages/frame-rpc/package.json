@@ -13,9 +13,7 @@
     "typecheck": "tsgo --noEmit"
   },
   "devDependencies": {
-    "@types/node": "^24.12.2",
-    "@typescript/native-preview": "7.0.0-dev.20260505.1",
-    "typescript": "^6.0.3"
+    "@types/node": "^24.12.2"
   },
   "packageManager": "pnpm@10.33.0"
 }
