@@ -10,8 +10,8 @@
     }
   },
   "scripts": {
-    "typecheck": "tsgo --noEmit",
-    "test": "tsgo --noEmit && vitest run"
+    "test": "tsgo --noEmit && vitest run",
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "ollama": "^0.6.3"

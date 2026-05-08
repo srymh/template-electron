@@ -10,8 +10,8 @@
     }
   },
   "scripts": {
-    "typecheck": "tsgo --noEmit",
-    "lint": "tsgo --noEmit && oxlint"
+    "test": "tsgo --noEmit && vitest",
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "@repo/sqlite": "workspace:*"

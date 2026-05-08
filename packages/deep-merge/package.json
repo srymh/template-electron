@@ -10,8 +10,8 @@
     }
   },
   "scripts": {
-    "typecheck": "tsgo --noEmit",
-    "test": "tsgo --noEmit && vitest run"
+    "test": "tsgo --noEmit && vitest run",
+    "typecheck": "tsgo --noEmit"
   },
   "devDependencies": {
     "@types/node": "^24.12.2",

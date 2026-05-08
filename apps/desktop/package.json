@@ -11,7 +11,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "pnpm lint && vite build && electron-builder",
+    "build": "vite build && electron-builder",
     "typecheck": "tsgo --noEmit",
     "postinstall": "electron-rebuild -f -w better-sqlite3"
   },

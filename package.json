@@ -7,9 +7,9 @@
     "build": "pnpm --filter @your-app-name/web run build && pnpm --filter your-app-name run build",
     "test": "pnpm -r run test",
     "typecheck": "pnpm -r run typecheck",
-    "lint": "pnpm typecheck && oxlint",
+    "lint": "pnpm run typecheck && oxlint",
     "format": "oxfmt",
-    "check": "pnpm --filter your-app-name run check"
+    "check": "pnpm run typecheck && oxlint --fix && oxfmt"
   },
   "devDependencies": {
     "@typescript/native-preview": "7.0.0-dev.20260508.1",
