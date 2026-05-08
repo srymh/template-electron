@@ -11,6 +11,9 @@ importers:
       oxfmt:
         specifier: ^0.48.0
         version: 0.48.0
+      oxlint:
+        specifier: ^1.63.0
+        version: 1.63.0
 
   apps/api:
     dependencies:
@@ -279,9 +282,6 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260505.1
         version: 7.0.0-dev.20260505.1
-      oxlint:
-        specifier: ^1.63.0
-        version: 1.63.0
       tsdown:
         specifier: ^0.21.10
         version: 0.21.10(@typescript/native-preview@7.0.0-dev.20260505.1)(typescript@6.0.3)
@@ -304,9 +304,6 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260505.1
         version: 7.0.0-dev.20260505.1
-      oxlint:
-        specifier: ^1.63.0
-        version: 1.63.0
       tsdown:
         specifier: ^0.21.10
         version: 0.21.10(@typescript/native-preview@7.0.0-dev.20260505.1)(typescript@6.0.3)
@@ -341,9 +338,6 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260505.1
         version: 7.0.0-dev.20260505.1
-      oxlint:
-        specifier: ^1.63.0
-        version: 1.63.0
       tsdown:
         specifier: ^0.21.10
         version: 0.21.10(@typescript/native-preview@7.0.0-dev.20260505.1)(typescript@6.0.3)
@@ -356,9 +350,6 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260505.1
         version: 7.0.0-dev.20260505.1
-      oxlint:
-        specifier: ^1.63.0
-        version: 1.63.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -375,9 +366,6 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260505.1
         version: 7.0.0-dev.20260505.1
-      oxlint:
-        specifier: ^1.63.0
-        version: 1.63.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -393,9 +381,6 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260505.1
         version: 7.0.0-dev.20260505.1
-      oxlint:
-        specifier: ^1.63.0
-        version: 1.63.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -411,9 +396,6 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260505.1
         version: 7.0.0-dev.20260505.1
-      oxlint:
-        specifier: ^1.63.0
-        version: 1.63.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -426,9 +408,6 @@ importers:
       electron:
         specifier: ^41.5.0
         version: 41.5.0
-      oxlint:
-        specifier: ^1.63.0
-        version: 1.63.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -460,9 +439,6 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260505.1
         version: 7.0.0-dev.20260505.1
-      oxlint:
-        specifier: ^1.63.0
-        version: 1.63.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -479,9 +455,6 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260505.1
         version: 7.0.0-dev.20260505.1
-      oxlint:
-        specifier: ^1.63.0
-        version: 1.63.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -591,9 +564,6 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260505.1
         version: 7.0.0-dev.20260505.1
-      oxlint:
-        specifier: ^1.63.0
-        version: 1.63.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -613,9 +583,6 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260505.1
         version: 7.0.0-dev.20260505.1
-      oxlint:
-        specifier: ^1.63.0
-        version: 1.63.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3

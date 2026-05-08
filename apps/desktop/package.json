@@ -12,8 +12,7 @@
   "scripts": {
     "dev": "vite",
     "build": "pnpm lint && vite build && electron-builder",
-    "lint": "tsgo --noEmit && oxlint",
-    "check": "tsgo --noEmit && oxlint --fix",
+    "typecheck": "tsgo --noEmit",
     "postinstall": "electron-rebuild -f -w better-sqlite3"
   },
   "dependencies": {

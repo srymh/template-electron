@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "pnpm lint && vite build",
     "test": "tsgo --noEmit && vitest run",
-    "lint": "tsgo --noEmit && oxlint",
-    "check": "tsgo --noEmit && oxlint --fix"
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "@faker-js/faker": "^10.4.0",

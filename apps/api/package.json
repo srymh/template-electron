@@ -10,8 +10,7 @@
     }
   },
   "scripts": {
-    "lint": "tsgo --noEmit && oxlint",
-    "check": "tsgo --noEmit && oxlint --fix"
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "@repo/frame-rpc": "workspace:*",

@@ -49,7 +49,7 @@
     }
   },
   "scripts": {
-    "lint": "tsgo"
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "@base-ui/react": "1.4.1",

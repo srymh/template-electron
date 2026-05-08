@@ -10,8 +10,8 @@
     }
   },
   "scripts": {
-    "test": "tsgo --noEmit && vitest run",
-    "lint": "tsgo --noEmit && oxlint"
+    "typecheck": "tsgo --noEmit",
+    "test": "tsgo --noEmit && vitest run"
   },
   "dependencies": {
     "ollama": "^0.6.3"
@@ -19,7 +19,6 @@
   "devDependencies": {
     "@types/node": "^24.12.2",
     "@typescript/native-preview": "7.0.0-dev.20260505.1",
-    "oxlint": "^1.63.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.5"
   },
