@@ -6,12 +6,15 @@
     "dev": "pnpm --parallel --filter @your-app-name/web --filter your-app-name run dev",
     "build": "pnpm --filter @your-app-name/web run build && pnpm --filter your-app-name run build",
     "test": "pnpm -r run test",
-    "lint": "pnpm -r run lint",
+    "typecheck": "pnpm -r run typecheck",
+    "lint": "pnpm run typecheck && oxlint",
     "format": "oxfmt",
-    "check": "pnpm --filter your-app-name run check"
+    "check": "pnpm run typecheck && oxlint --fix && oxfmt"
   },
   "devDependencies": {
-    "oxfmt": "^0.48.0"
+    "@typescript/native-preview": "7.0.0-dev.20260508.1",
+    "oxfmt": "^0.48.0",
+    "oxlint": "^1.63.0"
   },
   "packageManager": "pnpm@10.33.0"
 }

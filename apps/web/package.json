@@ -5,10 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "pnpm lint && vite build",
+    "build": "vite build",
     "test": "tsgo --noEmit && vitest run",
-    "lint": "tsgo --noEmit && oxlint",
-    "check": "tsgo --noEmit && oxlint --fix"
+    "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
     "@faker-js/faker": "^10.4.0",
@@ -46,13 +45,11 @@
     "@types/node": "^24.12.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@typescript/native-preview": "7.0.0-dev.20260505.1",
     "@vitejs/plugin-react": "^6.0.1",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint-plugin-use-no-memo": "^1.1.0",
     "jsdom": "^29.1.1",
     "oxlint": "^1.63.0",
-    "typescript": "^6.0.3",
     "vite": "^8.0.10",
     "vitest": "^4.1.5",
     "web-vitals": "^5.2.0"

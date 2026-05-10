@@ -10,12 +10,7 @@
     }
   },
   "scripts": {
-    "lint": "tsgo --noEmit && oxlint"
-  },
-  "devDependencies": {
-    "@typescript/native-preview": "7.0.0-dev.20260505.1",
-    "oxlint": "^1.63.0",
-    "typescript": "^6.0.3"
+    "typecheck": "tsgo --noEmit"
   },
   "packageManager": "pnpm@10.33.0"
 }
