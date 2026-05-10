@@ -10,7 +10,7 @@
     }
   },
   "scripts": {
-    "test": "tsgo --noEmit && vitest",
+    "test": "tsgo --noEmit && vitest run",
     "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
