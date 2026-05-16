@@ -9,8 +9,8 @@ export function DebouncedInput({
   debounce = 500,
   ...props
 }: {
-  value: string | number
-  onChange: (value: string | number) => void
+  value: string | number | undefined
+  onChange: (value: string | number | undefined) => void
   debounce?: number
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
   'use no memo'
@@ -47,7 +47,11 @@ export function DebouncedInput({
       value={value}
       onChange={(e) => {
         shouldNotifyRef.current = true
-        setValue(e.target.value)
+        if (props.type === 'number' && e.target.value === '') {
+          setValue(undefined)
+        } else {
+          setValue(e.target.value)
+        }
       }}
     />
   )
