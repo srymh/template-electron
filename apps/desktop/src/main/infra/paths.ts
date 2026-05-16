@@ -24,6 +24,7 @@ import path from 'node:path'
  *   appRoot:       '$root',
  *   mainDist:      '$root/dist',
  *   rendererDist:  '',
+ *   desktopPublic: '$root/public',
  *   vitePublic:    '$root/public',
  *   preloadPath:   '$root/dist/preload/index.cjs',
  *   indexHtmlPath: '',
@@ -53,6 +54,7 @@ import path from 'node:path'
  *   appRoot:       '$root/resources/app.asar',
  *   mainDist:      '$root/resources/app.asar/dist',
  *   rendererDist:  '$root/resources/app.asar/web/dist',
+ *   desktopPublic: '$root/resources/app.asar/public',
  *   vitePublic:    '$root/resources/app.asar/web/dist',
  *   preloadPath:   '$root/resources/app.asar/dist/preload/index.cjs',
  *   indexHtmlPath: '$root/resources/app.asar/web/dist/index.html',
@@ -82,6 +84,7 @@ import path from 'node:path'
  *   appRoot:       '$root/resources/app',
  *   mainDist:      '$root/resources/app/dist',
  *   rendererDist:  '$root/resources/app/web/dist',
+ *   desktopPublic: '$root/resources/app/public',
  *   vitePublic:    '$root/resources/app/web/dist',
  *   preloadPath:   '$root/resources/app/dist/preload/index.cjs',
  *   indexHtmlPath: '$root/resources/app/web/dist/index.html',
@@ -103,6 +106,8 @@ export type MainPaths = {
   mainDist: string
   /** Renderer のビルド成果物ディレクトリ（例: `web/dist`） */
   rendererDist: string
+  /** Desktop 側の public assets ディレクトリ（例: `public`） */
+  desktopPublic: string
   /** Vite public 参照用のディレクトリ（dev: `public`, prod: `web/dist`） */
   vitePublic: string
   /** preload スクリプトのパス（例: `dist/preload/index.cjs`） */
@@ -141,6 +146,7 @@ export function resolveMainPaths(args: {
     : // DEV時には使用しない
       ''
 
+  const desktopPublic = path.join(appRoot, 'public')
   const vitePublic = isProd ? rendererDist : path.join(appRoot, 'public')
   const indexHtmlPath = isProd
     ? path.join(rendererDist, 'index.html')
@@ -153,6 +159,7 @@ export function resolveMainPaths(args: {
     appRoot,
     mainDist,
     rendererDist,
+    desktopPublic,
     vitePublic,
     preloadPath,
     indexHtmlPath,

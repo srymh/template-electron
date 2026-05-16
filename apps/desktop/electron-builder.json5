@@ -9,6 +9,7 @@
   },
   files: [
     'dist',
+    'public',
     {
       from: '../web/dist',
       to: 'web/dist',
