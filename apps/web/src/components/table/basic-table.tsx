@@ -35,10 +35,11 @@ export function BasicTable<T>(props: {
   table: Table<T>
   rerender?: () => void
   refreshData?: () => void
+  debug?: boolean
 }) {
   'use no memo'
 
-  const { table, rerender, refreshData } = props
+  const { table, rerender, refreshData, debug = false } = props
 
   const pinColumn = React.useMemo(
     () =>
@@ -181,7 +182,7 @@ export function BasicTable<T>(props: {
       </div>
       <div className="h-4" />
       <Pagination table={table} />
-      <DebugInfo table={table} rerender={rerender} refreshData={refreshData} />
+      {debug && <DebugInfo table={table} rerender={rerender} refreshData={refreshData} />}
     </div>
   )
 }
@@ -203,7 +204,7 @@ function RowPinHeader<T>(props: HeaderContext<T, unknown>) {
         }
       }}
       disabled={!table.getIsSomeRowsPinned()}
-      className="cursor-pointer bg-white dark:bg-white"
+      className="cursor-pointer"
     />
   )
 }
@@ -223,7 +224,7 @@ function RowPinCell<T>(props: CellContext<T, unknown>) {
           row.pin(false)
         }
       }}
-      className="cursor-pointer bg-white dark:bg-white"
+      className="cursor-pointer"
     />
   )
 }
@@ -399,7 +400,7 @@ function GlobalFilter(props: {
 
   const { globalFilter = '', onChangeGlobalFilter } = props
 
-  const handleChange = (value: string | number) => {
+  const handleChange = (value: string | number | undefined) => {
     onChangeGlobalFilter(String(value))
   }
 

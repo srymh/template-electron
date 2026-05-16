@@ -29,7 +29,13 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
           min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
           max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
           value={columnFilterValue?.[0] ?? ''}
-          onChange={(value) => column.setFilterValue((old: [number, number]) => [value, old[1]])}
+          onChange={(value) =>
+            column.setFilterValue((old: [number, number] | undefined) => {
+              const lo = Number(value)
+              const hi = old?.[1] ?? ''
+              return [lo, hi]
+            })
+          }
           placeholder={`Min ${
             column.getFacetedMinMaxValues()?.[0] !== undefined
               ? `(${column.getFacetedMinMaxValues()?.[0]})`
@@ -41,7 +47,13 @@ export function Filter({ column }: { column: Column<any, unknown> }) {
           min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
           max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
           value={columnFilterValue?.[1] ?? ''}
-          onChange={(value) => column.setFilterValue((old: [number, number]) => [old[0], value])}
+          onChange={(value) =>
+            column.setFilterValue((old: [number, number] | undefined) => {
+              const lo = old?.[0] ?? ''
+              const hi = Number(value)
+              return [lo, hi]
+            })
+          }
           placeholder={`Max ${
             column.getFacetedMinMaxValues()?.[1] ? `(${column.getFacetedMinMaxValues()?.[1]})` : ''
           }`}
