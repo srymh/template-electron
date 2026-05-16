@@ -106,8 +106,8 @@ startApp<AppContext>({
          * BrowserWindow のオプション設定
          * ------------------------------------------------------------------ */
         browserWindowOptions: {
-          icon: path.join(appContext.paths.vitePublic, 'app.ico'),
-          autoHideMenuBar: true,
+          icon: getAppIconPath(appContext.paths.desktopPublic),
+          autoHideMenuBar: process.platform !== 'darwin',
           // タイトルバーを完全に消す
           titleBarStyle: 'hidden',
           // macOS 以外は titleBarOverlay を有効にしてタイトルバーとコンテンツを重ねる
@@ -274,4 +274,8 @@ function createTitleBarOverlay() {
     symbolColor: '#00000000', // シンボル
     height: 29,
   }
+}
+
+function getAppIconPath(publicPath: string) {
+  return path.join(publicPath, process.platform === 'darwin' ? 'app.icns' : 'app.ico')
 }

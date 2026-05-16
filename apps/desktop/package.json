@@ -13,6 +13,7 @@
     "dev": "vite",
     "build": "vite build && electron-builder",
     "typecheck": "tsgo --noEmit",
+    "test": "tsgo --noEmit && vitest run",
     "postinstall": "electron-rebuild -f -w better-sqlite3"
   },
   "dependencies": {

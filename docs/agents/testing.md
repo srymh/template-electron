@@ -3,16 +3,17 @@
 ## 現在の検証入口
 
 - ルートの `pnpm test` は `pnpm -r run test` を実行する。
-- 現在 root test に載る workspace は `apps/web`、`packages/auth`、`packages/ai-chat-session`、`packages/deep-merge`、`packages/ipc`、`packages/rag`。
-- `apps/api` と `apps/desktop` には `test` script がないため、変更時は利用側テストか lint/typecheck で検証する。
+- 現在 root test に載る workspace は `apps/desktop`、`apps/web`、`packages/auth`、`packages/ai-chat-session`、`packages/deep-merge`、`packages/ipc`、`packages/rag`。
+- `apps/api` には `test` script がないため、変更時は利用側テストか lint/typecheck で検証する。
 - ルートの `pnpm check` は `apps/desktop` の `check` だけを実行する。
 
 ## よく使う検証コマンド
 
 - web の単一テスト: `pnpm --filter @your-app-name/web exec vitest run src/components/theme-provider.test.tsx`
+- desktop の単一 workspace テスト: `pnpm --filter your-app-name run test`
 - shared package テスト: `pnpm --filter @repo/auth run test`
 - web の lint/typecheck: `pnpm --filter @your-app-name/web run lint`
-- desktop の lint/typecheck: `pnpm --filter your-app-name run lint`
+- desktop の typecheck: `pnpm --filter your-app-name run typecheck`
 - 変更を広く見るとき: `pnpm test`
 
 ## 新しいテストを追加するとき

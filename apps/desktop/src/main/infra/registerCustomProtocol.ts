@@ -1,16 +1,12 @@
 import fs from 'node:fs/promises'
-import path from 'node:path'
 
 import { protocol } from 'electron'
 
+import { resolveAppProtocolFilePath } from './appProtocolPath'
+
 export function registerCustomProtocol() {
   protocol.handle('app', async (request) => {
-    const url = decodeURI(request.url.replace(/^app:\/\//, ''))
-    let filePath = path.win32.normalize(url)
-    if (filePath.startsWith('\\')) {
-      filePath = filePath.slice(1) // \C:\path\to\file => C:\path\to\file
-    }
-    console.log({ input: url, filePath })
+    const filePath = resolveAppProtocolFilePath(request.url)
     const buffer = await fs.readFile(filePath)
     // BufferをUint8Arrayに変換してResponseに渡す
     return new Response(new Uint8Array(buffer), {
