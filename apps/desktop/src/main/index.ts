@@ -1,7 +1,6 @@
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
-import { app } from 'electron'
 import type { WebContents, BrowserWindow } from 'electron'
 
 import type { ServerTool } from '@tanstack/ai'
@@ -16,8 +15,6 @@ import { mcpToTanStackAiTools } from '@repo/tanstack-ai-mcp'
 import { startApp } from './app/startApp'
 import type { AppRuntime } from './app/startApp'
 import { createAppDatabase } from './infra/db'
-import { resolveMainPaths } from './infra/paths'
-import type { MainPaths } from './infra/paths'
 import { registerCustomProtocol } from './infra/registerCustomProtocol'
 import { registerIpc } from './ipc/registerIpc'
 import type { Context } from './ipc/registerIpc'
@@ -43,10 +40,10 @@ type AppContext = {
   aiChatSession: AiChatSession | null
 
   registerIpcCache: WeakMap<WebContents, Map<string, () => void>>
-  paths: MainPaths
 }
 
 startApp<AppContext>({
+  dirname: __dirname,
   /** --------------------------------------------------------------------------
    *
    * app 準備完了後の処理
@@ -89,8 +86,8 @@ startApp<AppContext>({
      */
     const ensureTrailingSeparator = (p: string) => (p.endsWith(path.sep) ? p : p + path.sep)
 
-    const rendererRootUrl = appContext.paths.rendererDist
-      ? pathToFileURL(ensureTrailingSeparator(appContext.paths.rendererDist)).toString()
+    const rendererRootUrl = appRuntime.paths.rendererDist
+      ? pathToFileURL(ensureTrailingSeparator(appRuntime.paths.rendererDist)).toString()
       : null
 
     createWindow(
@@ -98,7 +95,7 @@ startApp<AppContext>({
         if (VITE_DEV_SERVER_URL) {
           await win.loadURL(VITE_DEV_SERVER_URL)
         } else {
-          await win.loadFile(appContext.paths.indexHtmlPath)
+          await win.loadFile(appRuntime.paths.indexHtmlPath)
         }
       },
       {
@@ -106,7 +103,7 @@ startApp<AppContext>({
          * BrowserWindow のオプション設定
          * ------------------------------------------------------------------ */
         browserWindowOptions: {
-          icon: getAppIconPath(appContext.paths.desktopPublic),
+          icon: getAppIconPath(appRuntime.paths.desktopPublic),
           autoHideMenuBar: process.platform !== 'darwin',
           // タイトルバーを完全に消す
           titleBarStyle: 'hidden',
@@ -115,7 +112,7 @@ startApp<AppContext>({
           ...(process.platform !== 'darwin' ? { titleBarOverlay: createTitleBarOverlay() } : {}),
           webPreferences: {
             ...recommendedSecureOptions,
-            preload: appContext.paths.preloadPath,
+            preload: appRuntime.paths.preloadPath,
           },
         },
         /** --------------------------------------------------------------------
@@ -160,10 +157,6 @@ startApp<AppContext>({
       authRuntime: null,
       aiChatSession: null,
       registerIpcCache: new WeakMap(),
-      paths: resolveMainPaths({
-        isPackaged: app.isPackaged,
-        dirname: __dirname,
-      }),
     }
   },
 })
@@ -209,7 +202,7 @@ function createWindowContext(
         return toolsByMcp
       },
       getSearchProjectDetailDbPath: () => {
-        return path.join(appContext.paths.dataPath, 'example.db')
+        return path.join(appRuntime.paths.dataPath, 'example.db')
       },
       getAiChatSession: () => appContext.aiChatSession,
       setAiChatSession: (session) => {
@@ -220,7 +213,7 @@ function createWindowContext(
       getDb: () => {
         if (!appContext.db) {
           try {
-            const db = createAppDatabase(path.join(appContext.paths.dataPath, 'kakeibo.db'), {
+            const db = createAppDatabase(path.join(appRuntime.paths.dataPath, 'kakeibo.db'), {
               readonly: false,
               fileMustExist: false,
             })
@@ -246,7 +239,7 @@ function createWindowContext(
          * 認証スキーマ初期化は @repo/auth 側で行う。
          */
         function createAuthDb(): Database {
-          const dbPath = path.join(app.getPath('userData'), 'auth.db')
+          const dbPath = path.join(appRuntime.paths.userDataPath, 'auth.db')
 
           console.log(`Auth DB Path: ${dbPath}`)
 

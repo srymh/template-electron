@@ -28,7 +28,9 @@ import path from 'node:path'
  *   vitePublic:    '$root/public',
  *   preloadPath:   '$root/dist/preload/index.cjs',
  *   indexHtmlPath: '',
- *   dataPath:      '$root/data'
+ *   dataPath:      '$root/data',
+ *   userDataPath:  'C:\\Users\\ユーザー名\\AppData\\Roaming\\your-app-name\\app' (Windowsの場合)
+ *   userDataPath:  '/Users/ユーザー名/Library/Application Support/your-app-name/app' (macOSの場合)
  * }
  * ```
  *
@@ -58,7 +60,9 @@ import path from 'node:path'
  *   vitePublic:    '$root/resources/app.asar/web/dist',
  *   preloadPath:   '$root/resources/app.asar/dist/preload/index.cjs',
  *   indexHtmlPath: '$root/resources/app.asar/web/dist/index.html',
- *   dataPath:      '$root/resources/data'
+ *   dataPath:      '$root/resources/data',
+ *   userDataPath:  'C:\\Users\\ユーザー名\\AppData\\Roaming\\your-app-name\\app' (Windowsの場合)
+ *   userDataPath:  '/Users/ユーザー名/Library/Application Support/your-app-name/app' (macOSの場合)
  * }
  * ```
  *
@@ -88,7 +92,9 @@ import path from 'node:path'
  *   vitePublic:    '$root/resources/app/web/dist',
  *   preloadPath:   '$root/resources/app/dist/preload/index.cjs',
  *   indexHtmlPath: '$root/resources/app/web/dist/index.html',
- *   dataPath:      '$root/resources/data'
+ *   dataPath:      '$root/resources/data',
+ *   userDataPath:  'C:\\Users\\ユーザー名\\AppData\\Roaming\\your-app-name\\app' (Windowsの場合)
+ *   userDataPath:  '/Users/ユーザー名/Library/Application Support/your-app-name/app' (macOSの場合)
  * }
  * ```
  */
@@ -114,8 +120,10 @@ export type MainPaths = {
   preloadPath: string
   /** Renderer のエントリ HTML のパス（例: `web/dist/index.html`） */
   indexHtmlPath: string
-  /** data */
+  /** ビルトインの読み取り用データディレクトリ */
   dataPath: string
+  /** ユーザーデータ用ディレクトリ */
+  userDataPath: string
 }
 
 /**
@@ -133,8 +141,9 @@ export function resolveMainPaths(args: {
   isPackaged: boolean
   /** Equivalent to `path.dirname(fileURLToPath(import.meta.url))` in `src/main/index.ts` */
   dirname: string
+  userDataPath: string
 }): MainPaths {
-  const { isPackaged: isProd, dirname } = args
+  const { isPackaged: isProd, dirname, userDataPath } = args
 
   const appRoot = path.join(dirname, '..', '..')
 
@@ -155,6 +164,8 @@ export function resolveMainPaths(args: {
 
   const dataPath = isProd ? path.join(process.resourcesPath, 'data') : path.join(appRoot, 'data')
 
+  const userDataPathResolved = path.join(userDataPath, 'app')
+
   return {
     appRoot,
     mainDist,
@@ -164,5 +175,6 @@ export function resolveMainPaths(args: {
     preloadPath,
     indexHtmlPath,
     dataPath,
+    userDataPath: userDataPathResolved,
   }
 }
