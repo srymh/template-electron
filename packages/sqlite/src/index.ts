@@ -10,7 +10,7 @@ export type SqliteDatabaseHandle = {
   close: () => void
 }
 
-export class DataBase {
+export class Database {
   constructor(private readonly db: SqliteDatabaseHandle) {}
 
   query<T = unknown>(sql: string, params?: readonly unknown[]): T[] {
@@ -42,6 +42,6 @@ export class DataBase {
   }
 }
 
-export function createDataBase(db: SqliteDatabaseHandle): DataBase {
-  return new DataBase(db)
+export function createDatabase(db: SqliteDatabaseHandle): Database {
+  return new Database(db)
 }

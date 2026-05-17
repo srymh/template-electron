@@ -1,10 +1,10 @@
 /**
- * better-sqlite3 を @repo/sqlite の `DataBase` に接続する desktop app 側の adapter。
+ * better-sqlite3 を @repo/sqlite の `Database` に接続する desktop app 側の adapter。
  *
  * このファイルの責務:
  * - better-sqlite3 の生成を app 側に閉じ込める
  * - better-sqlite3 と `@repo/sqlite` の型差を吸収する
- * - 呼び出し側へ driver 非依存の `DataBase` を返す
+ * - 呼び出し側へ driver 非依存の `Database` を返す
  *
  * このファイルが決めないこと:
  * - DB ファイルの場所や名前
@@ -21,10 +21,10 @@ import type {
   Options as BetterSqlite3Options,
 } from 'better-sqlite3'
 
-import { createDataBase } from '@repo/sqlite'
-import type { DataBase, SqliteDatabaseHandle } from '@repo/sqlite'
+import { createDatabase } from '@repo/sqlite'
+import type { Database, SqliteDatabaseHandle } from '@repo/sqlite'
 
-export type DataBaseOpenOptions = {
+export type DatabaseOpenOptions = {
   readonly?: boolean
   fileMustExist?: boolean
 }
@@ -46,7 +46,7 @@ function createBetterSqlite3Handle(db: BetterSqlite3Database): SqliteDatabaseHan
   }
 }
 
-function toBetterSqlite3Options(options?: DataBaseOpenOptions): BetterSqlite3Options | undefined {
+function toBetterSqlite3Options(options?: DatabaseOpenOptions): BetterSqlite3Options | undefined {
   if (!options) {
     return undefined
   }
@@ -58,11 +58,11 @@ function toBetterSqlite3Options(options?: DataBaseOpenOptions): BetterSqlite3Opt
 }
 
 /**
- * 共通で扱う open option だけを受け取り、driver 非依存の `DataBase` を返します。
+ * 共通で扱う open option だけを受け取り、driver 非依存の `Database` を返します。
  * `filePath` の解決は呼び出し側の責務です。
  */
-export function createAppDataBase(filePath: string, options?: DataBaseOpenOptions): DataBase {
-  return createDataBase(
+export function createAppDatabase(filePath: string, options?: DatabaseOpenOptions): Database {
+  return createDatabase(
     createBetterSqlite3Handle(new BetterSqlite3(filePath, toBetterSqlite3Options(options))),
   )
 }

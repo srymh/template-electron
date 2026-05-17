@@ -1,7 +1,6 @@
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
-import { app } from 'electron'
 import type { WebContents, BrowserWindow } from 'electron'
 
 import type { ServerTool } from '@tanstack/ai'
@@ -10,14 +9,12 @@ import type { AiChatSession } from '@repo/ai-chat-session'
 import type { AuthRuntime } from '@repo/auth'
 import { createAuthRuntime } from '@repo/auth'
 import type { McpServer } from '@repo/mcp-server-example'
-import type { DataBase } from '@repo/sqlite'
+import type { Database } from '@repo/sqlite'
 import { mcpToTanStackAiTools } from '@repo/tanstack-ai-mcp'
 
 import { startApp } from './app/startApp'
 import type { AppRuntime } from './app/startApp'
-import { createAppDataBase } from './infra/db'
-import { resolveMainPaths } from './infra/paths'
-import type { MainPaths } from './infra/paths'
+import { createAppDatabase } from './infra/db'
 import { registerCustomProtocol } from './infra/registerCustomProtocol'
 import { registerIpc } from './ipc/registerIpc'
 import type { Context } from './ipc/registerIpc'
@@ -37,16 +34,16 @@ type AppContext = {
   windowContextMap: WeakMap<WebContents, Context>
 
   mcpServer: McpServer | null
-  db: DataBase | null
+  db: Database | null
   toolsByMcp: ServerTool[] | null
   authRuntime: AuthRuntime | null
   aiChatSession: AiChatSession | null
 
   registerIpcCache: WeakMap<WebContents, Map<string, () => void>>
-  paths: MainPaths
 }
 
 startApp<AppContext>({
+  dirname: __dirname,
   /** --------------------------------------------------------------------------
    *
    * app 準備完了後の処理
@@ -89,8 +86,8 @@ startApp<AppContext>({
      */
     const ensureTrailingSeparator = (p: string) => (p.endsWith(path.sep) ? p : p + path.sep)
 
-    const rendererRootUrl = appContext.paths.rendererDist
-      ? pathToFileURL(ensureTrailingSeparator(appContext.paths.rendererDist)).toString()
+    const rendererRootUrl = appRuntime.paths.rendererDist
+      ? pathToFileURL(ensureTrailingSeparator(appRuntime.paths.rendererDist)).toString()
       : null
 
     createWindow(
@@ -98,7 +95,7 @@ startApp<AppContext>({
         if (VITE_DEV_SERVER_URL) {
           await win.loadURL(VITE_DEV_SERVER_URL)
         } else {
-          await win.loadFile(appContext.paths.indexHtmlPath)
+          await win.loadFile(appRuntime.paths.indexHtmlPath)
         }
       },
       {
@@ -106,7 +103,7 @@ startApp<AppContext>({
          * BrowserWindow のオプション設定
          * ------------------------------------------------------------------ */
         browserWindowOptions: {
-          icon: getAppIconPath(appContext.paths.desktopPublic),
+          icon: getAppIconPath(appRuntime.paths.desktopPublic),
           autoHideMenuBar: process.platform !== 'darwin',
           // タイトルバーを完全に消す
           titleBarStyle: 'hidden',
@@ -115,7 +112,7 @@ startApp<AppContext>({
           ...(process.platform !== 'darwin' ? { titleBarOverlay: createTitleBarOverlay() } : {}),
           webPreferences: {
             ...recommendedSecureOptions,
-            preload: appContext.paths.preloadPath,
+            preload: appRuntime.paths.preloadPath,
           },
         },
         /** --------------------------------------------------------------------
@@ -160,10 +157,6 @@ startApp<AppContext>({
       authRuntime: null,
       aiChatSession: null,
       registerIpcCache: new WeakMap(),
-      paths: resolveMainPaths({
-        isPackaged: app.isPackaged,
-        dirname: __dirname,
-      }),
     }
   },
 })
@@ -209,7 +202,7 @@ function createWindowContext(
         return toolsByMcp
       },
       getSearchProjectDetailDbPath: () => {
-        return path.join(appContext.paths.dataPath, 'example.db')
+        return path.join(appRuntime.paths.dataPath, 'example.db')
       },
       getAiChatSession: () => appContext.aiChatSession,
       setAiChatSession: (session) => {
@@ -220,7 +213,7 @@ function createWindowContext(
       getDb: () => {
         if (!appContext.db) {
           try {
-            const db = createAppDataBase(path.join(appContext.paths.dataPath, 'kakeibo.db'), {
+            const db = createAppDatabase(path.join(appRuntime.paths.dataPath, 'kakeibo.db'), {
               readonly: false,
               fileMustExist: false,
             })
@@ -245,12 +238,12 @@ function createWindowContext(
          * desktop app 用に auth.db の実体を開く factory。
          * 認証スキーマ初期化は @repo/auth 側で行う。
          */
-        function createAuthDb(): DataBase {
-          const dbPath = path.join(app.getPath('userData'), 'auth.db')
+        function createAuthDb(): Database {
+          const dbPath = path.join(appRuntime.paths.userDataPath, 'auth.db')
 
           console.log(`Auth DB Path: ${dbPath}`)
 
-          return createAppDataBase(dbPath)
+          return createAppDatabase(dbPath)
         }
 
         const newRuntime = createAuthRuntime({

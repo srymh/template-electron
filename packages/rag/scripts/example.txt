@@ -72,7 +72,7 @@ AppContext は以下のフィールドを持つ。
 
 - windowsById: Map<string, BrowserWindow> でウィンドウを ID で管理する。
 - mcpServer: MCP サーバーインスタンス。
-- db: better-sqlite3 の DataBase ラッパーインスタンス。
+- db: better-sqlite3 の Database ラッパーインスタンス。
 - authRuntime: 認証ランタイム（AuthRuntime）。
 
 startApp 関数はジェネリックなアプリケーションライフサイクルマネージャーである。electron/main/app/startApp.ts に定義されており、初期化・ウィンドウ作成・破棄のライフサイクルを管理する。dispose パターンにより、アプリ終了時にリソースを確実に解放する。
@@ -283,7 +283,7 @@ electron/shared/lib/tanstack-ai-mcp/index.ts には mcpToTanStackAiTools ユー�
 
 アプリケーションデータには better-sqlite3 を使用する。データベースファイルは data/kakeibo.db に配置される。
 
-packages/sqlite/src/index.ts に DataBase クラスが定義されている。apps/desktop/electron/main/infra/db.ts は better-sqlite3 をその抽象へ接続する adapter である。DataBase は以下のメソッドを提供する。
+packages/sqlite/src/index.ts に Database クラスが定義されている。apps/desktop/electron/main/infra/db.ts は better-sqlite3 をその抽象へ接続する adapter である。Database は以下のメソッドを提供する。
 
 - query(): SELECT クエリを実行し結果の配列を返す。
 - get(): 単一行を取得する。

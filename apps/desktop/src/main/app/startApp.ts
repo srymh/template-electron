@@ -1,6 +1,10 @@
 import { app, BrowserWindow } from 'electron'
 
+import type { MainPaths } from '../infra/paths'
+import { resolveMainPaths } from '../infra/paths'
+
 export interface AppRuntime {
+  paths: MainPaths
   // 破棄処理を追加する
   addDispose(dispose: () => void | Promise<void>): void
 }
@@ -9,6 +13,7 @@ export interface AppRuntime {
 const DEFAULT_DISPOSE_TIMEOUT_MS = 5_000
 
 export async function startApp<TAppContext>(options: {
+  dirname: string
   onAppReady: ({
     appRuntime,
     appContext,
@@ -23,21 +28,26 @@ export async function startApp<TAppContext>(options: {
     appRuntime: AppRuntime
     appContext: TAppContext
   }) => void
-  createAppContext: () => Promise<TAppContext>
+  createAppContext: ({ appRuntime }: { appRuntime: AppRuntime }) => Promise<TAppContext>
 }) {
-  const { onAppReady, openMainWindow, createAppContext } = options
-
-  const appContext: TAppContext = await createAppContext()
+  const { dirname, onAppReady, openMainWindow, createAppContext } = options
 
   /** before-quit で呼ばれる破棄処理（同期/非同期混在可） */
   const disposeSet: Set<(() => void) | (() => Promise<void>)> = new Set()
   let isDisposing = false
 
   const appRuntime: AppRuntime = {
+    paths: resolveMainPaths({
+      isPackaged: app.isPackaged,
+      dirname,
+      userDataPath: app.getPath('userData'),
+    }),
     addDispose(dispose) {
       disposeSet.add(dispose)
     },
   }
+
+  const appContext: TAppContext = await createAppContext({ appRuntime })
 
   /** --------------------------------------------------------------------------
    *
