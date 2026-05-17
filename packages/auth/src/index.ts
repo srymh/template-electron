@@ -1,6 +1,6 @@
 import crypto from 'node:crypto'
 
-import type { DataBase } from '@repo/sqlite'
+import type { Database } from '@repo/sqlite'
 
 export type AuthUser = {
   username: string
@@ -20,13 +20,13 @@ export type AuthRuntime = {
 
 export type CreateAuthRuntimeOptions =
   | {
-      db: DataBase
+      db: Database
       createDb?: never
       closeDbOnDispose?: boolean
     }
   | {
       db?: never
-      createDb: () => DataBase
+      createDb: () => Database
       closeDbOnDispose?: boolean
     }
 
@@ -109,14 +109,14 @@ function verifyPassword(password: string, user: DbAuthUser) {
   return crypto.timingSafeEqual(a, b)
 }
 
-function revokeCurrentSession(db: DataBase, revokedAt: string) {
+function revokeCurrentSession(db: Database, revokedAt: string) {
   db.run(
     'UPDATE auth_sessions SET revoked_at = ?, is_current = 0 WHERE is_current = 1 AND revoked_at IS NULL',
     [revokedAt],
   )
 }
 
-function createCurrentSession(db: DataBase, userId: number) {
+function createCurrentSession(db: Database, userId: number) {
   const createdAt = nowIso()
   const expiresAt = computeExpiresAtIso()
 
@@ -126,7 +126,7 @@ function createCurrentSession(db: DataBase, userId: number) {
   )
 }
 
-function readCurrentSessionUser(db: DataBase): DbAuthSessionWithUser | undefined {
+function readCurrentSessionUser(db: Database): DbAuthSessionWithUser | undefined {
   return db.get<DbAuthSessionWithUser>(
     [
       'SELECT u.username as username, s.expires_at as expires_at',
@@ -139,7 +139,7 @@ function readCurrentSessionUser(db: DataBase): DbAuthSessionWithUser | undefined
 }
 
 function resolveRuntimeDb(options: CreateAuthRuntimeOptions): {
-  db: DataBase
+  db: Database
   closeDbOnDispose: boolean
 } {
   if (options.createDb) {
@@ -155,7 +155,7 @@ function resolveRuntimeDb(options: CreateAuthRuntimeOptions): {
   }
 }
 
-export function ensureAuthDb(db: DataBase): void {
+export function ensureAuthDb(db: Database): void {
   db.exec(
     [
       'PRAGMA foreign_keys = ON;',
@@ -188,7 +188,7 @@ export function ensureAuthDb(db: DataBase): void {
   )
 }
 
-export function getAuthStatus(db: DataBase): AuthStatus {
+export function getAuthStatus(db: Database): AuthStatus {
   const row = readCurrentSessionUser(db)
   if (!row) {
     return { isAuthenticated: false, user: null }
@@ -212,7 +212,7 @@ export function getAuthStatus(db: DataBase): AuthStatus {
   }
 }
 
-export function login(db: DataBase, username: string, password: string): AuthStatus {
+export function login(db: Database, username: string, password: string): AuthStatus {
   const normalized = username.trim()
   if (!normalized) {
     throw new Error('username is required')
@@ -288,7 +288,7 @@ export function login(db: DataBase, username: string, password: string): AuthSta
   }
 }
 
-export function logout(db: DataBase): void {
+export function logout(db: Database): void {
   revokeCurrentSession(db, nowIso())
 }
 

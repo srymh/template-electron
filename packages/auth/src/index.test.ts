@@ -2,7 +2,7 @@ import { DatabaseSync } from 'node:sqlite'
 
 import { describe, expect, it, vi } from 'vitest'
 
-import { createDataBase } from '@repo/sqlite'
+import { createDatabase } from '@repo/sqlite'
 import type { SqliteDatabaseHandle } from '@repo/sqlite'
 
 import { createAuthRuntime } from './index'
@@ -10,7 +10,7 @@ import { createAuthRuntime } from './index'
 describe('createAuthRuntime', () => {
   it('creates a user session on first login and returns the current auth status', () => {
     const createInMemoryDb = () =>
-      createDataBase(new DatabaseSync(':memory:') as unknown as SqliteDatabaseHandle)
+      createDatabase(new DatabaseSync(':memory:') as unknown as SqliteDatabaseHandle)
 
     const runtime = createAuthRuntime({
       createDb: createInMemoryDb,
@@ -39,7 +39,7 @@ describe('createAuthRuntime', () => {
     const closeSpy = vi.spyOn(handle, 'close')
 
     const runtime = createAuthRuntime({
-      db: createDataBase(handle as unknown as SqliteDatabaseHandle),
+      db: createDatabase(handle as unknown as SqliteDatabaseHandle),
       closeDbOnDispose: true,
     })
 

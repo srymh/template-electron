@@ -10,12 +10,12 @@ import type { AiChatSession } from '@repo/ai-chat-session'
 import type { AuthRuntime } from '@repo/auth'
 import { createAuthRuntime } from '@repo/auth'
 import type { McpServer } from '@repo/mcp-server-example'
-import type { DataBase } from '@repo/sqlite'
+import type { Database } from '@repo/sqlite'
 import { mcpToTanStackAiTools } from '@repo/tanstack-ai-mcp'
 
 import { startApp } from './app/startApp'
 import type { AppRuntime } from './app/startApp'
-import { createAppDataBase } from './infra/db'
+import { createAppDatabase } from './infra/db'
 import { resolveMainPaths } from './infra/paths'
 import type { MainPaths } from './infra/paths'
 import { registerCustomProtocol } from './infra/registerCustomProtocol'
@@ -37,7 +37,7 @@ type AppContext = {
   windowContextMap: WeakMap<WebContents, Context>
 
   mcpServer: McpServer | null
-  db: DataBase | null
+  db: Database | null
   toolsByMcp: ServerTool[] | null
   authRuntime: AuthRuntime | null
   aiChatSession: AiChatSession | null
@@ -220,7 +220,7 @@ function createWindowContext(
       getDb: () => {
         if (!appContext.db) {
           try {
-            const db = createAppDataBase(path.join(appContext.paths.dataPath, 'kakeibo.db'), {
+            const db = createAppDatabase(path.join(appContext.paths.dataPath, 'kakeibo.db'), {
               readonly: false,
               fileMustExist: false,
             })
@@ -245,12 +245,12 @@ function createWindowContext(
          * desktop app 用に auth.db の実体を開く factory。
          * 認証スキーマ初期化は @repo/auth 側で行う。
          */
-        function createAuthDb(): DataBase {
+        function createAuthDb(): Database {
           const dbPath = path.join(app.getPath('userData'), 'auth.db')
 
           console.log(`Auth DB Path: ${dbPath}`)
 
-          return createAppDataBase(dbPath)
+          return createAppDatabase(dbPath)
         }
 
         const newRuntime = createAuthRuntime({

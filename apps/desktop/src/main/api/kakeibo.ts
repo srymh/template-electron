@@ -1,7 +1,7 @@
 import type { WebContents } from 'electron'
 
 import type { ApiInterface, WithWebContentsApi } from '@repo/ipc'
-import type { DataBase } from '@repo/sqlite'
+import type { Database } from '@repo/sqlite'
 
 // -----------------------------------------------------------------------------
 // 型定義
@@ -10,7 +10,7 @@ export const Kakeibo_API_KEY = 'kakeibo' as const
 export type KakeiboApiKey = typeof Kakeibo_API_KEY
 
 export type KakeiboContext = {
-  getDb: () => DataBase
+  getDb: () => Database
 }
 
 export type KakeiboEntry = {
