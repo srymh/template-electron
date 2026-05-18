@@ -14,7 +14,6 @@
     "@repo/ai-chat": "workspace:*",
     "@repo/ai-tools": "workspace:*",
     "@repo/shadcn": "workspace:*",
-    "@standard-schema/spec": "^1.1.0",
     "@tailwindcss/vite": "^4.2.4",
     "@tanstack/ai": "^0.14.0",
     "@tanstack/ai-client": "^0.8.0",
