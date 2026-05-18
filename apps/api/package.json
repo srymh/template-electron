@@ -16,10 +16,6 @@
     "@repo/frame-rpc": "workspace:*",
     "your-app-name": "workspace:*"
   },
-  "devDependencies": {
-    "@types/node": "^24.12.2",
-    "oxlint": "^1.63.0"
-  },
   "devEngines": {
     "packageManager": {
       "name": "pnpm",

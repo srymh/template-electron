@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "@repo/rag": "workspace:*",
-    "@standard-schema/spec": "^1.1.0",
     "@tanstack/ai": "^0.14.0",
     "zod": "^4.4.3"
   },
