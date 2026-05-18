@@ -2,6 +2,7 @@ import { app, BrowserWindow } from 'electron'
 
 import type { MainPaths } from '../infra/paths'
 import { resolveMainPaths } from '../infra/paths'
+import { ensureUserDataAppDirectory } from '../infra/userDataDirectory'
 
 export interface AppRuntime {
   paths: MainPaths
@@ -46,6 +47,8 @@ export async function startApp<TAppContext>(options: {
       disposeSet.add(dispose)
     },
   }
+
+  await ensureUserDataAppDirectory(appRuntime.paths.userDataPath)
 
   const appContext: TAppContext = await createAppContext({ appRuntime })
 
