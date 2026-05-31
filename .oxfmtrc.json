@@ -49,7 +49,7 @@
     "README.md",
     "tsconfig.json",
     "packages/shadcn/src/**",
-    "packages/shadcn@v4.6.0/src/**",
+    "packages/ui/src/**",
     "AGENTS.md",
     ".*/**"
   ]
