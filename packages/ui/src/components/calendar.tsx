@@ -8,8 +8,8 @@ import {
   type Locale,
 } from "react-day-picker"
 
-import { cn } from "@repo/ui/lib/utils"
-import { Button, buttonVariants } from "@repo/ui/components/button"
+import { cn } from "#lib/utils"
+import { Button, buttonVariants } from "#components/button"
 import { ChevronLeftIcon, ChevronRightIcon, ChevronDownIcon } from "lucide-react"
 
 function Calendar({
