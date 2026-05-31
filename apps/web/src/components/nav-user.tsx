@@ -1,7 +1,5 @@
 import { useNavigate } from '@tanstack/react-router'
-import { ChevronsUpDown, LogOut, Settings2Icon } from 'lucide-react'
-
-import { Avatar, AvatarFallback, AvatarImage } from '@repo/shadcn/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@workspace/ui/components/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,13 +8,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@repo/shadcn/ui/dropdown-menu'
+} from '@workspace/ui/components/dropdown-menu'
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@repo/shadcn/ui/sidebar'
+} from '@workspace/ui/components/sidebar'
+import { ChevronsUpDown, LogOut, Settings2Icon } from 'lucide-react'
 
 export function NavUser({
   user,

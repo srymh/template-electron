@@ -13,7 +13,6 @@
     "@faker-js/faker": "^10.4.0",
     "@repo/ai-chat": "workspace:*",
     "@repo/ai-tools": "workspace:*",
-    "@repo/shadcn": "workspace:*",
     "@tailwindcss/vite": "^4.2.4",
     "@tanstack/ai": "^0.14.0",
     "@tanstack/ai-client": "^0.8.0",

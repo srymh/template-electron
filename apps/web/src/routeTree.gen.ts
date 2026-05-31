@@ -13,11 +13,8 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as appSettingsRouteImport } from './routes/(app)/settings'
-import { Route as appUiRouteRouteImport } from './routes/(app)/ui/route'
 import { Route as appDemoRouteRouteImport } from './routes/(app)/demo.route'
-import { Route as appUiIndexRouteImport } from './routes/(app)/ui/index'
 import { Route as appDemoIndexRouteImport } from './routes/(app)/demo.index'
-import { Route as appUiComponentRouteImport } from './routes/(app)/ui/$component'
 import { Route as appDemoWebRouteImport } from './routes/(app)/demo.web'
 import { Route as appDemoTanstackQueryRouteImport } from './routes/(app)/demo.tanstack-query'
 import { Route as appDemoTableRouteImport } from './routes/(app)/demo.table'
@@ -43,30 +40,15 @@ const appSettingsRoute = appSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => appRouteRoute,
 } as any)
-const appUiRouteRoute = appUiRouteRouteImport.update({
-  id: '/ui',
-  path: '/ui',
-  getParentRoute: () => appRouteRoute,
-} as any)
 const appDemoRouteRoute = appDemoRouteRouteImport.update({
   id: '/demo',
   path: '/demo',
   getParentRoute: () => appRouteRoute,
 } as any)
-const appUiIndexRoute = appUiIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => appUiRouteRoute,
-} as any)
 const appDemoIndexRoute = appDemoIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => appDemoRouteRoute,
-} as any)
-const appUiComponentRoute = appUiComponentRouteImport.update({
-  id: '/$component',
-  path: '/$component',
-  getParentRoute: () => appUiRouteRoute,
 } as any)
 const appDemoWebRoute = appDemoWebRouteImport.update({
   id: '/web',
@@ -98,16 +80,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/demo': typeof appDemoRouteRouteWithChildren
-  '/ui': typeof appUiRouteRouteWithChildren
   '/settings': typeof appSettingsRoute
   '/demo/fs': typeof appDemoFsRoute
   '/demo/kakeibo': typeof appDemoKakeiboRoute
   '/demo/table': typeof appDemoTableRoute
   '/demo/tanstack-query': typeof appDemoTanstackQueryRoute
   '/demo/web': typeof appDemoWebRoute
-  '/ui/$component': typeof appUiComponentRoute
   '/demo/': typeof appDemoIndexRoute
-  '/ui/': typeof appUiIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -118,9 +97,7 @@ export interface FileRoutesByTo {
   '/demo/table': typeof appDemoTableRoute
   '/demo/tanstack-query': typeof appDemoTanstackQueryRoute
   '/demo/web': typeof appDemoWebRoute
-  '/ui/$component': typeof appUiComponentRoute
   '/demo': typeof appDemoIndexRoute
-  '/ui': typeof appUiIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -128,16 +105,13 @@ export interface FileRoutesById {
   '/(app)': typeof appRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/(app)/demo': typeof appDemoRouteRouteWithChildren
-  '/(app)/ui': typeof appUiRouteRouteWithChildren
   '/(app)/settings': typeof appSettingsRoute
   '/(app)/demo/fs': typeof appDemoFsRoute
   '/(app)/demo/kakeibo': typeof appDemoKakeiboRoute
   '/(app)/demo/table': typeof appDemoTableRoute
   '/(app)/demo/tanstack-query': typeof appDemoTanstackQueryRoute
   '/(app)/demo/web': typeof appDemoWebRoute
-  '/(app)/ui/$component': typeof appUiComponentRoute
   '/(app)/demo/': typeof appDemoIndexRoute
-  '/(app)/ui/': typeof appUiIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -145,16 +119,13 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/demo'
-    | '/ui'
     | '/settings'
     | '/demo/fs'
     | '/demo/kakeibo'
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/web'
-    | '/ui/$component'
     | '/demo/'
-    | '/ui/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -165,25 +136,20 @@ export interface FileRouteTypes {
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/web'
-    | '/ui/$component'
     | '/demo'
-    | '/ui'
   id:
     | '__root__'
     | '/'
     | '/(app)'
     | '/login'
     | '/(app)/demo'
-    | '/(app)/ui'
     | '/(app)/settings'
     | '/(app)/demo/fs'
     | '/(app)/demo/kakeibo'
     | '/(app)/demo/table'
     | '/(app)/demo/tanstack-query'
     | '/(app)/demo/web'
-    | '/(app)/ui/$component'
     | '/(app)/demo/'
-    | '/(app)/ui/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -222,13 +188,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appSettingsRouteImport
       parentRoute: typeof appRouteRoute
     }
-    '/(app)/ui': {
-      id: '/(app)/ui'
-      path: '/ui'
-      fullPath: '/ui'
-      preLoaderRoute: typeof appUiRouteRouteImport
-      parentRoute: typeof appRouteRoute
-    }
     '/(app)/demo': {
       id: '/(app)/demo'
       path: '/demo'
@@ -236,26 +195,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appDemoRouteRouteImport
       parentRoute: typeof appRouteRoute
     }
-    '/(app)/ui/': {
-      id: '/(app)/ui/'
-      path: '/'
-      fullPath: '/ui/'
-      preLoaderRoute: typeof appUiIndexRouteImport
-      parentRoute: typeof appUiRouteRoute
-    }
     '/(app)/demo/': {
       id: '/(app)/demo/'
       path: '/'
       fullPath: '/demo/'
       preLoaderRoute: typeof appDemoIndexRouteImport
       parentRoute: typeof appDemoRouteRoute
-    }
-    '/(app)/ui/$component': {
-      id: '/(app)/ui/$component'
-      path: '/$component'
-      fullPath: '/ui/$component'
-      preLoaderRoute: typeof appUiComponentRouteImport
-      parentRoute: typeof appUiRouteRoute
     }
     '/(app)/demo/web': {
       id: '/(app)/demo/web'
@@ -317,29 +262,13 @@ const appDemoRouteRouteWithChildren = appDemoRouteRoute._addFileChildren(
   appDemoRouteRouteChildren,
 )
 
-interface appUiRouteRouteChildren {
-  appUiComponentRoute: typeof appUiComponentRoute
-  appUiIndexRoute: typeof appUiIndexRoute
-}
-
-const appUiRouteRouteChildren: appUiRouteRouteChildren = {
-  appUiComponentRoute: appUiComponentRoute,
-  appUiIndexRoute: appUiIndexRoute,
-}
-
-const appUiRouteRouteWithChildren = appUiRouteRoute._addFileChildren(
-  appUiRouteRouteChildren,
-)
-
 interface appRouteRouteChildren {
   appDemoRouteRoute: typeof appDemoRouteRouteWithChildren
-  appUiRouteRoute: typeof appUiRouteRouteWithChildren
   appSettingsRoute: typeof appSettingsRoute
 }
 
 const appRouteRouteChildren: appRouteRouteChildren = {
   appDemoRouteRoute: appDemoRouteRouteWithChildren,
-  appUiRouteRoute: appUiRouteRouteWithChildren,
   appSettingsRoute: appSettingsRoute,
 }
 

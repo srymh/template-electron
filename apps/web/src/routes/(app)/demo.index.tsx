@@ -1,7 +1,6 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
-
-import { Badge } from '@repo/shadcn/ui/badge'
-import { Button } from '@repo/shadcn/ui/button'
+import { Badge } from '@workspace/ui/components/badge'
+import { Button } from '@workspace/ui/components/button'
 import {
   Card,
   CardContent,
@@ -9,8 +8,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@repo/shadcn/ui/card'
-import { Separator } from '@repo/shadcn/ui/separator'
+} from '@workspace/ui/components/card'
+import { Separator } from '@workspace/ui/components/separator'
 import {
   Table,
   TableBody,
@@ -18,7 +17,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@repo/shadcn/ui/table'
+} from '@workspace/ui/components/table'
 
 export const Route = createFileRoute('/(app)/demo/')({
   component: RouteComponent,
@@ -173,9 +172,6 @@ function RouteComponent() {
               <div className="text-xs text-muted-foreground">
                 この画面はダッシュボードの雛形です
               </div>
-              <Button variant="link" size="sm" asChild>
-                <Link to="/ui">UI</Link>
-              </Button>
             </CardFooter>
           </Card>
         </div>

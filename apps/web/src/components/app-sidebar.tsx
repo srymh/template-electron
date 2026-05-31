@@ -2,18 +2,6 @@ import * as React from 'react'
 
 import { Link, useLocation } from '@tanstack/react-router'
 import {
-  BookOpen,
-  Frame,
-  HomeIcon,
-  LogInIcon,
-  Map,
-  Pickaxe,
-  PieChart,
-  ToggleLeftIcon,
-} from 'lucide-react'
-
-import { components } from '@repo/shadcn/demo/constants'
-import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -23,14 +11,14 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
-} from '@repo/shadcn/ui/sidebar'
+} from '@workspace/ui/components/sidebar'
+import { BookOpen, Frame, HomeIcon, LogInIcon, Map, Pickaxe, PieChart } from 'lucide-react'
 
 import logo from '@/assets/logo.svg'
 import { NavMain } from '@/components/nav-main'
 import { NavUser } from '@/components/nav-user'
 import { useAuth } from '@/features/auth/api/auth'
 import { OpenChat } from '@/features/chat/components/open-chat'
-import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
 
 // This is sample data.
 const data = {
@@ -67,15 +55,6 @@ const data = {
           url: '/demo/kakeibo',
         },
       ],
-    },
-    {
-      title: 'UI',
-      url: '/ui/',
-      icon: ToggleLeftIcon,
-      items: components.map((component) => ({
-        title: formatKebabAsTitle(component),
-        url: `/ui/${component}`,
-      })),
     },
     {
       title: 'Documentation',

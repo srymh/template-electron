@@ -1,10 +1,6 @@
 import * as React from 'react'
 
-import { BotIcon, XIcon } from 'lucide-react'
-
-import type { Model } from '@repo/ai-chat/shared'
-import { MODELS, modelSchema } from '@repo/ai-chat/shared'
-import { Button } from '@repo/shadcn/ui/button'
+import { Button } from '@workspace/ui/components/button'
 import {
   Dialog,
   DialogClose,
@@ -12,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@repo/shadcn/ui/dialog'
+} from '@workspace/ui/components/dialog'
 import {
   Select,
   SelectContent,
@@ -20,8 +16,12 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@repo/shadcn/ui/select'
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@repo/shadcn/ui/sidebar'
+} from '@workspace/ui/components/select'
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@workspace/ui/components/sidebar'
+import { BotIcon, XIcon } from 'lucide-react'
+
+import type { Model } from '@repo/ai-chat/shared'
+import { MODELS, modelSchema } from '@repo/ai-chat/shared'
 
 import { Chat } from '@/features/chat/components/chat'
 import { ChatSessionProvider } from '@/features/chat/components/chat-session-provider'
