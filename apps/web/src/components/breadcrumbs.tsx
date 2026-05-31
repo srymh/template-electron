@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Link, isMatch, useLocation, useMatches } from '@tanstack/react-router'
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,7 +9,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@workspace/ui/components/breadcrumb'
+} from '@repo/ui/components/breadcrumb'
 
 /**
  * パンくずリストコンポーネント

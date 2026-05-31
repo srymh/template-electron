@@ -5,8 +5,8 @@ import {
   SidebarProvider,
   SidebarTrigger,
   useSidebar,
-} from '@workspace/ui/components/sidebar'
-import { cn } from '@workspace/ui/lib/utils'
+} from '@repo/ui/components/sidebar'
+import { cn } from '@repo/ui/lib/utils'
 
 import { AppSidebar } from '@/components/app-sidebar'
 

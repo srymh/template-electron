@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Input } from '@workspace/ui/components/input'
+import { Input } from '@repo/ui/components/input'
 
 // 一般的なdebounce付きのinputコンポーネント
 export function DebouncedInput({

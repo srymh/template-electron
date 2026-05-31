@@ -14,9 +14,9 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import type { Table as TanStackTable } from '@tanstack/react-table'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@workspace/ui/components/tabs'
 import { Square, Table } from 'lucide-react'
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/components/tabs'
 import { kakeibo } from '@your-app-name/api'
 
 import { BasicTable } from '@/components/table/basic-table'

@@ -1,7 +1,8 @@
 import * as React from 'react'
 
 import { Link, createFileRoute } from '@tanstack/react-router'
-import { Button } from '@workspace/ui/components/button'
+
+import { Button } from '@repo/ui/components/button'
 import {
   Card,
   CardContent,
@@ -9,18 +10,18 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@workspace/ui/components/card'
-import { Input } from '@workspace/ui/components/input'
-import { Label } from '@workspace/ui/components/label'
+} from '@repo/ui/components/card'
+import { Input } from '@repo/ui/components/input'
+import { Label } from '@repo/ui/components/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@workspace/ui/components/select'
-import { Separator } from '@workspace/ui/components/separator'
-import { Switch } from '@workspace/ui/components/switch'
+} from '@repo/ui/components/select'
+import { Separator } from '@repo/ui/components/separator'
+import { Switch } from '@repo/ui/components/switch'
 
 import { ThemeSwitcher as ModeSwitcher } from '@/components/theme-switcher'
 

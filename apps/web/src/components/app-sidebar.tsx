@@ -1,6 +1,8 @@
 import * as React from 'react'
 
 import { Link, useLocation } from '@tanstack/react-router'
+import { BookOpen, Frame, HomeIcon, LogInIcon, Map, Pickaxe, PieChart } from 'lucide-react'
+
 import {
   Sidebar,
   SidebarContent,
@@ -11,8 +13,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
-} from '@workspace/ui/components/sidebar'
-import { BookOpen, Frame, HomeIcon, LogInIcon, Map, Pickaxe, PieChart } from 'lucide-react'
+} from '@repo/ui/components/sidebar'
 
 import logo from '@/assets/logo.svg'
 import { NavMain } from '@/components/nav-main'

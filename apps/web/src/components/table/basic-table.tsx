@@ -2,14 +2,6 @@ import React from 'react'
 
 import { createColumnHelper, flexRender } from '@tanstack/react-table'
 import type { CellContext, Column, Header, HeaderContext, Table } from '@tanstack/react-table'
-import { Button } from '@workspace/ui/components/button'
-import { Checkbox } from '@workspace/ui/components/checkbox'
-import { Input } from '@workspace/ui/components/input'
-import { Label } from '@workspace/ui/components/label'
-import { NativeSelect, NativeSelectOption } from '@workspace/ui/components/native-select'
-import { Popover, PopoverContent, PopoverTrigger } from '@workspace/ui/components/popover'
-import { Separator } from '@workspace/ui/components/separator'
-import { cn } from '@workspace/ui/lib/utils'
 import {
   ArrowDown,
   ArrowDownUp,
@@ -26,6 +18,15 @@ import {
   PinIcon,
   PinOffIcon,
 } from 'lucide-react'
+
+import { Button } from '@repo/ui/components/button'
+import { Checkbox } from '@repo/ui/components/checkbox'
+import { Input } from '@repo/ui/components/input'
+import { Label } from '@repo/ui/components/label'
+import { NativeSelect, NativeSelectOption } from '@repo/ui/components/native-select'
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/components/popover'
+import { Separator } from '@repo/ui/components/separator'
+import { cn } from '@repo/ui/lib/utils'
 
 import { DebouncedInput } from '@/components/table/debounced-input'
 import { Filter } from '@/components/table/filter'

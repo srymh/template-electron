@@ -1,5 +1,6 @@
-import { ToggleGroup, ToggleGroupItem } from '@workspace/ui/components/toggle-group'
 import { LaptopIcon, MoonIcon, SunIcon } from 'lucide-react'
+
+import { ToggleGroup, ToggleGroupItem } from '@repo/ui/components/toggle-group'
 
 import { useTheme } from '@/components/theme-provider'
 

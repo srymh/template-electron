@@ -1,11 +1,14 @@
 import ReactMarkdown from 'react-markdown'
 
+import { ArrowUpIcon, BotIcon, SquareIcon, User2Icon } from 'lucide-react'
+import remarkGfm from 'remark-gfm'
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@workspace/ui/components/accordion'
+} from '@repo/ui/components/accordion'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,17 +19,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@workspace/ui/components/alert-dialog'
-import { Field } from '@workspace/ui/components/field'
+} from '@repo/ui/components/alert-dialog'
+import { Field } from '@repo/ui/components/field'
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupTextarea,
-} from '@workspace/ui/components/input-group'
-import { Separator } from '@workspace/ui/components/separator'
-import { ArrowUpIcon, BotIcon, SquareIcon, User2Icon } from 'lucide-react'
-import remarkGfm from 'remark-gfm'
+} from '@repo/ui/components/input-group'
+import { Separator } from '@repo/ui/components/separator'
 
 import { useAuth } from '@/features/auth/api/auth'
 import { useChatSession } from '@/features/chat/components/chat-session-provider'
