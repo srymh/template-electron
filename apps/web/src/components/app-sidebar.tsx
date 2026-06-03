@@ -1,7 +1,16 @@
 import * as React from 'react'
 
 import { Link, useLocation } from '@tanstack/react-router'
-import { BookOpen, Frame, HomeIcon, LogInIcon, Map, Pickaxe, PieChart } from 'lucide-react'
+import {
+  BookOpen,
+  Frame,
+  HomeIcon,
+  LogInIcon,
+  Map,
+  Pickaxe,
+  PieChart,
+  ToggleLeftIcon,
+} from 'lucide-react'
 
 import {
   Sidebar,
@@ -56,6 +65,11 @@ const data = {
           url: '/demo/kakeibo',
         },
       ],
+    },
+    {
+      title: 'UI',
+      url: '/ui/',
+      icon: ToggleLeftIcon,
     },
     {
       title: 'Documentation',

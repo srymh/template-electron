@@ -26,8 +26,20 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@repo/ui/compon
 import { Chat } from '@/features/chat/components/chat'
 import { ChatSessionProvider } from '@/features/chat/components/chat-session-provider'
 
+function isInEmbeddedFrame() {
+  try {
+    return window.self !== window.top
+  } catch {
+    return true
+  }
+}
+
 export function OpenChat() {
   const [selectedModel, setSelectedModel] = React.useState<Model>('gpt-oss:20b-cloud')
+
+  if (isInEmbeddedFrame()) {
+    return null
+  }
 
   // AIチャット機能が利用可能かどうかを判定する
   // const isAiChatAvailable = (window.api as unknown) !== undefined

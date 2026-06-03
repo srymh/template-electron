@@ -301,6 +301,9 @@ importers:
       '@repo/ai-tools':
         specifier: workspace:*
         version: link:../../packages/ai-tools
+      '@repo/shadcn':
+        specifier: workspace:*
+        version: link:../../packages/shadcn
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
