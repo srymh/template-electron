@@ -30,7 +30,7 @@ function useShadcnDemoStyles() {
     const style = document.createElement('style')
     style.id = SHADCN_DEMO_STYLE_ID
     style.textContent = shadcnStyles
-    document.head.appendChild(style)
+    document.head.prepend(style)
 
     return () => {
       style.remove()
