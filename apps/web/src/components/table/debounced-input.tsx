@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Input } from '@repo/shadcn/ui/input'
+import { Input } from '@repo/ui/components/input'
 
 // 一般的なdebounce付きのinputコンポーネント
 export function DebouncedInput({

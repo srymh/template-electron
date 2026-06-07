@@ -12,7 +12,6 @@ import {
   ToggleLeftIcon,
 } from 'lucide-react'
 
-import { components } from '@repo/shadcn/demo/constants'
 import {
   Sidebar,
   SidebarContent,
@@ -23,14 +22,13 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
-} from '@repo/shadcn/ui/sidebar'
+} from '@repo/ui/components/sidebar'
 
 import logo from '@/assets/logo.svg'
 import { NavMain } from '@/components/nav-main'
 import { NavUser } from '@/components/nav-user'
 import { useAuth } from '@/features/auth/api/auth'
 import { OpenChat } from '@/features/chat/components/open-chat'
-import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
 
 // This is sample data.
 const data = {
@@ -72,10 +70,6 @@ const data = {
       title: 'UI',
       url: '/ui/',
       icon: ToggleLeftIcon,
-      items: components.map((component) => ({
-        title: formatKebabAsTitle(component),
-        url: `/ui/${component}`,
-      })),
     },
     {
       title: 'Documentation',

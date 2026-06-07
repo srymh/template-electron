@@ -8,7 +8,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@repo/shadcn/ui/accordion'
+} from '@repo/ui/components/accordion'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,15 +19,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@repo/shadcn/ui/alert-dialog'
-import { Field } from '@repo/shadcn/ui/field'
+} from '@repo/ui/components/alert-dialog'
+import { Field } from '@repo/ui/components/field'
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupTextarea,
-} from '@repo/shadcn/ui/input-group'
-import { Separator } from '@repo/shadcn/ui/separator'
+} from '@repo/ui/components/input-group'
+import { Separator } from '@repo/ui/components/separator'
 
 import { useAuth } from '@/features/auth/api/auth'
 import { useChatSession } from '@/features/chat/components/chat-session-provider'

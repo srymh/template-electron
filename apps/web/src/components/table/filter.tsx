@@ -2,7 +2,7 @@ import React from 'react'
 
 import type { Column } from '@tanstack/react-table'
 
-import { NativeSelect, NativeSelectOption } from '@repo/shadcn/ui/native-select'
+import { NativeSelect, NativeSelectOption } from '@repo/ui/components/native-select'
 
 import { DebouncedInput } from '@/components/table/debounced-input'
 

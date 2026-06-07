@@ -1,18 +1,17 @@
 import * as React from 'react'
 
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { MoonIcon, SunIcon } from 'lucide-react'
 import { z } from 'zod'
 
 import { components } from '@repo/shadcn/demo/constants'
-import { THEMES, useStyle, useTheme, STYLES } from '@repo/shadcn/design-system'
+import { STYLES, THEMES, useStyle, useTheme } from '@repo/shadcn/design-system'
 import type { StyleName, ThemeName } from '@repo/shadcn/design-system'
 import { cn } from '@repo/shadcn/lib/utils'
-import { Button } from '@repo/shadcn/ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@repo/shadcn/ui/card'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@repo/shadcn/ui/hover-card'
-import { Item } from '@repo/shadcn/ui/item'
-import { Label } from '@repo/shadcn/ui/label'
+import { Button } from '@repo/ui/components/button'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@repo/ui/components/hover-card'
+import { Item } from '@repo/ui/components/item'
+import { Label } from '@repo/ui/components/label'
 import {
   Pagination,
   PaginationContent,
@@ -21,7 +20,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@repo/shadcn/ui/pagination'
+} from '@repo/ui/components/pagination'
 import {
   Popover,
   PopoverContent,
@@ -29,14 +28,11 @@ import {
   PopoverHeader,
   PopoverTitle,
   PopoverTrigger,
-} from '@repo/shadcn/ui/popover'
-import { ToggleGroup, ToggleGroupItem } from '@repo/shadcn/ui/toggle-group'
+} from '@repo/ui/components/popover'
+import { ToggleGroup, ToggleGroupItem } from '@repo/ui/components/toggle-group'
 import type { ThemeApi } from '@your-app-name/api'
 
 import { useTheme as useAppearanceMode } from '@/components/theme-provider'
-import { ThemeSwitcher as ModeSwitcher } from '@/components/theme-switcher'
-import { StyleSwitcher } from '@/features/style/components/style-switcher'
-import { ThemeSwitcher } from '@/features/style/components/theme-switcher'
 import { useIframeMessage } from '@/hooks/use-iframe-message'
 import { formatKebabAsTitle } from '@/lib/format-kebab-as-title'
 import { getPaginationItems } from '@/lib/pagination'
@@ -48,6 +44,8 @@ type IframeDesignMessage = {
   theme: ThemeName
   style: StyleName
 }
+
+type ComponentName = (typeof components)[number]
 
 const DESIGN_FRAME_MESSAGE_TYPE = 'design'
 
@@ -61,7 +59,7 @@ export const Route = createFileRoute('/(app)/ui/')({
 })
 
 function RouteComponent() {
-  const componentsPerPage = 3
+  const componentsPerPage = 1
   const { page: rawPage = 0 } = Route.useSearch()
   const navigate = Route.useNavigate()
 
@@ -107,34 +105,21 @@ function RouteComponent() {
 
   return (
     <div className="p-2 flex gap-2 flex-col bg-accent h-full overflow-auto">
-      <div className="p-2 bg-background flex flex-wrap gap-2 items-center justify-start border border-border">
-        <Item size="xs" variant="outline" className="flex-col w-fit items-start">
-          <Label className="text-muted-foreground text-xs">モード</Label>
-          <ModeSwitcher />
-        </Item>
-        <Item size="xs" variant="outline" className="flex-col w-fit items-start">
-          <Label className="text-muted-foreground text-xs">スタイル</Label>
-          <StyleSwitcher />
-        </Item>
-        <Item size="xs" variant="outline" className="flex-col w-fit items-start">
-          <Label className="text-muted-foreground text-xs">テーマ</Label>
-          <ThemeSwitcher className="text-xs" />
-        </Item>
-      </div>
-
-      <div className="flex gap-2 flex-wrap h-full overflow-auto">
-        {filteredComponents.map((component) => {
-          return (
-            <Content
-              key={component}
-              title={formatKebabAsTitle(component)}
-              src={`#/ui/${component}`}
-              to={`/ui/${component}`}
-            />
-          )
-        })}
-      </div>
-
+      {filteredComponents.map((component) => {
+        return (
+          <Content
+            key={component}
+            component={component}
+            src={`#/ui/${component}`}
+            onComponentChange={(component) => {
+              const componentIndex = components.findIndex((c) => c === component)
+              if (componentIndex === -1) return
+              const newPage = Math.floor(componentIndex / componentsPerPage)
+              setPage(newPage)
+            }}
+          />
+        )
+      })}
       <Pagination className="bg-background border border-border">
         <PaginationContent>
           <PaginationItem>
@@ -240,38 +225,52 @@ function PaginationHoverPreview({
   )
 }
 
-function Content({ title, src, to }: { title: string; src: string; to: string }) {
-  const navigate = useNavigate()
+function Content({
+  component,
+  src,
+  onComponentChange,
+}: {
+  component: ComponentName
+  src: string
+  onComponentChange?: (component: ComponentName) => void
+}) {
   const { ref, config, setMode, setTheme, setStyle, handleIframeLoad } = useDesignPreviewFrame()
 
   return (
-    <Card className="h-max w-max">
-      <CardHeader>
-        <CardTitle className="flex flex-col gap-2">
-          <div className="text-lg font-semibold">{title}</div>
-          <div className="flex gap-2">
+    <div className="h-max w-full flex flex-col gap-2 flex-1">
+      <div className="w-full">
+        <div className="text-lg font-semibold">{formatKebabAsTitle(component)}</div>
+        <div className="p-2 bg-background flex flex-wrap gap-2 items-center justify-start border border-border">
+          <Item size="xs" variant="outline" className="flex-col w-fit items-start">
+            <Label className="text-muted-foreground text-xs">コンポーネント</Label>
+            <div className="w-full h-32 overflow-auto shadow-inner rounded-md border border-border p-2">
+              <ComponentSwitcher value={component} onValueChange={onComponentChange} />
+            </div>
+          </Item>
+          <Item size="xs" variant="outline" className="flex-col w-fit items-start">
+            <Label className="text-muted-foreground text-xs">モード</Label>
             <DemoModeSwitcher value={config.mode} onValueChange={setMode} />
+          </Item>
+          <Item size="xs" variant="outline" className="flex-col w-fit items-start">
+            <Label className="text-muted-foreground text-xs">スタイル</Label>
             <DemoStyleSwitcher value={config.style} onValueChange={setStyle} />
+          </Item>
+          <Item size="xs" variant="outline" className="flex-col w-fit items-start">
+            <Label className="text-muted-foreground text-xs">テーマ</Label>
             <DemoThemeSwitcher value={config.theme} onValueChange={setTheme} />
-          </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+          </Item>
+        </div>
+      </div>
+      <div className="w-full flex-1">
         <iframe
           ref={ref}
           src={src}
-          width={550}
           height={550}
-          className="border rounded-xl"
+          className="border h-full w-full"
           onLoad={handleIframeLoad}
         />
-      </CardContent>
-      <CardFooter>
-        <Button variant="link" onClick={() => navigate({ to })}>
-          詳細
-        </Button>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   )
 }
 
@@ -452,6 +451,36 @@ function DemoStyleSwitcher({
       {STYLES.map(({ name: style }) => (
         <ToggleGroupItem key={style} value={style}>
           {formatKebabAsTitle(style)}
+        </ToggleGroupItem>
+      ))}
+    </ToggleGroup>
+  )
+}
+
+function ComponentSwitcher({
+  className = '',
+  value = 'accordion',
+  onValueChange = () => {},
+}: {
+  className?: string
+  value?: ComponentName
+  onValueChange?: (value: ComponentName) => void
+}) {
+  return (
+    <ToggleGroup
+      className={cn(className, 'flex-wrap')}
+      type="single"
+      variant="outline"
+      value={value}
+      onValueChange={(val) => {
+        if (val === value) return
+        if (val == '') return
+        onValueChange(val as ComponentName)
+      }}
+    >
+      {components.map((component) => (
+        <ToggleGroupItem key={component} value={component}>
+          {formatKebabAsTitle(component)}
         </ToggleGroupItem>
       ))}
     </ToggleGroup>

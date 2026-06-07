@@ -4,7 +4,7 @@ import { BotIcon, XIcon } from 'lucide-react'
 
 import type { Model } from '@repo/ai-chat/shared'
 import { MODELS, modelSchema } from '@repo/ai-chat/shared'
-import { Button } from '@repo/shadcn/ui/button'
+import { Button } from '@repo/ui/components/button'
 import {
   Dialog,
   DialogClose,
@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@repo/shadcn/ui/dialog'
+} from '@repo/ui/components/dialog'
 import {
   Select,
   SelectContent,
@@ -20,14 +20,26 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@repo/shadcn/ui/select'
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@repo/shadcn/ui/sidebar'
+} from '@repo/ui/components/select'
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@repo/ui/components/sidebar'
 
 import { Chat } from '@/features/chat/components/chat'
 import { ChatSessionProvider } from '@/features/chat/components/chat-session-provider'
 
+function isInEmbeddedFrame() {
+  try {
+    return window.self !== window.top
+  } catch {
+    return true
+  }
+}
+
 export function OpenChat() {
   const [selectedModel, setSelectedModel] = React.useState<Model>('gpt-oss:20b-cloud')
+
+  if (isInEmbeddedFrame()) {
+    return null
+  }
 
   // AIチャット機能が利用可能かどうかを判定する
   // const isAiChatAvailable = (window.api as unknown) !== undefined

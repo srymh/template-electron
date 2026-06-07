@@ -7,7 +7,13 @@
   "env": {
     "builtin": true
   },
-  "ignorePatterns": ["**/*.d.ts", "**/coverage/**", "**/dist/**", "packages/shadcn/**"],
+  "ignorePatterns": [
+    "**/*.d.ts",
+    "**/coverage/**",
+    "**/dist/**",
+    "packages/shadcn/**",
+    "packages/ui/**"
+  ],
   "rules": {
     "import/no-duplicates": "error",
     "typescript/consistent-type-imports": [

@@ -3,9 +3,8 @@ import { StrictMode, useEffect, useRef } from 'react'
 import { RouterProvider, createHashHistory, createRouter } from '@tanstack/react-router'
 import ReactDOM from 'react-dom/client'
 
-import { DesignSystemProvider } from '@repo/shadcn/design-system'
-import { Toaster } from '@repo/shadcn/ui/sonner'
-import { TooltipProvider } from '@repo/shadcn/ui/tooltip'
+import { Toaster } from '@repo/ui/components/sonner'
+import { TooltipProvider } from '@repo/ui/components/tooltip'
 
 import { DevToolsProvider } from '@/components/devtools-provider.tsx'
 import { ThemeProvider } from '@/components/theme-provider'
@@ -17,6 +16,7 @@ import { routeTree } from './routeTree.gen'
 // 生成されたルートツリーをインポート
 
 import './styles.css'
+import '@repo/ui/globals.css'
 
 // プラットフォーム情報を CSS から参照できるよう data 属性にセット
 document.documentElement.dataset.platform = __PLATFORM__
@@ -81,18 +81,16 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <ThemeProvider>
-        <DesignSystemProvider>
-          <TooltipProvider>
-            <DevToolsProvider defaultHidden={false}>
-              <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
-                <AuthProvider>
-                  <InnerApp />
-                </AuthProvider>
-              </TanStackQueryProvider.Provider>
-            </DevToolsProvider>
-          </TooltipProvider>
-          <Toaster />
-        </DesignSystemProvider>
+        <TooltipProvider>
+          <DevToolsProvider defaultHidden={false}>
+            <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
+              <AuthProvider>
+                <InnerApp />
+              </AuthProvider>
+            </TanStackQueryProvider.Provider>
+          </DevToolsProvider>
+        </TooltipProvider>
+        <Toaster />
       </ThemeProvider>
     </StrictMode>,
   )

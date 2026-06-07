@@ -19,14 +19,14 @@ import {
   PinOffIcon,
 } from 'lucide-react'
 
-import { cn } from '@repo/shadcn/lib/utils'
-import { Button } from '@repo/shadcn/ui/button'
-import { Checkbox } from '@repo/shadcn/ui/checkbox'
-import { Input } from '@repo/shadcn/ui/input'
-import { Label } from '@repo/shadcn/ui/label'
-import { NativeSelect, NativeSelectOption } from '@repo/shadcn/ui/native-select'
-import { Popover, PopoverContent, PopoverTrigger } from '@repo/shadcn/ui/popover'
-import { Separator } from '@repo/shadcn/ui/separator'
+import { Button } from '@repo/ui/components/button'
+import { Checkbox } from '@repo/ui/components/checkbox'
+import { Input } from '@repo/ui/components/input'
+import { Label } from '@repo/ui/components/label'
+import { NativeSelect, NativeSelectOption } from '@repo/ui/components/native-select'
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui/components/popover'
+import { Separator } from '@repo/ui/components/separator'
+import { cn } from '@repo/ui/lib/utils'
 
 import { DebouncedInput } from '@/components/table/debounced-input'
 import { Filter } from '@/components/table/filter'

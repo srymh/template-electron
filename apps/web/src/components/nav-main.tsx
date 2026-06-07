@@ -4,7 +4,11 @@ import { Link } from '@tanstack/react-router'
 import { ChevronRight } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@repo/shadcn/ui/collapsible'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@repo/ui/components/collapsible'
 import {
   SidebarGroup,
   SidebarMenu,
@@ -13,7 +17,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from '@repo/shadcn/ui/sidebar'
+} from '@repo/ui/components/sidebar'
 
 export function NavMain({
   items,

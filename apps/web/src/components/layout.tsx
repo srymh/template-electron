@@ -1,7 +1,12 @@
 import React from 'react'
 
-import { cn } from '@repo/shadcn/lib/utils'
-import { SidebarInset, SidebarProvider, SidebarTrigger, useSidebar } from '@repo/shadcn/ui/sidebar'
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+  useSidebar,
+} from '@repo/ui/components/sidebar'
+import { cn } from '@repo/ui/lib/utils'
 
 import { AppSidebar } from '@/components/app-sidebar'
 

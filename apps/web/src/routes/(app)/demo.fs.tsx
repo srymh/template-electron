@@ -3,8 +3,8 @@ import React from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
-import { Label } from '@repo/shadcn/ui/label'
-import { RadioGroup, RadioGroupItem } from '@repo/shadcn/ui/radio-group'
+import { Label } from '@repo/ui/components/label'
+import { RadioGroup, RadioGroupItem } from '@repo/ui/components/radio-group'
 import { fs } from '@your-app-name/api'
 
 export const Route = createFileRoute('/(app)/demo/fs')({

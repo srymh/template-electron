@@ -81,6 +81,24 @@ pnpm --filter @your-app-name/web run lint
 pnpm --filter your-app-name run lint
 ```
 
+### shadcn UI の更新
+
+### プリセット適用
+
+```bash
+cd project-root
+pnpm dlx shadcn@latest apply --preset b1PzeK --cwd apps/web
+# pnpm dlx shadcn@latest apply --preset b7CSc0sS0 --cwd apps/web など
+```
+
+### コンポーネント追加・更新など
+
+```bash
+cd project-root
+pnpm dlx shadcn@latest add button --cwd packages/ui
+# pnpm dlx shadcn@latest add --all --cwd packages/ui など
+```
+
 ## ディレクトリ構成
 
 - `apps/web/`: renderer UI。routes、components、features、hooks、styles を持つ

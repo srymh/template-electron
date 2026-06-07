@@ -9,7 +9,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@repo/shadcn/ui/breadcrumb'
+} from '@repo/ui/components/breadcrumb'
 
 /**
  * パンくずリストコンポーネント

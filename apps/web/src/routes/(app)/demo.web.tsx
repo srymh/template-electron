@@ -7,7 +7,7 @@ import {
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-} from '@repo/shadcn/ui/context-menu'
+} from '@repo/ui/components/context-menu'
 import { web } from '@your-app-name/api'
 
 export const Route = createFileRoute('/(app)/demo/web')({

@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { Link, createFileRoute } from '@tanstack/react-router'
 
-import { Button } from '@repo/shadcn/ui/button'
+import { Button } from '@repo/ui/components/button'
 import {
   Card,
   CardContent,
@@ -10,22 +10,20 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@repo/shadcn/ui/card'
-import { Input } from '@repo/shadcn/ui/input'
-import { Label } from '@repo/shadcn/ui/label'
+} from '@repo/ui/components/card'
+import { Input } from '@repo/ui/components/input'
+import { Label } from '@repo/ui/components/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@repo/shadcn/ui/select'
-import { Separator } from '@repo/shadcn/ui/separator'
-import { Switch } from '@repo/shadcn/ui/switch'
+} from '@repo/ui/components/select'
+import { Separator } from '@repo/ui/components/separator'
+import { Switch } from '@repo/ui/components/switch'
 
 import { ThemeSwitcher as ModeSwitcher } from '@/components/theme-switcher'
-import { StyleSwitcher } from '@/features/style/components/style-switcher'
-import { ThemeSwitcher } from '@/features/style/components/theme-switcher'
 
 export const Route = createFileRoute('/(app)/settings')({
   loader: () => ({ crumb: 'Settings' }),
@@ -63,20 +61,6 @@ function RouteComponent() {
               <div className="text-sm font-medium">モード</div>
               <ModeSwitcher className="justify-start" />
               <div className="text-xs text-muted-foreground">ライト / ダーク / システム</div>
-            </div>
-
-            <Separator />
-
-            <div className="space-y-2">
-              <div className="text-sm font-medium">スタイル</div>
-              <StyleSwitcher className="justify-start flex-wrap" />
-            </div>
-
-            <Separator />
-
-            <div className="space-y-2">
-              <div className="text-sm font-medium">テーマ</div>
-              <ThemeSwitcher className="justify-start" />
             </div>
           </CardContent>
         </Card>
