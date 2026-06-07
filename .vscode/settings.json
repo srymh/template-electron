@@ -8,5 +8,6 @@
   "files.readonlyInclude": {
     "**/routeTree.gen.ts": true,
     "**/packages/shadcn/src/**": true,
+    "**/packages/ui/src/**": true,
   }
 }
