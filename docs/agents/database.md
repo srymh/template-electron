@@ -16,6 +16,9 @@
 
 - 既定 driver は `better-sqlite3`。
 - `SQLITE_DRIVER=node:sqlite` を指定すると `node:sqlite` adapter を使い、`better-sqlite3` の postinstall rebuild は skip される。
+- `better-sqlite3` の rebuild を避ける場合は `SQLITE_DRIVER=node:sqlite pnpm install` を使う。
+- `better-sqlite3` の optional dependency install 自体も除外する場合は、pnpm の `ignoredOptionalDependencies` を project/global config に設定する。
+- `--no-optional` は使わない。Vite / Rolldown などの toolchain が必要とする native optional dependency も skip される。
 - `SKIP_BETTER_SQLITE3_REBUILD=1` は rebuild だけを skip する。runtime driver は変えない。
 - packaged app では build 時の `SQLITE_DRIVER` も main/preload bundle に埋め込まれる。runtime env があれば runtime env を優先する。
 - `node:sqlite` が runtime に存在しない場合は adapter が明示エラーを投げる。

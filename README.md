@@ -40,7 +40,9 @@ SQLITE_DRIVER=node:sqlite pnpm dev
 - 既定値は `better-sqlite3` です。
 - `node:sqlite` は Electron / Node 同梱 runtime が対応している場合に使えます。
 - `SQLITE_DRIVER=node:sqlite` のとき、`better-sqlite3` の postinstall rebuild は skip されます。
-- native dependency を避けて install したい場合は、`SQLITE_DRIVER=node:sqlite pnpm install --no-optional` を使います。
+- `better-sqlite3` の Electron rebuild を避けて install したい場合は、`SQLITE_DRIVER=node:sqlite pnpm install` を使います。
+- `better-sqlite3` の optional dependency install 自体も除外したい場合は、pnpm の `ignoredOptionalDependencies` を project/global config に設定します。
+- `--no-optional` は使わないでください。Vite / Rolldown などの toolchain が必要とする native optional dependency も skip され、開発起動できなくなります。
 - `better-sqlite3` の rebuild だけを明示的に skip したい場合は、`SKIP_BETTER_SQLITE3_REBUILD=1 pnpm install` を使います。
 
 ## 開発起動
@@ -138,6 +140,7 @@ pnpm dlx shadcn@latest add button --cwd packages/ui
 ## トラブルシューティング
 
 - `better-sqlite3` の native rebuild で問題が出た場合は、まず `pnpm install` を再実行して Electron 向け rebuild をやり直します。Electron 更新時など rebuild がブロッカーになる場合は、`SQLITE_DRIVER=node:sqlite` で暫定的に切り替えます。
+- `--no-optional` で install した後に Vite / Rolldown の native binding が見つからない場合は、`SQLITE_DRIVER=node:sqlite pnpm install` を再実行して optional dependency を復元します。
 - `node:sqlite` が使えない runtime では起動時に明示エラーになります。その場合は `SQLITE_DRIVER=better-sqlite3` を使うか、Electron / Node runtime を更新します。
 - パッケージ成果物の確認や再生成が必要な場合は、`apps/web/dist/`、`apps/desktop/dist/`、`apps/desktop/release/` を見直してから `pnpm build` を再実行します。
 - DB ファイルや native module の packaging を変更する場合は、`apps/desktop/vite.config.ts` と `apps/desktop/electron-builder.json5` をセットで確認してください。
