@@ -26,7 +26,22 @@ Electron desktop app、Vite/React renderer、共有 TypeScript package をまと
 pnpm install
 ```
 
-`apps/desktop` では `postinstall` で `electron-rebuild -f -w better-sqlite3` が実行され、native module を Electron 向けに再ビルドします。
+`apps/desktop` では SQLite driver の既定値として `better-sqlite3` を使います。`better-sqlite3` がインストールされている場合、`postinstall` で Electron 向け rebuild を実行します。
+
+## SQLite driver
+
+SQLite driver は `SQLITE_DRIVER` で切り替えられます。
+
+```bash
+SQLITE_DRIVER=better-sqlite3 pnpm dev
+SQLITE_DRIVER=node:sqlite pnpm dev
+```
+
+- 既定値は `better-sqlite3` です。
+- `node:sqlite` は Electron / Node 同梱 runtime が対応している場合に使えます。
+- `SQLITE_DRIVER=node:sqlite` のとき、`better-sqlite3` の postinstall rebuild は skip されます。
+- native dependency を避けて install したい場合は、`SQLITE_DRIVER=node:sqlite pnpm install --no-optional` を使います。
+- `better-sqlite3` の rebuild だけを明示的に skip したい場合は、`SKIP_BETTER_SQLITE3_REBUILD=1 pnpm install` を使います。
 
 ## 開発起動
 
@@ -76,6 +91,7 @@ pnpm build
 
 ```bash
 pnpm --filter @your-app-name/web exec vitest run src/components/theme-provider.test.tsx
+pnpm --filter @repo/sqlite run test
 pnpm --filter @repo/auth run test
 pnpm --filter @your-app-name/web run lint
 pnpm --filter your-app-name run lint
@@ -121,7 +137,8 @@ pnpm dlx shadcn@latest add button --cwd packages/ui
 
 ## トラブルシューティング
 
-- `better-sqlite3` のような native 依存で問題が出た場合は、まず `pnpm install` を再実行して Electron 向け rebuild をやり直します。
+- `better-sqlite3` の native rebuild で問題が出た場合は、まず `pnpm install` を再実行して Electron 向け rebuild をやり直します。Electron 更新時など rebuild がブロッカーになる場合は、`SQLITE_DRIVER=node:sqlite` で暫定的に切り替えます。
+- `node:sqlite` が使えない runtime では起動時に明示エラーになります。その場合は `SQLITE_DRIVER=better-sqlite3` を使うか、Electron / Node runtime を更新します。
 - パッケージ成果物の確認や再生成が必要な場合は、`apps/web/dist/`、`apps/desktop/dist/`、`apps/desktop/release/` を見直してから `pnpm build` を再実行します。
 - DB ファイルや native module の packaging を変更する場合は、`apps/desktop/vite.config.ts` と `apps/desktop/electron-builder.json5` をセットで確認してください。
 

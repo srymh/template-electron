@@ -10,8 +10,11 @@ export default defineConfig(({ mode }) => {
   // 失敗する（例: express → body-parser, ollama → whatwg-fetch）。
   // ネイティブモジュール（.node バイナリを含むもの）のみ external にし、
   // 残りはすべて Vite にバンドルさせることで asar 内の解決問題を回避する。
+  // better-sqlite3 は optional driver だが、選択時に native module を
+  // asar 外から読み込めるよう external のまま維持する。
   const nativeModules = ['better-sqlite3']
   const external = nativeModules
+  const sqliteDriver = process.env.SQLITE_DRIVER ?? ''
 
   return {
     server: {
@@ -23,6 +26,9 @@ export default defineConfig(({ mode }) => {
         main: {
           entry: 'src/main/index.ts',
           vite: {
+            define: {
+              __SQLITE_DRIVER__: JSON.stringify(sqliteDriver),
+            },
             build: {
               sourcemap,
               minify,
@@ -35,6 +41,9 @@ export default defineConfig(({ mode }) => {
         preload: {
           entry: 'src/preload/index.ts',
           vite: {
+            define: {
+              __SQLITE_DRIVER__: JSON.stringify(sqliteDriver),
+            },
             build: {
               sourcemap: sourcemap ? 'inline' : false,
               minify,

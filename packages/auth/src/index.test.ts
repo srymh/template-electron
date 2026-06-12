@@ -1,16 +1,12 @@
-import { DatabaseSync } from 'node:sqlite'
+import { describe, expect, it } from 'vitest'
 
-import { describe, expect, it, vi } from 'vitest'
-
-import { createDatabase } from '@repo/sqlite'
-import type { SqliteDatabaseHandle } from '@repo/sqlite'
+import { openNodeSqliteDatabase } from '@repo/sqlite'
 
 import { createAuthRuntime } from './index'
 
 describe('createAuthRuntime', () => {
   it('creates a user session on first login and returns the current auth status', () => {
-    const createInMemoryDb = () =>
-      createDatabase(new DatabaseSync(':memory:') as unknown as SqliteDatabaseHandle)
+    const createInMemoryDb = () => openNodeSqliteDatabase(':memory:')
 
     const runtime = createAuthRuntime({
       createDb: createInMemoryDb,
@@ -35,17 +31,16 @@ describe('createAuthRuntime', () => {
   })
 
   it('closes the injected database on dispose when requested and rejects further access', () => {
-    const handle = new DatabaseSync(':memory:')
-    const closeSpy = vi.spyOn(handle, 'close')
+    const db = openNodeSqliteDatabase(':memory:')
 
     const runtime = createAuthRuntime({
-      db: createDatabase(handle as unknown as SqliteDatabaseHandle),
+      db,
       closeDbOnDispose: true,
     })
 
     runtime.dispose()
 
-    expect(closeSpy).toHaveBeenCalledTimes(1)
+    expect(() => db.exec('SELECT 1')).toThrow()
     expect(() => runtime.getStatus()).toThrow('AuthRuntime is disposed')
   })
 })

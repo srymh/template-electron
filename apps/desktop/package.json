@@ -14,7 +14,7 @@
     "build": "vite build && electron-builder",
     "typecheck": "tsgo --noEmit",
     "test": "tsgo --noEmit && vitest run",
-    "postinstall": "electron-rebuild -f -w better-sqlite3"
+    "postinstall": "node scripts/rebuild-better-sqlite3.mjs"
   },
   "dependencies": {
     "@repo/ai-chat": "workspace:*",
@@ -27,8 +27,10 @@
     "@repo/sqlite": "workspace:*",
     "@repo/tanstack-ai-mcp": "workspace:*",
     "@tanstack/ai": "^0.14.0",
-    "better-sqlite3": "^12.9.0",
     "zod": "^4.4.3"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^12.9.0"
   },
   "devDependencies": {
     "@electron/rebuild": "^4.0.4",
