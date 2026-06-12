@@ -10,7 +10,8 @@
 
 - `packages/auth` は認証ロジック、スキーマ初期化、`AuthRuntime` を持ち、依存は `@repo/sqlite` に留める。
 - `createAuthRuntime` は `db` または `createDb` を受け取れる。`createDb` を渡した場合は `dispose()` で DB を閉じる。
-- `packages/sqlite` は同期 SQLite 抽象だけを持ち、`better-sqlite3` の import・rebuild・packaging は `apps/desktop` が担当する。
+- `packages/sqlite` は同期 SQLite 抽象と `node:sqlite` adapter を持つ。
+- `better-sqlite3` の import・rebuild・packaging は `apps/desktop` が担当する。`better-sqlite3` は選択時だけ読み込む。
 
 ## iframe と frame-rpc
 
