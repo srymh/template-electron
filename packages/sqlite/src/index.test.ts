@@ -6,20 +6,28 @@ import { afterEach, describe, expect, it } from 'vitest'
 
 import { openNodeSqliteDatabase, parseSqliteDriverName } from './index'
 
+/** 一時ディレクトリのリスト */
 const tmpDirs: string[] = []
 
+/**
+ * 一時ディレクトリを作成する
+ * @returns 作成された一時ディレクトリのパス
+ */
 async function createTempDir(): Promise<string> {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'sqlite-driver-'))
   tmpDirs.push(dir)
   return dir
 }
 
+/**
+ * テストごとに作成された一時ディレクトリをクリーンアップする
+ */
 afterEach(async () => {
   await Promise.all(tmpDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })))
 })
 
 describe('openNodeSqliteDatabase', () => {
-  it('runs basic CRUD statements against an in-memory database', () => {
+  it('インメモリデータベースに対して基本的な CRUD ステートメントを実行できる', () => {
     const db = openNodeSqliteDatabase(':memory:')
 
     db.exec('CREATE TABLE items (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL);')
@@ -35,7 +43,7 @@ describe('openNodeSqliteDatabase', () => {
     db.close()
   })
 
-  it('iterates rows', () => {
+  it('iterate メソッドが正しく動作する', () => {
     const db = openNodeSqliteDatabase(':memory:')
     db.exec(
       [
@@ -52,7 +60,7 @@ describe('openNodeSqliteDatabase', () => {
     db.close()
   })
 
-  it('rejects a missing file when fileMustExist is enabled', async () => {
+  it('fileMustExist オプションが有効な場合、存在しないファイルを拒否する', async () => {
     const dir = await createTempDir()
     const dbPath = path.join(dir, 'missing.db')
 
@@ -63,13 +71,13 @@ describe('openNodeSqliteDatabase', () => {
 })
 
 describe('parseSqliteDriverName', () => {
-  it('accepts supported driver names', () => {
+  it('サポートされているドライバー名を受け入れる', () => {
     expect(parseSqliteDriverName('better-sqlite3')).toBe('better-sqlite3')
     expect(parseSqliteDriverName('node:sqlite')).toBe('node:sqlite')
     expect(parseSqliteDriverName(undefined)).toBeUndefined()
   })
 
-  it('rejects unsupported driver names', () => {
+  it('サポートされていないドライバー名を拒否する', () => {
     expect(() => parseSqliteDriverName('sqlite3')).toThrow(
       'SQLITE_DRIVER must be "better-sqlite3" or "node:sqlite"',
     )
