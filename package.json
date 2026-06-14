@@ -12,9 +12,13 @@
     "check": "pnpm run typecheck && oxlint --fix && oxfmt"
   },
   "devDependencies": {
+    "@types/node": "^24.12.2",
     "@typescript/native-preview": "7.0.0-dev.20260508.1",
     "oxfmt": "^0.48.0",
-    "oxlint": "^1.63.0"
+    "oxlint": "^1.63.0",
+    "tsdown": "^0.21.10",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.5"
   },
   "devEngines": {
     "packageManager": {

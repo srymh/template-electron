@@ -15,15 +15,5 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@tanstack/ai": "^0.14.0"
-  },
-  "devDependencies": {
-    "@types/node": "^24.12.2"
-  },
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "^11.1.2",
-      "onFail": "download"
-    }
   }
 }

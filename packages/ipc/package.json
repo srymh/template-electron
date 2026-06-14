@@ -22,14 +22,6 @@
     "typecheck": "tsgo --noEmit"
   },
   "devDependencies": {
-    "electron": "^41.5.0",
-    "vitest": "^4.1.5"
-  },
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "^11.1.2",
-      "onFail": "download"
-    }
+    "electron": "^41.5.0"
   }
 }

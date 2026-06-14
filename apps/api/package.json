@@ -15,12 +15,5 @@
   "dependencies": {
     "@repo/frame-rpc": "workspace:*",
     "your-app-name": "workspace:*"
-  },
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "^11.1.2",
-      "onFail": "download"
-    }
   }
 }

@@ -85,14 +85,6 @@
     "@testing-library/react": "^16.3.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "vite": "^8.0.10",
-    "vitest": "^4.1.5"
-  },
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "^11.1.2",
-      "onFail": "download"
-    }
+    "vite": "^8.0.10"
   }
 }
