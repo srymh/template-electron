@@ -21,18 +21,7 @@
     "@tanstack/ai": "^0.14.0",
     "zod": "^4.4.3"
   },
-  "devDependencies": {
-    "@types/node": "^24.12.2",
-    "tsdown": "^0.21.10"
-  },
   "peerDependencies": {
     "electron": "^41.2.1"
-  },
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "^11.1.2",
-      "onFail": "download"
-    }
   }
 }
