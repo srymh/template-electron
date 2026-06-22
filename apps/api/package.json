@@ -34,7 +34,7 @@
     "@repo/ipc": "workspace:*",
     "@repo/mcp-server-example": "workspace:*",
     "@repo/sqlite": "workspace:*",
-    "@tanstack/ai": "^0.14.0"
+    "@tanstack/ai": "^0.29.0"
   },
   "devDependencies": {
     "electron": "^41.5.0"

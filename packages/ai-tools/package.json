@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@repo/rag": "workspace:*",
-    "@tanstack/ai": "^0.14.0",
+    "@tanstack/ai": "^0.29.0",
     "zod": "^4.4.3"
   },
   "peerDependencies": {
