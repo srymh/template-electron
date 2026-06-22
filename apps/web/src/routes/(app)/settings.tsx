@@ -22,6 +22,7 @@ import {
 } from '@repo/ui/components/select'
 import { Separator } from '@repo/ui/components/separator'
 import { Switch } from '@repo/ui/components/switch'
+import { secret } from '@your-app-name/api/renderer'
 
 import { ThemeSwitcher as ModeSwitcher } from '@/components/theme-switcher'
 
@@ -168,6 +169,10 @@ function RouteComponent() {
                 </Button>
               </div>
             )}
+
+            <Separator />
+
+            <SetSecretRow />
           </CardContent>
           <CardFooter className="justify-end">
             <div className="text-xs text-muted-foreground">
@@ -226,4 +231,32 @@ function useLocalStorageState<T>(key: string, defaultValue: T) {
   )
 
   return [value, setAndPersist] as const
+}
+
+function SetSecretRow() {
+  const [secretValue, setSecretValue] = React.useState('')
+
+  return (
+    <div className="space-y-2">
+      <Label htmlFor="secret">FOO_API_KEY を保存（保存した値を再表示することはできません）</Label>
+      <Input
+        id="secret"
+        type="password"
+        placeholder="xxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+        value={secretValue}
+        onChange={(e) => setSecretValue(e.target.value)}
+      />
+      <div className="flex justify-end">
+        <Button
+          onClick={() => {
+            secret.setSecret({ key: 'FOO_API_KEY', value: secretValue })
+            setSecretValue('')
+          }}
+          disabled={!secretValue.trim()}
+        >
+          保存
+        </Button>
+      </div>
+    </div>
+  )
 }

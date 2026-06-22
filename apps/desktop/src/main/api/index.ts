@@ -4,6 +4,7 @@ import { createAiChatContext } from './ai-chat'
 import { createAuthContext } from './auth'
 import { createKakeiboContext } from './kakeibo'
 import { createMcpContext } from './mcp'
+import { createSecretContext } from './secret'
 import { createThemeContext } from './theme'
 import type { CreateApiContext } from './types'
 import { createWebContext } from './web'
@@ -16,5 +17,6 @@ export const createWindowApiContext: CreateApiContext<ApiContext> = (options) =>
     kakeibo: createKakeiboContext(options),
     auth: createAuthContext(options),
     web: createWebContext(options),
+    secret: createSecretContext(options),
   }
 }

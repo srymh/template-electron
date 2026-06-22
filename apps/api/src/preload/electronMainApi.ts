@@ -60,6 +60,9 @@ export const electronMainApi = createElectronApi<ElectronMainApi>(
         login: useChannelAsInvoke('auth.login'),
         logout: useChannelAsInvoke('auth.logout'),
       },
+      secret: {
+        setSecret: useChannelAsInvoke('secret.setSecret'),
+      },
     }),
   {
     // useChannelAsEvent を使ったイベント登録の管理用マップ

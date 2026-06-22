@@ -12,6 +12,8 @@ import { Kakeibo_API_KEY, getKakeiboApi } from '../api/kakeibo'
 import type { KakeiboContext } from '../api/kakeibo'
 import { MCP_API_KEY, getMcpApi } from '../api/mcp'
 import type { McpApiContext } from '../api/mcp'
+import { SECRET_API_KEY, getSecretApi } from '../api/secret'
+import type { SecretContext } from '../api/secret'
 import { THEME_API_KEY, getThemeApi } from '../api/theme'
 import type { ThemeContext } from '../api/theme'
 import { WEB_API_KEY, getWebApi } from '../api/web'
@@ -24,6 +26,7 @@ export type Context = {
   [Kakeibo_API_KEY]: KakeiboContext
   [AUTH_API_KEY]: AuthContext
   [WEB_API_KEY]: WebContext
+  [SECRET_API_KEY]: SecretContext
 }
 
 export const registerIpc = createRegisterIpc<ElectronMainApi, Context>(
@@ -35,6 +38,7 @@ export const registerIpc = createRegisterIpc<ElectronMainApi, Context>(
     const aiChat = getAiChatApi((wc: WebContents) => getContext(wc)[AI_CHAT_API_KEY])
     const kakeibo = getKakeiboApi((wc: WebContents) => getContext(wc)[Kakeibo_API_KEY])
     const auth = getAuthApi((wc: WebContents) => getContext(wc)[AUTH_API_KEY])
+    const secret = getSecretApi((wc: WebContents) => getContext(wc)[SECRET_API_KEY])
 
     return defineHelper({
       // 'this.should.cause.a.type.error': { type: 'invoke', method: () => {} },
@@ -70,6 +74,7 @@ export const registerIpc = createRegisterIpc<ElectronMainApi, Context>(
       'auth.getStatus': { type: 'invoke', method: auth.getStatus },
       'auth.login': { type: 'invoke', method: auth.login },
       'auth.logout': { type: 'invoke', method: auth.logout },
+      'secret.setSecret': { type: 'invoke', method: secret.setSecret },
     })
   },
 )
