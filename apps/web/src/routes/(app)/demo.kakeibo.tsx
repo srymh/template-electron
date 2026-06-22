@@ -17,7 +17,7 @@ import type { Table as TanStackTable } from '@tanstack/react-table'
 import { Square, Table } from 'lucide-react'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/components/tabs'
-import { kakeibo } from '@your-app-name/api'
+import { kakeibo } from '@your-app-name/api/renderer'
 
 import { BasicTable } from '@/components/table/basic-table'
 import { fuzzyFilter } from '@/components/table/tableUtils'

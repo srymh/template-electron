@@ -8,7 +8,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@repo/ui/components/context-menu'
-import { web } from '@your-app-name/api'
+import { web } from '@your-app-name/api/renderer'
 
 export const Route = createFileRoute('/(app)/demo/web')({
   component: RouteComponent,
