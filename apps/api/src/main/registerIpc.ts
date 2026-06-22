@@ -2,6 +2,7 @@ import type { WebContents } from 'electron'
 
 import { createRegisterIpc } from '@repo/ipc/main'
 
+import type { ElectronMainApi } from '../api'
 import { AI_CHAT_API_KEY, getAiChatApi } from '../api/aiChat'
 import type { AiChatContext } from '../api/aiChat'
 import { AUTH_API_KEY, getAuthApi } from '../api/auth'
@@ -13,8 +14,8 @@ import { MCP_API_KEY, getMcpApi } from '../api/mcp'
 import type { McpApiContext } from '../api/mcp'
 import { THEME_API_KEY, getThemeApi } from '../api/theme'
 import type { ThemeContext } from '../api/theme'
-import { getWebApi } from '../api/web'
-import type { ElectronMainApi } from './electronMainApi'
+import { WEB_API_KEY, getWebApi } from '../api/web'
+import type { WebContext } from '../api/web'
 
 export type Context = {
   [THEME_API_KEY]: ThemeContext
@@ -22,13 +23,14 @@ export type Context = {
   [AI_CHAT_API_KEY]: AiChatContext
   [Kakeibo_API_KEY]: KakeiboContext
   [AUTH_API_KEY]: AuthContext
+  [WEB_API_KEY]: WebContext
 }
 
 export const registerIpc = createRegisterIpc<ElectronMainApi, Context>(
   ({ getContext, defineHelper }) => {
     const fs = getFileSystemApi()
     const theme = getThemeApi((wc: WebContents) => getContext(wc)[THEME_API_KEY])
-    const web = getWebApi()
+    const web = getWebApi((wc: WebContents) => getContext(wc)[WEB_API_KEY])
     const mcp = getMcpApi((wc: WebContents) => getContext(wc)[MCP_API_KEY])
     const aiChat = getAiChatApi((wc: WebContents) => getContext(wc)[AI_CHAT_API_KEY])
     const kakeibo = getKakeiboApi((wc: WebContents) => getContext(wc)[Kakeibo_API_KEY])

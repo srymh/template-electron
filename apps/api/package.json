@@ -4,16 +4,39 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./src/api.ts",
-      "import": "./src/api.ts"
+    "./*": {
+      "types": "./src/api/*.ts",
+      "import": "./src/api/*.ts"
+    },
+    "./main": {
+      "types": "./src/main/registerIpc.ts",
+      "import": "./src/main/registerIpc.ts"
+    },
+    "./preload": {
+      "types": "./src/preload/electronApi.ts",
+      "import": "./src/preload/electronApi.ts"
+    },
+    "./renderer": {
+      "types": "./src/renderer/api.ts",
+      "import": "./src/renderer/api.ts"
     }
   },
   "scripts": {
     "typecheck": "tsgo --noEmit"
   },
   "dependencies": {
+    "@repo/ai-chat": "workspace:*",
+    "@repo/ai-chat-session": "workspace:*",
+    "@repo/ai-tools": "workspace:*",
+    "@repo/auth": "workspace:*",
+    "@repo/deep-merge": "workspace:*",
     "@repo/frame-rpc": "workspace:*",
-    "your-app-name": "workspace:*"
+    "@repo/ipc": "workspace:*",
+    "@repo/mcp-server-example": "workspace:*",
+    "@repo/sqlite": "workspace:*",
+    "@tanstack/ai": "^0.14.0"
+  },
+  "devDependencies": {
+    "electron": "^41.5.0"
   }
 }

@@ -1,6 +1,4 @@
-import type { WebContents } from 'electron'
-
-import type { ApiInterface, WithWebContentsApi } from '@repo/ipc'
+import type { ApiInterface, WithCallerKeyApi } from '@repo/ipc'
 import type { Database } from '@repo/sqlite'
 
 // -----------------------------------------------------------------------------
@@ -32,12 +30,12 @@ export type KakeiboApi = ApiInterface<{
 // -----------------------------------------------------------------------------
 // 実装
 
-export function getKakeiboApi(
-  getContext: (webContents: WebContents) => KakeiboContext,
-): WithWebContentsApi<KakeiboApi> {
+export function getKakeiboApi<TKey>(
+  getContext: (key: TKey) => KakeiboContext,
+): WithCallerKeyApi<KakeiboApi, TKey> {
   return {
-    entries: async (wc) => {
-      const db = getContext(wc).getDb()
+    entries: async (key) => {
+      const db = getContext(key).getDb()
 
       const entries = db.query('SELECT * FROM expense_view ORDER BY spent_at DESC;')
 

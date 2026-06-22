@@ -1,6 +1,4 @@
-import type { WebContents } from 'electron'
-
-import type { ApiInterface, WithWebContents, WithWebContentsApi } from '@repo/ipc'
+import type { ApiInterface, WithCallerKey, WithCallerKeyApi } from '@repo/ipc'
 import { startServer as startMcpServer } from '@repo/mcp-server-example'
 import type { McpServer } from '@repo/mcp-server-example'
 
@@ -31,11 +29,11 @@ export type McpApi = ApiInterface<{
 // 実装
 
 const getServerStatusFn =
-  (
-    getContext: (webContents: WebContents) => McpApiContext,
-  ): WithWebContents<McpApi['getServerStatus']> =>
-  async (webContents) => {
-    const { getMcpServer } = getContext(webContents)
+  <TKey>(
+    getContext: (key: TKey) => McpApiContext,
+  ): WithCallerKey<McpApi['getServerStatus'], TKey> =>
+  async (key) => {
+    const { getMcpServer } = getContext(key)
 
     const server = getMcpServer()
 
@@ -55,11 +53,9 @@ const getServerStatusFn =
   }
 
 const startServerFn =
-  (
-    getContext: (webContents: WebContents) => McpApiContext,
-  ): WithWebContents<McpApi['startServer']> =>
-  async ({ port }, webContents) => {
-    const { getMcpServer, setMcpServer } = getContext(webContents)
+  <TKey>(getContext: (key: TKey) => McpApiContext): WithCallerKey<McpApi['startServer'], TKey> =>
+  async ({ port }, key) => {
+    const { getMcpServer, setMcpServer } = getContext(key)
 
     let server = getMcpServer()
     if (!server) {
@@ -69,11 +65,9 @@ const startServerFn =
   }
 
 const stopServerFn =
-  (
-    getContext: (webContents: WebContents) => McpApiContext,
-  ): WithWebContents<McpApi['stopServer']> =>
-  async (webContents) => {
-    const { getMcpServer, setMcpServer } = getContext(webContents)
+  <TKey>(getContext: (key: TKey) => McpApiContext): WithCallerKey<McpApi['stopServer'], TKey> =>
+  async (key) => {
+    const { getMcpServer, setMcpServer } = getContext(key)
 
     let server = getMcpServer()
     if (server) {
@@ -82,9 +76,9 @@ const stopServerFn =
     }
   }
 
-export function getMcpApi(
-  getContext: (webContents: WebContents) => McpApiContext,
-): WithWebContentsApi<McpApi> {
+export function getMcpApi<TKey>(
+  getContext: (key: TKey) => McpApiContext,
+): WithCallerKeyApi<McpApi, TKey> {
   return {
     getServerStatus: getServerStatusFn(getContext),
     startServer: startServerFn(getContext),

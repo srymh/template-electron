@@ -1,6 +1,6 @@
-import type { Event, Result } from 'electron'
+import type { Event, Result, WebContents } from 'electron'
 
-import type { ApiInterface, AddListener, WithWebContentsApi } from '@repo/ipc'
+import type { ApiInterface, AddListener, WithCallerKeyApi } from '@repo/ipc'
 
 // -----------------------------------------------------------------------------
 // 型定義
@@ -8,13 +8,17 @@ import type { ApiInterface, AddListener, WithWebContentsApi } from '@repo/ipc'
 export const WEB_API_KEY = 'web' as const
 export type WebApiKey = typeof WEB_API_KEY
 
+export type WebContext = {
+  getWebContents: () => WebContents
+}
+
 // -----------------------------------------------------------------------------
 // インターフェイス定義
 
 export type WebApi = ApiInterface<{
   findInPage: (options: { text: string }) => Promise<number>
   stopFindInPage: (options: {
-    action: Parameters<Electron.WebContents['stopFindInPage']>[0]
+    action: Parameters<WebContents['stopFindInPage']>[0]
   }) => Promise<void>
   on: {
     blur: AddListener<void>
@@ -26,12 +30,16 @@ export type WebApi = ApiInterface<{
 // -----------------------------------------------------------------------------
 // 実装
 
-export function getWebApi(): WithWebContentsApi<WebApi> {
+export function getWebApi<TKey>(
+  getContext: (key: TKey) => WebContext,
+): WithCallerKeyApi<WebApi, TKey> {
   return {
-    findInPage: async ({ text }, webContents) => webContents.findInPage(text),
-    stopFindInPage: async ({ action }, webContents) => webContents.stopFindInPage(action),
+    findInPage: async ({ text }, key) => getContext(key).getWebContents().findInPage(text),
+    stopFindInPage: async ({ action }, key) =>
+      getContext(key).getWebContents().stopFindInPage(action),
     on: {
-      blur: (listener, webContents) => {
+      blur: (listener, key) => {
+        const webContents = getContext(key).getWebContents()
         const listenerWrapper = () => listener()
         webContents.on('blur', listenerWrapper)
         let disposed = false
@@ -41,7 +49,8 @@ export function getWebApi(): WithWebContentsApi<WebApi> {
           webContents.off('blur', listenerWrapper)
         }
       },
-      focus: (listener, webContents) => {
+      focus: (listener, key) => {
+        const webContents = getContext(key).getWebContents()
         const listenerWrapper = () => listener()
         webContents.on('focus', listenerWrapper)
         let disposed = false
@@ -51,7 +60,8 @@ export function getWebApi(): WithWebContentsApi<WebApi> {
           webContents.off('focus', listenerWrapper)
         }
       },
-      foundInPage: (listener, webContents) => {
+      foundInPage: (listener, key) => {
+        const webContents = getContext(key).getWebContents()
         const listenerWrapper = (_: Event, result: Result) => {
           listener(result)
         }

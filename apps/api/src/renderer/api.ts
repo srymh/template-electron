@@ -1,6 +1,6 @@
-import type { ElectronApi } from 'your-app-name/api'
-
 import { registerAuthStatusResponder, requestAuthStatusFromParent } from '@repo/frame-rpc'
+
+import type { ElectronApi } from '../api'
 
 export type Api = ElectronApi
 export type AiChatApi = Api['aiChat']

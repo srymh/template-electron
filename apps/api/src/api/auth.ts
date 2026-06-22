@@ -1,7 +1,5 @@
-import type { WebContents } from 'electron'
-
 import type { AuthRuntime, AuthStatus } from '@repo/auth'
-import type { ApiInterface, WithWebContentsApi } from '@repo/ipc'
+import type { ApiInterface, WithCallerKeyApi } from '@repo/ipc'
 
 // -----------------------------------------------------------------------------
 // 型定義
@@ -25,20 +23,20 @@ export type AuthApi = ApiInterface<{
 // -----------------------------------------------------------------------------
 // 実装
 
-export function getAuthApi(
-  getContext: (webContents: WebContents) => AuthContext,
-): WithWebContentsApi<AuthApi> {
+export function getAuthApi<TKey>(
+  getContext: (key: TKey) => AuthContext,
+): WithCallerKeyApi<AuthApi, TKey> {
   return {
-    getStatus: async (webContents) => {
-      return getContext(webContents).getRuntime().getStatus()
+    getStatus: async (key) => {
+      return getContext(key).getRuntime().getStatus()
     },
 
-    login: async (username, password, webContents) => {
-      return getContext(webContents).getRuntime().login(username, password)
+    login: async (username, password, key) => {
+      return getContext(key).getRuntime().login(username, password)
     },
 
-    logout: async (webContents) => {
-      getContext(webContents).getRuntime().logout()
+    logout: async (key) => {
+      getContext(key).getRuntime().logout()
     },
   }
 }

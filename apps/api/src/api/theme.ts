@@ -1,7 +1,7 @@
 import { nativeTheme, systemPreferences } from 'electron'
-import type { Event, WebContents, TitleBarOverlayOptions } from 'electron'
+import type { Event, TitleBarOverlayOptions } from 'electron'
 
-import type { ApiInterface, AddListener, WithWebContents, WithWebContentsApi } from '@repo/ipc'
+import type { ApiInterface, AddListener, WithCallerKey, WithCallerKeyApi } from '@repo/ipc'
 
 // -----------------------------------------------------------------------------
 // 型定義
@@ -31,15 +31,15 @@ export type ThemeApi = ApiInterface<{
 // -----------------------------------------------------------------------------
 // 実装
 
-const getTheme: WithWebContents<ThemeApi['getTheme']> = async () => {
+const getTheme: ThemeApi['getTheme'] = async () => {
   return nativeTheme.themeSource
 }
 
-const createSetTheme = (
-  getContext: (wc: WebContents) => ThemeContext,
-): WithWebContents<ThemeApi['setTheme']> => {
-  return async ({ theme }, wc) => {
-    const { setTitleBarOverlay } = getContext(wc)
+const createSetTheme = <TKey>(
+  getContext: (key: TKey) => ThemeContext,
+): WithCallerKey<ThemeApi['setTheme'], TKey> => {
+  return async ({ theme }, key) => {
+    const { setTitleBarOverlay } = getContext(key)
     let symbolColor = theme === 'dark' ? '#FFFFFF' : '#000000'
     // もしテーマが system なら OS のダークモード設定に応じてシンボルカラーを決定する
     if (theme === 'system') {
@@ -51,11 +51,11 @@ const createSetTheme = (
   }
 }
 
-const getAccentColor: WithWebContents<ThemeApi['getAccentColor']> = async () => {
+const getAccentColor: ThemeApi['getAccentColor'] = async () => {
   return systemPreferences.getAccentColor()
 }
 
-const onAccentColorChanged: WithWebContents<ThemeApi['on']['accentColorChanged']> = (listener) => {
+const onAccentColorChanged: ThemeApi['on']['accentColorChanged'] = (listener) => {
   const listenerWrapper = (_: Event, newColor: string) => {
     return listener(newColor)
   }
@@ -70,7 +70,7 @@ const onAccentColorChanged: WithWebContents<ThemeApi['on']['accentColorChanged']
   }
 }
 
-const onUpdated: WithWebContents<ThemeApi['on']['updated']> = (listener) => {
+const onUpdated: ThemeApi['on']['updated'] = (listener) => {
   const listenerWrapper = () => {
     console.log('nativeTheme updated:', {
       themeSource: nativeTheme.themeSource,
@@ -93,9 +93,9 @@ const onUpdated: WithWebContents<ThemeApi['on']['updated']> = (listener) => {
   }
 }
 
-export function getThemeApi(
-  getContext: (webContents: WebContents) => ThemeContext,
-): WithWebContentsApi<ThemeApi> {
+export function getThemeApi<TKey>(
+  getContext: (key: TKey) => ThemeContext,
+): WithCallerKeyApi<ThemeApi, TKey> {
   return {
     getTheme,
     setTheme: createSetTheme(getContext),
