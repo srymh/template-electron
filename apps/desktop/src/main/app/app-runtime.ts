@@ -4,6 +4,7 @@ import type { BrowserWindow } from 'electron/main'
 
 import type { Logger } from '../infra/logger'
 import type { MainPaths } from '../infra/paths'
+import type { SecretStorage } from '../infra/safe-storage'
 
 /** 破棄処理のデフォルトタイムアウト時間（ミリ秒） */
 const DEFAULT_DISPOSE_TIMEOUT_MS = 5_000
@@ -21,6 +22,7 @@ export class AppRuntime {
   // TODO: BrowserWindow.getAllWindows() で代替できるか検討
   private windowsById = new Map<number, BrowserWindow>()
   logger: Logger
+  secretStorage: SecretStorage
 
   constructor({
     paths,
@@ -28,18 +30,21 @@ export class AppRuntime {
     allowedDevOrigin,
     rendererRootUrl,
     logger,
+    secretStorage,
   }: {
     paths: MainPaths
     devServerUrl: string | null
     allowedDevOrigin: string | null
     rendererRootUrl: string | null
     logger: Logger
+    secretStorage: SecretStorage
   }) {
     this.paths = paths
     this.devServerUrl = devServerUrl
     this.allowedDevOrigin = allowedDevOrigin
     this.rendererRootUrl = rendererRootUrl
     this.logger = logger
+    this.secretStorage = secretStorage
   }
 
   addDispose(dispose: () => void | Promise<void>) {
@@ -77,6 +82,25 @@ export class AppRuntime {
 
   private unregisterWindowById(windowId: number) {
     this.windowsById.delete(windowId)
+  }
+
+  storeSecret(key: string, value: string): Promise<void> {
+    try {
+      this.logger.info(`Storing secret for key: ${key}`)
+      return this.secretStorage.storeSecret(key, value)
+    } catch (error) {
+      this.logger.error(`Failed to store secret for key: ${key}`, error)
+      throw error
+    }
+  }
+
+  retrieveSecret(key: string): Promise<string> {
+    try {
+      return this.secretStorage.retrieveSecret(key)
+    } catch (error) {
+      this.logger.error(`Failed to retrieve secret for key: ${key}`, error)
+      throw error
+    }
   }
 }
 

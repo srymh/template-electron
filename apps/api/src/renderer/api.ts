@@ -10,6 +10,7 @@ export type KakeiboApi = Api['kakeibo']
 export type McpApi = Api['mcp']
 export type ThemeApi = Api['theme']
 export type WebApi = Api['web']
+export type SecretApi = Api['secret']
 
 type BrowserWindowWithApi = Window & {
   api?: ElectronApi
@@ -128,8 +129,9 @@ const api: Api = (() => {
     mcp: notAvailable('mcp') as McpApi,
     theme,
     web: notAvailable('web') as WebApi,
+    secret: notAvailable('secret') as SecretApi,
   }
 })()
 
 // export default api
-export const { aiChat, auth, fs, kakeibo, mcp, theme, web } = api
+export const { aiChat, auth, fs, kakeibo, mcp, theme, web, secret } = api

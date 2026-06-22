@@ -6,7 +6,8 @@ import { app } from 'electron'
 import { Logger } from '../infra/logger'
 import type { MainPaths } from '../infra/paths'
 import { ensureTrailingSeparator, resolveMainPaths } from '../infra/paths'
-import { ensureUserDataAppDirectory } from '../infra/userDataDirectory'
+import { SecretStorage } from '../infra/safe-storage'
+import { ensureDirectory } from '../utils/ensure-directory'
 import { AppRuntime } from './app-runtime'
 
 export async function createAppRuntime({
@@ -22,7 +23,9 @@ export async function createAppRuntime({
     userDataPath: app.getPath('userData'),
   })
 
-  await ensureUserDataAppDirectory(paths.userDataPath)
+  await ensureDirectory(paths.userDataPath)
+  const secretsDir = path.join(paths.userDataPath, 'secrets')
+  await ensureDirectory(secretsDir)
 
   const appRuntime = new AppRuntime({
     paths,
@@ -30,6 +33,7 @@ export async function createAppRuntime({
     allowedDevOrigin: getAllowedDevOrigin(devServerUrl),
     rendererRootUrl: getRendererRootUrl(paths),
     logger: new Logger(path.join(paths.userDataPath, 'log.txt'), !app.isPackaged),
+    secretStorage: new SecretStorage(path.join(paths.userDataPath, 'secrets')),
   })
 
   // ここで logger の dispose を登録すると一番最初に logger が dispose される。
