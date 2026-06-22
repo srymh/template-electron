@@ -1,44 +1,38 @@
-import type { WebContents } from 'electron'
+import path from 'node:path'
 
-import type { AuthRuntime, AuthStatus } from '@repo/auth'
-import type { ApiInterface, WithWebContentsApi } from '@repo/ipc'
+import { createAuthRuntime } from '@repo/auth'
+import type { Database } from '@repo/sqlite'
+import type { AuthContext } from '@your-app-name/api/auth'
 
-// -----------------------------------------------------------------------------
-// 型定義
+import { createAppDatabase } from '../infra/db'
+import type { CreateApiContext } from './types'
 
-export const AUTH_API_KEY = 'auth' as const
-export type AuthApiKey = typeof AUTH_API_KEY
-
-export type AuthContext = {
-  getRuntime: () => AuthRuntime
-}
-
-// -----------------------------------------------------------------------------
-// インターフェイス定義
-
-export type AuthApi = ApiInterface<{
-  getStatus: () => Promise<AuthStatus>
-  login: (username: string, password: string) => Promise<AuthStatus>
-  logout: () => Promise<void>
-}>
-
-// -----------------------------------------------------------------------------
-// 実装
-
-export function getAuthApi(
-  getContext: (webContents: WebContents) => AuthContext,
-): WithWebContentsApi<AuthApi> {
+export const createAuthContext: CreateApiContext<AuthContext> = ({ appRuntime, appContext }) => {
   return {
-    getStatus: async (webContents) => {
-      return getContext(webContents).getRuntime().getStatus()
-    },
+    getRuntime: () => {
+      const runtime = appContext.authRuntime
+      if (runtime) {
+        return runtime
+      }
 
-    login: async (username, password, webContents) => {
-      return getContext(webContents).getRuntime().login(username, password)
-    },
+      /**
+       * desktop app 用に auth.db の実体を開く factory。
+       * 認証スキーマ初期化は @repo/auth 側で行う。
+       */
+      function createAuthDb(): Database {
+        const dbPath = path.join(appRuntime.paths.userDataPath, 'auth.db')
 
-    logout: async (webContents) => {
-      getContext(webContents).getRuntime().logout()
+        console.log(`Auth DB Path: ${dbPath}`)
+
+        return createAppDatabase(dbPath)
+      }
+
+      const newRuntime = createAuthRuntime({
+        createDb: createAuthDb,
+      })
+      appContext.authRuntime = newRuntime
+      appRuntime.addDispose(() => newRuntime.dispose())
+      return newRuntime
     },
   }
 }

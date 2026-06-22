@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { auth as authApi } from '@your-app-name/api'
+import { auth as authApi } from '@your-app-name/api/renderer'
 
 export type AuthUser = {
   username: string

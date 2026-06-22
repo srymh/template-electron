@@ -1,47 +1,37 @@
-import type { WebContents } from 'electron'
+import path from 'node:path'
 
-import type { ApiInterface, WithWebContentsApi } from '@repo/ipc'
-import type { Database } from '@repo/sqlite'
+import type { KakeiboContext } from '@your-app-name/api/kakeibo'
 
-// -----------------------------------------------------------------------------
-// 型定義
+import { createAppDatabase } from '../infra/db'
+import type { CreateApiContext } from './types'
 
-export const Kakeibo_API_KEY = 'kakeibo' as const
-export type KakeiboApiKey = typeof Kakeibo_API_KEY
-
-export type KakeiboContext = {
-  getDb: () => Database
-}
-
-export type KakeiboEntry = {
-  id: number
-  spent_at: string
-  amount: number
-  user: string
-  category: string
-  payment_method: string
-}
-
-// -----------------------------------------------------------------------------
-// インターフェイス定義
-
-export type KakeiboApi = ApiInterface<{
-  entries: () => Promise<KakeiboEntry[]>
-}>
-
-// -----------------------------------------------------------------------------
-// 実装
-
-export function getKakeiboApi(
-  getContext: (webContents: WebContents) => KakeiboContext,
-): WithWebContentsApi<KakeiboApi> {
+export const createKakeiboContext: CreateApiContext<KakeiboContext> = ({
+  appRuntime,
+  appContext,
+}) => {
   return {
-    entries: async (wc) => {
-      const db = getContext(wc).getDb()
+    getDb: () => {
+      const db = appContext.db
+      if (db) {
+        return db
+      }
 
-      const entries = db.query('SELECT * FROM expense_view ORDER BY spent_at DESC;')
-
-      return entries as KakeiboEntry[]
+      try {
+        const db = createAppDatabase(path.join(appRuntime.paths.dataPath, 'kakeibo.db'), {
+          readonly: false,
+          fileMustExist: false,
+        })
+        appContext.db = db
+        appRuntime.addDispose(() => {
+          db.close()
+          console.log(`[DB] Database connection closed`)
+        })
+        console.log(`[DB] Database opened successfully at kakeibo.db`)
+      } catch (error) {
+        console.error('[DB] Failed to open database:', error)
+        throw error
+      }
+      return appContext.db
     },
   }
 }

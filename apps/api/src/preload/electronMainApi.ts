@@ -1,24 +1,8 @@
 import { createElectronApi } from '@repo/ipc/browser'
 
-import type { AiChatApi, AI_CHAT_API_KEY } from '../api/aiChat'
-import type { AuthApi, AUTH_API_KEY } from '../api/auth'
-import type { FileSystemApi, FS_API_KEY } from '../api/fs'
-import type { KakeiboApi, Kakeibo_API_KEY } from '../api/kakeibo'
-import type { McpApi, MCP_API_KEY } from '../api/mcp'
-import type { ThemeApi, THEME_API_KEY } from '../api/theme'
-import type { WebApi, WEB_API_KEY } from '../api/web'
+import type { ElectronMainApi } from '../api'
 
-type Api = {
-  [FS_API_KEY]: FileSystemApi
-  [THEME_API_KEY]: ThemeApi
-  [WEB_API_KEY]: WebApi
-  [MCP_API_KEY]: McpApi
-  [AI_CHAT_API_KEY]: AiChatApi
-  [Kakeibo_API_KEY]: KakeiboApi
-  [AUTH_API_KEY]: AuthApi
-}
-
-export const electronMainApi = createElectronApi<Api>(
+export const electronMainApi = createElectronApi<ElectronMainApi>(
   ({ defineHelper, useChannelAsInvoke, useChannelAsEvent }) =>
     /**
      * defineHelper の使用は任意ですが、以下の利点があります。
@@ -82,5 +66,3 @@ export const electronMainApi = createElectronApi<Api>(
     registeredEventMap: new Map(),
   },
 )
-
-export type ElectronMainApi = typeof electronMainApi

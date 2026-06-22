@@ -30,7 +30,7 @@ import {
   PopoverTrigger,
 } from '@repo/ui/components/popover'
 import { ToggleGroup, ToggleGroupItem } from '@repo/ui/components/toggle-group'
-import type { ThemeApi } from '@your-app-name/api'
+import type { ThemeApi } from '@your-app-name/api/renderer'
 
 import { useTheme as useAppearanceMode } from '@/components/theme-provider'
 import { useIframeMessage } from '@/hooks/use-iframe-message'

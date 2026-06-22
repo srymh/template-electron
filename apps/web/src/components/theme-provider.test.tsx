@@ -9,7 +9,7 @@ const themeApiMocks = vi.hoisted(() => {
   }
 })
 
-vi.mock('@your-app-name/api', () => {
+vi.mock('@your-app-name/api/renderer', () => {
   return {
     theme: {
       setTheme: themeApiMocks.setTheme,

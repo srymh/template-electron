@@ -1,5 +1,3 @@
-import type { WebContents } from 'electron'
-
 // -----------------------------------------------------------------------------
 // Main, Renderer Process 共通部分
 
@@ -179,30 +177,30 @@ export type ExtractAddListener<
     : never
 
 /**
- * 任意の関数 T を受け取り、最初の引数に WebContents を追加した関数型を返す
+ * 任意の関数 TFn を受け取り、最初の引数に呼び出し元キー TKey を追加した関数型を返す
  *
  * @example
  * type Fn1 = (a: number) => Promise<string>
  * type Fn2 = () => Promise<string>
  * type Fn3 = (a: number, b: string) => Promise<string>
  *
- * type Fn1WithWebContents = WithWebContents<Fn1>
- * // (a: number, webContents: WebContents) => Promise<string>
+ * type Fn1WithCallerKey = WithCallerKey<Fn1>
+ * // (a: number, key: TKey) => Promise<string>
  *
- * type Fn2WithWebContents = WithWebContents<Fn2>
- * // (webContents: WebContents) => Promise<string>
+ * type Fn2WithCallerKey = WithCallerKey<Fn2>
+ * // (key: TKey) => Promise<string>
  *
- * type Fn3WithWebContents = WithWebContents<Fn3>
- * // (a: number, b: string, webContents: WebContents) => Promise<string>
+ * type Fn3WithCallerKey = WithCallerKey<Fn3>
+ * // (a: number, b: string, key: TKey) => Promise<string>
  */
-export type WithWebContents<T extends AnyFunction> = T extends (
+export type WithCallerKey<TFn extends AnyFunction, TKey extends any> = TFn extends (
   ...args: infer TArgs
 ) => infer TReturn
-  ? (...args: [...TArgs, WebContents]) => TReturn
+  ? (...args: [...TArgs, TKey]) => TReturn
   : never
 
 /**
- * 任意の API オブジェクト T のすべての関数を WithWebContents 化した型を生成します。
+ * 任意の API オブジェクト T のすべての関数を WithCallerKey 化した型を生成します。
  *
  * @example
  * type MyApi = {
@@ -212,41 +210,41 @@ export type WithWebContents<T extends AnyFunction> = T extends (
  *   }
  * }
  *
- * type MyApiWithWebContents = WithWebContentsApi<MyApi>
+ * type MyApiWithCallerKey = WithCallerKeyApi<MyApi, number>
  * // Expected:
- * // type MyApiWithWebContents = {
- * //   foo: (x: number, webContents: WebContents) => Promise<string>
+ * // type MyApiWithCallerKey = {
+ * //   foo: (x: number, key: number) => Promise<string>
  * //   bar: {
- * //     baz: (y: string, webContents: WebContents) => Promise<number>
+ * //     baz: (y: string, key: number) => Promise<number>
  * //   }
  * // }
  */
-export type WithWebContentsApi<T extends Api> = {
+export type WithCallerKeyApi<T extends Api, TKey extends any> = {
   [K in keyof T]: T[K] extends AnyFunction
-    ? WithWebContents<T[K]>
+    ? WithCallerKey<T[K], TKey>
     : T[K] extends Api
-      ? WithWebContentsApi<T[K]>
+      ? WithCallerKeyApi<T[K], TKey>
       : T[K]
 }
 
 export type IpcInvokeEntry<
-  TElectronMainApi extends Api,
-  TChannel extends RecursiveMethodKeys<TElectronMainApi>,
+  TApi extends Api,
+  TChannel extends RecursiveMethodKeys<TApi>,
+  TKey extends any,
 > = {
   type: 'invoke'
-  method: WithWebContents<ExtractMethod<TElectronMainApi, TChannel>>
+  method: WithCallerKey<ExtractMethod<TApi, TChannel>, TKey>
 }
 
 export type IpcEventEntry<
-  TElectronMainApi extends Api,
-  TChannel extends RecursiveMethodKeys<TElectronMainApi>,
+  TApi extends Api,
+  TChannel extends RecursiveMethodKeys<TApi>,
+  TKey extends any,
 > = {
   type: 'event'
-  addEventListener: WithWebContents<ExtractAddListener<TElectronMainApi, TChannel>>
+  addEventListener: WithCallerKey<ExtractAddListener<TApi, TChannel>, TKey>
 }
 
-export type IpcRegistrationMap<TElectronMainApi extends Api> = {
-  [K in RecursiveMethodKeys<TElectronMainApi>]:
-    | IpcInvokeEntry<TElectronMainApi, K>
-    | IpcEventEntry<TElectronMainApi, K>
+export type IpcRegistrationMap<TApi extends Api, TKey extends any> = {
+  [K in RecursiveMethodKeys<TApi>]: IpcInvokeEntry<TApi, K, TKey> | IpcEventEntry<TApi, K, TKey>
 }

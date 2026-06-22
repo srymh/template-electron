@@ -9,7 +9,7 @@ import type {
   SaveDialogReturnValue,
 } from 'electron'
 
-import type { ApiInterface, WithWebContents, WithWebContentsApi } from '@repo/ipc'
+import type { ApiInterface } from '@repo/ipc'
 
 // -----------------------------------------------------------------------------
 // 型定義
@@ -121,18 +121,15 @@ export type FileSystemRendererApi = Readonly<{
 // -----------------------------------------------------------------------------
 // 実装
 
-const joinPath: WithWebContents<FileSystemApi['joinPath']> = async (options) =>
-  nodePath.join(...options.parts)
+const joinPath: FileSystemApi['joinPath'] = async (options) => nodePath.join(...options.parts)
 
-const readFileAsText: WithWebContents<FileSystemApi['readFileAsText']> = async (options) => {
+const readFileAsText: FileSystemApi['readFileAsText'] = async (options) => {
   const { path } = options
   const text = await fs.readFile(path, 'utf-8')
   return text
 }
 
-const readFileAsArrayBuffer: WithWebContents<FileSystemApi['readFileAsArrayBuffer']> = async (
-  options,
-) => {
+const readFileAsArrayBuffer: FileSystemApi['readFileAsArrayBuffer'] = async (options) => {
   const { path } = options
   const buffer = await fs.readFile(path)
 
@@ -150,28 +147,26 @@ const readFileAsArrayBuffer: WithWebContents<FileSystemApi['readFileAsArrayBuffe
   return arrayBuffer
 }
 
-const writeFileAsText: WithWebContents<FileSystemApi['writeFileAsText']> = async (options) => {
+const writeFileAsText: FileSystemApi['writeFileAsText'] = async (options) => {
   const { path, data } = options
   await fs.writeFile(path, data, 'utf-8')
 }
 
-const writeFileAsArrayBuffer: WithWebContents<FileSystemApi['writeFileAsArrayBuffer']> = async (
-  options,
-) => {
+const writeFileAsArrayBuffer: FileSystemApi['writeFileAsArrayBuffer'] = async (options) => {
   const { path, data } = options
   const buffer = Buffer.from(data)
   await fs.writeFile(path, buffer)
 }
 
-const showOpenDialog: WithWebContents<FileSystemApi['showOpenDialog']> = async (options) => {
+const showOpenDialog: FileSystemApi['showOpenDialog'] = async (options) => {
   return await dialog.showOpenDialog(options)
 }
 
-const showSaveDialog: WithWebContents<FileSystemApi['showSaveDialog']> = async (options) => {
+const showSaveDialog: FileSystemApi['showSaveDialog'] = async (options) => {
   return await dialog.showSaveDialog(options)
 }
 
-const readDirectory: WithWebContents<FileSystemApi['readDirectory']> = async (options) => {
+const readDirectory: FileSystemApi['readDirectory'] = async (options) => {
   const { path } = options
   const entries = await fs.readdir(path, { withFileTypes: true })
   return entries.map((entry) => ({
@@ -181,14 +176,12 @@ const readDirectory: WithWebContents<FileSystemApi['readDirectory']> = async (op
   }))
 }
 
-const openFileByDefaultApp: WithWebContents<FileSystemApi['openFileByDefaultApp']> = async (
-  options,
-) => {
+const openFileByDefaultApp: FileSystemApi['openFileByDefaultApp'] = async (options) => {
   const { path } = options
   await shell.openPath(path)
 }
 
-const getFileDetails: WithWebContents<FileSystemApi['getFileDetails']> = async (options) => {
+const getFileDetails: FileSystemApi['getFileDetails'] = async (options) => {
   let path: string
   if ('path' in options) {
     path = options.path
@@ -216,7 +209,7 @@ const getFileDetails: WithWebContents<FileSystemApi['getFileDetails']> = async (
   }
 }
 
-export function getFileSystemApi(): WithWebContentsApi<FileSystemApi> {
+export function getFileSystemApi(): FileSystemApi {
   return {
     joinPath,
     readFileAsText,

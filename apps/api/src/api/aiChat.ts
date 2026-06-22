@@ -1,5 +1,3 @@
-import type { WebContents } from 'electron'
-
 import type { ModelMessage, ServerTool, StreamChunk } from '@tanstack/ai'
 
 import { chat } from '@repo/ai-chat'
@@ -18,7 +16,7 @@ import {
   switchThemeDarkTool,
   switchThemeLightTool,
 } from '@repo/ai-tools/server/tools'
-import type { AddListener, ApiInterface, WithWebContents, WithWebContentsApi } from '@repo/ipc'
+import type { AddListener, ApiInterface, WithCallerKey, WithCallerKeyApi } from '@repo/ipc'
 
 // -----------------------------------------------------------------------------
 // 型定義
@@ -52,10 +50,10 @@ export type AiChatApi = ApiInterface<{
 // 実装
 
 const createChat =
-  (getContext: (wc: WebContents) => AiChatContext): WithWebContents<AiChatApi['chat']> =>
-  async (request, webContents) => {
+  <TKey>(getContext: (key: TKey) => AiChatContext): WithCallerKey<AiChatApi['chat'], TKey> =>
+  async (request, key) => {
     const { getToolsByMcp, getSearchProjectDetailDbPath, getAiChatSession, setAiChatSession } =
-      getContext(webContents)
+      getContext(key)
     const { messages, data, id } = request
 
     const sessionStore = {
@@ -121,14 +119,14 @@ const createChat =
     }
   }
 
-export function getAiChatApi(
-  getContext: (wc: WebContents) => AiChatContext,
-): WithWebContentsApi<AiChatApi> {
+export function getAiChatApi<TKey>(
+  getContext: (key: TKey) => AiChatContext,
+): WithCallerKeyApi<AiChatApi, TKey> {
   return {
     chat: createChat(getContext),
     on: {
-      chunk: (listener, wc) => {
-        const { getAiChatSession, setAiChatSession } = getContext(wc)
+      chunk: (listener, key) => {
+        const { getAiChatSession, setAiChatSession } = getContext(key)
         const sessionStore = {
           getSession: getAiChatSession,
           setSession: setAiChatSession,

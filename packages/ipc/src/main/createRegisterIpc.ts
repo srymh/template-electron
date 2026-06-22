@@ -6,15 +6,18 @@ import type {
   Api,
   IpcRegistrationMap,
   RecursiveMethodKeys,
-  WithWebContents,
+  WithCallerKey,
   ExtractMethod,
   ExtractAddListener,
+  AnyFunction,
 } from '../shared/types'
+
+type WithWebContents<T extends AnyFunction> = WithCallerKey<T, WebContents>
 
 type CreateRegistrationMap<TElectronMainApi extends Api, TContext = any> = (helpers: {
   getContext: (webContents: WebContents) => TContext
-  defineHelper: <T extends IpcRegistrationMap<TElectronMainApi>>(map: T) => T
-}) => IpcRegistrationMap<TElectronMainApi>
+  defineHelper: <T extends IpcRegistrationMap<TElectronMainApi, WebContents>>(map: T) => T
+}) => IpcRegistrationMap<TElectronMainApi, WebContents>
 
 type RegisterIpc<TContext = any> = (options: {
   getContext: (webContents: WebContents) => TContext
@@ -217,7 +220,7 @@ export const createRegisterIpc =
   ({ getContext, cache }) => {
     const map = createRegistrationMap({
       getContext,
-      defineHelper: <T extends IpcRegistrationMap<TElectronMainApi>>(map: T) => map,
+      defineHelper: <T extends IpcRegistrationMap<TElectronMainApi, WebContents>>(map: T) => map,
     })
 
     for (const channel of Object.keys(map) as Array<keyof typeof map>) {

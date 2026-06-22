@@ -5,7 +5,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Label } from '@repo/ui/components/label'
 import { RadioGroup, RadioGroupItem } from '@repo/ui/components/radio-group'
-import { fs } from '@your-app-name/api'
+import { fs } from '@your-app-name/api/renderer'
 
 export const Route = createFileRoute('/(app)/demo/fs')({
   component: RouteComponent,

@@ -1,5 +1,5 @@
 import { contextBridge } from 'electron'
 
-import { electronApi } from '../main/ipc/electronApi'
+import { electronApi } from '@your-app-name/api/preload'
 
 contextBridge.exposeInMainWorld('api', electronApi)

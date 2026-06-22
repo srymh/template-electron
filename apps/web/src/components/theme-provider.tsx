@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { theme as themeApi } from '@your-app-name/api'
+import { theme as themeApi } from '@your-app-name/api/renderer'
 
 import { useParentWindowMessage } from '@/hooks/use-iframe-message'
 
