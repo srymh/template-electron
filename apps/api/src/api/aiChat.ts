@@ -10,6 +10,7 @@ import {
   prepareAiChatSessionForChat,
 } from '@repo/ai-chat-session'
 import type { AiChatSession } from '@repo/ai-chat-session'
+import { webSearchTool } from '@repo/ai-ollama-tools'
 import { clockToolDef } from '@repo/ai-tools/client/definitions'
 import {
   createSearchProjectDetailTool,
@@ -102,6 +103,7 @@ const createChat =
         clockToolDef,
         ...toolsByMcp,
         searchProjectDetailsTool,
+        webSearchTool,
       ]
     }
 
