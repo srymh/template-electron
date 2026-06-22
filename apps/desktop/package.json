@@ -18,7 +18,7 @@
     "@repo/mcp-server-example": "workspace:*",
     "@repo/sqlite": "workspace:*",
     "@repo/tanstack-ai-mcp": "workspace:*",
-    "@tanstack/ai": "^0.14.0",
+    "@tanstack/ai": "^0.29.0",
     "@your-app-name/api": "workspace:*",
     "better-sqlite3": "^12.9.0",
     "zod": "^4.4.3"
