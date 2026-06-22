@@ -178,3 +178,17 @@ export function resolveMainPaths(args: {
     userDataPath: userDataPathResolved,
   }
 }
+
+export function getAppIconPath(publicPath: string) {
+  return path.join(publicPath, process.platform === 'darwin' ? 'app.icns' : 'app.ico')
+}
+
+/**
+ * file://... のパスに必ず末尾セパレータをつける関数
+ * 例: input: file:///path/to/dist -> output: file:///path/to/dist/
+ * @param p パス
+ * @returns 末尾セパレータ付きのパス
+ */
+export function ensureTrailingSeparator(p: string) {
+  return p.endsWith(path.sep) ? p : p + path.sep
+}

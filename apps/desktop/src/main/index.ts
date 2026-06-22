@@ -1,23 +1,16 @@
 import path from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { fileURLToPath } from 'node:url'
 
-import type { WebContents, BrowserWindow } from 'electron'
+import { registerIpc } from '@your-app-name/api/main'
 
-import type { ServerTool } from '@tanstack/ai'
-
-import type { AiChatSession } from '@repo/ai-chat-session'
-import type { AuthRuntime } from '@repo/auth'
-import { createAuthRuntime } from '@repo/auth'
-import type { McpServer } from '@repo/mcp-server-example'
-import type { Database } from '@repo/sqlite'
-import { mcpToTanStackAiTools } from '@repo/tanstack-ai-mcp'
-
+import { createWindowApiContext } from './api'
+import { createAppContext, createWindowState } from './app-context'
+import type { AppRuntime } from './app/app-runtime'
+import { createAppRuntime } from './app/create-app-runtime'
 import { startApp } from './app/startApp'
-import type { AppRuntime } from './app/startApp'
-import { createAppDatabase } from './infra/db'
+import { getAppIconPath } from './infra/paths'
 import { registerCustomProtocol } from './infra/registerCustomProtocol'
-import { registerIpc } from './ipc/registerIpc'
-import type { Context } from './ipc/registerIpc'
+import { createTitleBarOverlay } from './windows/create-title-bar-overlay'
 import { createWindow, recommendedSecureOptions } from './windows/createWindow'
 
 /** __dirname の代替 */
@@ -26,249 +19,97 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 /** 開発時の Vite dev server URL */
 const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL
 
-/**
- * アプリケーション全体のコンテキスト。
- */
-type AppContext = {
-  windowsById: Map<number, BrowserWindow>
-  windowContextMap: WeakMap<WebContents, Context>
-
-  mcpServer: McpServer | null
-  db: Database | null
-  toolsByMcp: ServerTool[] | null
-  authRuntime: AuthRuntime | null
-  aiChatSession: AiChatSession | null
-
-  registerIpcCache: WeakMap<WebContents, Map<string, () => void>>
-}
-
-startApp<AppContext>({
+const appRuntime = await createAppRuntime({
   dirname: __dirname,
+  devServerUrl: VITE_DEV_SERVER_URL,
+})
+
+const appContext = await createAppContext()
+
+startApp({
+  appRuntime,
   /** --------------------------------------------------------------------------
    *
    * app 準備完了後の処理
    *
    * ------------------------------------------------------------------------ */
-  onAppReady: async ({ appContext }) => {
+  onAppReady: async ({ appRuntime }) => {
     registerCustomProtocol()
 
     // IPC登録（window が load して renderer が invoke する前に必ず登録しておく）
     registerIpc({
       getContext: (webContents) => {
-        if (!appContext.windowContextMap.has(webContents)) {
-          throw new Error('Context is not found')
-        }
-        return appContext.windowContextMap.get(webContents)!
+        return appContext.apiContexts.getOrThrow(webContents).apiContext
       },
-      cache: appContext.registerIpcCache,
+      cache: appRuntime.registerIpcCache,
     })
   },
-  /** --------------------------------------------------------------------------
-   *
-   * メインウィンドウを開く
-   *
-   * ------------------------------------------------------------------------ */
-  openMainWindow: ({ appRuntime, appContext }) => {
-    const allowedDevOrigin = (() => {
-      if (!VITE_DEV_SERVER_URL) return null
-      try {
-        return new URL(VITE_DEV_SERVER_URL).origin
-      } catch {
-        return null
-      }
-    })()
-
-    /**
-     * file://... のパスに必ず末尾セパレータをつける関数
-     * 例: input: file:///path/to/dist -> output: file:///path/to/dist/
-     * @param p パス
-     * @returns 末尾セパレータ付きのパス
-     */
-    const ensureTrailingSeparator = (p: string) => (p.endsWith(path.sep) ? p : p + path.sep)
-
-    const rendererRootUrl = appRuntime.paths.rendererDist
-      ? pathToFileURL(ensureTrailingSeparator(appRuntime.paths.rendererDist)).toString()
-      : null
-
-    createWindow(
-      async (win) => {
-        if (VITE_DEV_SERVER_URL) {
-          await win.loadURL(VITE_DEV_SERVER_URL)
-        } else {
-          await win.loadFile(appRuntime.paths.indexHtmlPath)
-        }
-      },
-      {
-        /** --------------------------------------------------------------------
-         * BrowserWindow のオプション設定
-         * ------------------------------------------------------------------ */
-        browserWindowOptions: {
-          icon: getAppIconPath(appRuntime.paths.desktopPublic),
-          autoHideMenuBar: process.platform !== 'darwin',
-          // タイトルバーを完全に消す
-          titleBarStyle: 'hidden',
-          // macOS 以外は titleBarOverlay を有効にしてタイトルバーとコンテンツを重ねる
-          // https://www.electronjs.org/ja/docs/latest/tutorial/custom-title-bar#%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E3%81%AE%E3%82%A6%E3%82%A4%E3%83%B3%E3%83%89%E3%82%A6%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%AB%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%99%E3%82%8B-windows-linux
-          ...(process.platform !== 'darwin' ? { titleBarOverlay: createTitleBarOverlay() } : {}),
-          webPreferences: {
-            ...recommendedSecureOptions,
-            preload: appRuntime.paths.preloadPath,
-          },
-        },
-        /** --------------------------------------------------------------------
-         * ナビゲーションポリシー設定
-         * ------------------------------------------------------------------ */
-        navigation: {
-          allowedDevOrigin,
-          rendererRootUrl,
-        },
-        /** --------------------------------------------------------------------
-         * ライフサイクルフック
-         * ------------------------------------------------------------------ */
-        onCreated: (win) => {
-          const windowContext = createWindowContext(win, {
-            appRuntime,
-            appContext,
-          })
-          appContext.windowContextMap.set(win.webContents, windowContext)
-          appContext.windowsById.set(win.id, win)
-        },
-        onClose: (win) => {
-          appContext.windowsById.delete(win.id)
-          appContext.windowContextMap.delete(win.webContents)
-        },
-        onClosed: () => {
-          // 何もしない
-        },
-      },
-    ).catch((err) => {
-      console.error(`Failed to create main window: ${String(err)}`)
-    })
-  },
-  createAppContext: async () => {
-    return {
-      // TODO: BrowserWindow.getAllWindows() で代替できるか検討
-      windowsById: new Map(),
-      windowContextMap: new WeakMap(),
-      aiAgent: null,
-      mcpServer: null,
-      db: null,
-      toolsByMcp: null,
-      authRuntime: null,
-      aiChatSession: null,
-      registerIpcCache: new WeakMap(),
-    }
-  },
+  openMainWindow,
 })
 
-function createWindowContext(
-  win: BrowserWindow,
-  {
-    appRuntime,
-    appContext,
-  }: {
-    appRuntime: AppRuntime
-    appContext: AppContext
-  },
-): Context {
-  return {
-    theme: {
-      setTitleBarOverlay: (options) => {
-        if (process.platform === 'darwin') return
-        win.setTitleBarOverlay(options)
-      },
-    },
-    mcp: {
-      getMcpServer: () => appContext.mcpServer,
-      setMcpServer: (server) => {
-        appContext.mcpServer = server
-      },
-    },
-    aiChat: {
-      getToolsByMcp: async () => {
-        if (appContext.mcpServer == null) {
-          return []
-        } else if (appContext.toolsByMcp != null) {
-          return appContext.toolsByMcp
-        }
+function openMainWindow({ appRuntime }: { appRuntime: AppRuntime }) {
+  let unregisterWindow: (() => void) | null = null
+  let unregisterWindowContext: (() => void) | null = null
 
-        const toolsByMcp = await mcpToTanStackAiTools({
-          httpOptions: {
-            url: `http://localhost:${appContext.mcpServer.port}/mcp`,
-          },
+  createWindow(
+    async (win) => {
+      // Debug
+      appRuntime.logger.info('-------------------------------------------------------------')
+      appRuntime.logger.info('appRuntime.devServerUrl    :', appRuntime.devServerUrl)
+      appRuntime.logger.info('appRuntime.rendererRootUrl :', appRuntime.rendererRootUrl)
+      appRuntime.logger.info('appRuntime.paths.indexHtmlPath :', appRuntime.paths.indexHtmlPath)
+      appRuntime.logger.info('-------------------------------------------------------------')
+
+      if (appRuntime.devServerUrl) {
+        await win.loadURL(appRuntime.devServerUrl)
+      } else {
+        await win.loadFile(appRuntime.paths.indexHtmlPath)
+      }
+    },
+    {
+      /** --------------------------------------------------------------------
+       * BrowserWindow のオプション設定
+       * ------------------------------------------------------------------ */
+      browserWindowOptions: {
+        icon: getAppIconPath(appRuntime.paths.desktopPublic),
+        autoHideMenuBar: process.platform !== 'darwin',
+        // タイトルバーを完全に消す
+        titleBarStyle: 'hidden',
+        // macOS 以外は titleBarOverlay を有効にしてタイトルバーとコンテンツを重ねる
+        // https://www.electronjs.org/docs/latest/tutorial/custom-title-bar#add-native-window-controls-windows-linux
+        ...(process.platform !== 'darwin' ? { titleBarOverlay: createTitleBarOverlay() } : {}),
+        webPreferences: {
+          ...recommendedSecureOptions,
+          preload: appRuntime.paths.preloadPath,
+        },
+      },
+      /** --------------------------------------------------------------------
+       * ナビゲーションポリシー設定
+       * ------------------------------------------------------------------ */
+      navigation: {
+        allowedDevOrigin: appRuntime.allowedDevOrigin,
+        rendererRootUrl: appRuntime.rendererRootUrl,
+      },
+      /** --------------------------------------------------------------------
+       * ライフサイクルフック
+       * ------------------------------------------------------------------ */
+      onCreated: (win) => {
+        const windowState = createWindowState()
+        const apiContext = createWindowApiContext({ win, appRuntime, windowState, appContext })
+        unregisterWindow = appRuntime.registerWindow(win)
+        unregisterWindowContext = appContext.apiContexts.register(win.webContents, {
+          apiContext,
+          state: windowState,
         })
-
-        appContext.toolsByMcp = toolsByMcp
-        return toolsByMcp
       },
-      getSearchProjectDetailDbPath: () => {
-        return path.join(appRuntime.paths.dataPath, 'example.db')
-      },
-      getAiChatSession: () => appContext.aiChatSession,
-      setAiChatSession: (session) => {
-        appContext.aiChatSession = session
+      onClosed: () => {
+        unregisterWindowContext?.()
+        unregisterWindowContext = null
+        unregisterWindow?.()
+        unregisterWindow = null
       },
     },
-    kakeibo: {
-      getDb: () => {
-        if (!appContext.db) {
-          try {
-            const db = createAppDatabase(path.join(appRuntime.paths.dataPath, 'kakeibo.db'), {
-              readonly: false,
-              fileMustExist: false,
-            })
-            appContext.db = db
-            console.log(`[DB] Database opened successfully at kakeibo.db`)
-          } catch (error) {
-            console.error('[DB] Failed to open database:', error)
-            throw error
-          }
-        }
-        return appContext.db
-      },
-    },
-    auth: {
-      getRuntime: () => {
-        const runtime = appContext.authRuntime
-        if (runtime) {
-          return runtime
-        }
-
-        /**
-         * desktop app 用に auth.db の実体を開く factory。
-         * 認証スキーマ初期化は @repo/auth 側で行う。
-         */
-        function createAuthDb(): Database {
-          const dbPath = path.join(appRuntime.paths.userDataPath, 'auth.db')
-
-          console.log(`Auth DB Path: ${dbPath}`)
-
-          return createAppDatabase(dbPath)
-        }
-
-        const newRuntime = createAuthRuntime({
-          createDb: createAuthDb,
-        })
-        appContext.authRuntime = newRuntime
-        appRuntime.addDispose(() => newRuntime.dispose())
-        return newRuntime
-      },
-    },
-  }
-}
-
-function createTitleBarOverlay() {
-  // 起動時 nativeTheme には OS の設定が反映されており、
-  // レンダラーで保持されたテーマとは異なる可能性がある。
-  // そのため、起動時には透明なオーバーレイを設定しておき、
-  // レンダラーからテーマが送られてきたタイミングで色を更新する。
-  return {
-    color: '#00000000', // 背景
-    symbolColor: '#00000000', // シンボル
-    height: 29,
-  }
-}
-
-function getAppIconPath(publicPath: string) {
-  return path.join(publicPath, process.platform === 'darwin' ? 'app.icns' : 'app.ico')
+  ).catch((err) => {
+    console.error(`Failed to create main window: ${String(err)}`)
+  })
 }
