@@ -10,7 +10,7 @@ import {
   prepareAiChatSessionForChat,
 } from '@repo/ai-chat-session'
 import type { AiChatSession } from '@repo/ai-chat-session'
-import { webSearchTool } from '@repo/ai-ollama-tools'
+import { createWebSearchTool } from '@repo/ai-ollama-tools'
 import { clockToolDef } from '@repo/ai-tools/client/definitions'
 import {
   createSearchProjectDetailTool,
@@ -30,6 +30,7 @@ export type AiChatContext = {
   getSearchProjectDetailDbPath: () => string
   getAiChatSession: () => AiChatSession | null
   setAiChatSession: (session: AiChatSession | null) => void
+  getApiKey: (provider: 'ollama') => Promise<string | undefined>
 }
 
 // -----------------------------------------------------------------------------
@@ -53,8 +54,13 @@ export type AiChatApi = ApiInterface<{
 const createChat =
   <TKey>(getContext: (key: TKey) => AiChatContext): WithCallerKey<AiChatApi['chat'], TKey> =>
   async (request, key) => {
-    const { getToolsByMcp, getSearchProjectDetailDbPath, getAiChatSession, setAiChatSession } =
-      getContext(key)
+    const {
+      getToolsByMcp,
+      getSearchProjectDetailDbPath,
+      getAiChatSession,
+      setAiChatSession,
+      getApiKey,
+    } = getContext(key)
     const { messages, data, id } = request
 
     const sessionStore = {
@@ -97,6 +103,7 @@ const createChat =
         queryPrefix: 'search_query:',
         topK: 6,
       })
+      const webSearchTool = createWebSearchTool(() => getApiKey('ollama'))
       return [
         switchThemeDarkTool,
         switchThemeLightTool,

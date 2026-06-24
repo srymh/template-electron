@@ -1,4 +1,4 @@
-import { webSearchTool } from '../dist/index.mjs'
+import { createWebSearchTool } from '../dist/index.mjs'
 
 const query = process.argv[2] ?? ''
 
@@ -10,7 +10,7 @@ if (query.trim().length === 0) {
 
 console.log(`Searching for: ${query}`)
 
-const webSearch = webSearchTool.execute
+const webSearch = createWebSearchTool().execute
 
 if (!webSearch) {
   console.log('webSearch is not available')

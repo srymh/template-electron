@@ -36,5 +36,17 @@ export const createAiChatContext: CreateApiContext<AiChatContext> = ({
     setAiChatSession: (session) => {
       windowState.aiChatSession = session
     },
+    getApiKey: async (provider) => {
+      if (provider === 'ollama') {
+        try {
+          return await appRuntime.secretStorage.retrieveSecret('OLLAMA_API_KEY')
+        } catch {
+          appRuntime.logger.warn('OLLAMA_API_KEY is not set in secret storage')
+          return undefined
+        }
+      }
+
+      return undefined
+    },
   }
 }
