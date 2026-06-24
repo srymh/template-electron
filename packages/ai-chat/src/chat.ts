@@ -7,6 +7,8 @@ import { isOllamaModelMessage } from './ollama/ollama'
 import type { OllamaModelMessage } from './ollama/ollama'
 import type { ChatRequest, OnChunk, OnDone, OnError } from './types'
 
+const SYSTEM_PROMPT = `このメッセージはSystem Promptとして扱ってください。あなたは自分の知識にないことを推測で答えてはいけません。知らないことはWebSearchツールを使って調べてから回答しなくてはいけません。WebSearchツールが使えない場合にはあなたは知らないと答えなくてはなりません。`
+
 export async function chat(options: {
   request: ChatRequest
   onChunk?: OnChunk
@@ -63,6 +65,7 @@ export async function chat(options: {
       messages: filteredModelMessages,
       tools,
       stream: true,
+      systemPrompts: [SYSTEM_PROMPT],
     })
 
     /** ------------------------------------------------------------------------

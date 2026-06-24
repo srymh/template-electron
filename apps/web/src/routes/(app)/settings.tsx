@@ -238,7 +238,9 @@ function SetSecretRow() {
 
   return (
     <div className="space-y-2">
-      <Label htmlFor="secret">FOO_API_KEY を保存（保存した値を再表示することはできません）</Label>
+      <Label htmlFor="secret">
+        OLLAMA_API_KEY を保存（保存した値を再表示することはできません）
+      </Label>
       <Input
         id="secret"
         type="password"
@@ -248,8 +250,8 @@ function SetSecretRow() {
       />
       <div className="flex justify-end">
         <Button
-          onClick={() => {
-            secret.setSecret({ key: 'FOO_API_KEY', value: secretValue })
+          onClick={async () => {
+            await secret.setSecret({ key: 'OLLAMA_API_KEY', value: secretValue })
             setSecretValue('')
           }}
           disabled={!secretValue.trim()}

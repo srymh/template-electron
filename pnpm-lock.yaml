@@ -237,6 +237,9 @@ importers:
       '@repo/ai-chat-session':
         specifier: workspace:*
         version: link:../../packages/ai-chat-session
+      '@repo/ai-ollama-tools':
+        specifier: workspace:*
+        version: link:../../packages/ai-ollama-tools
       '@repo/ai-tools':
         specifier: workspace:*
         version: link:../../packages/ai-tools
@@ -468,6 +471,21 @@ importers:
       '@repo/async-queue':
         specifier: workspace:*
         version: link:../async-queue
+
+  packages/ai-ollama-tools:
+    dependencies:
+      '@repo/rag':
+        specifier: workspace:*
+        version: link:../rag
+      '@tanstack/ai':
+        specifier: ^0.29.0
+        version: 0.29.0
+      ollama:
+        specifier: ^0.6.3
+        version: 0.6.3
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
 
   packages/ai-tools:
     dependencies:

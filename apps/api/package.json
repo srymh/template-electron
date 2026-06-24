@@ -27,6 +27,7 @@
   "dependencies": {
     "@repo/ai-chat": "workspace:*",
     "@repo/ai-chat-session": "workspace:*",
+    "@repo/ai-ollama-tools": "workspace:*",
     "@repo/ai-tools": "workspace:*",
     "@repo/auth": "workspace:*",
     "@repo/deep-merge": "workspace:*",
