@@ -1,5 +1,6 @@
 import ReactMarkdown from 'react-markdown'
 
+import type { AnyClientTool, MessagePart } from '@tanstack/ai-client'
 import { ArrowUpIcon, BotIcon, SquareIcon, User2Icon } from 'lucide-react'
 import remarkGfm from 'remark-gfm'
 
@@ -101,78 +102,9 @@ export function Chat() {
             <Separator />
 
             <div className="p-2 flex flex-col gap-1">
-              {msg.parts.map((part, idx) => {
-                const key = `${part.type}-${idx}`
-
-                switch (part.type) {
-                  case 'text':
-                    return (
-                      <div key={key}>
-                        <TextContent content={part.content} />
-                      </div>
-                    )
-                  case 'thinking':
-                    return (
-                      <Accordion
-                        type="single"
-                        collapsible
-                        className="italic bg-muted text-muted-foreground overflow-auto"
-                        key={key}
-                      >
-                        <AccordionItem value={key}>
-                          <AccordionTrigger>Thinking</AccordionTrigger>
-                          <AccordionContent className="h-fit">{part.content}</AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-                    )
-                  case 'tool-call':
-                    return (
-                      <Accordion
-                        type="single"
-                        collapsible
-                        className="italic bg-muted text-muted-foreground overflow-auto"
-                        key={key}
-                      >
-                        <AccordionItem value={key}>
-                          <AccordionTrigger>Tool Call: {part.name}</AccordionTrigger>
-                          <AccordionContent>
-                            <pre className="font-mono not-italic">
-                              {JSON.stringify(part, null, 2)}
-                            </pre>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-                    )
-                  case 'tool-result':
-                    return (
-                      <Accordion
-                        type="single"
-                        collapsible
-                        className="italic bg-muted text-muted-foreground overflow-auto"
-                        key={key}
-                      >
-                        <AccordionItem value={key}>
-                          <AccordionTrigger>Tool Result</AccordionTrigger>
-                          <AccordionContent>
-                            <pre className="font-mono not-italic">
-                              {JSON.stringify(part, null, 2)}
-                            </pre>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-                    )
-                  case 'image':
-                    return <div key={key}>Not Implemented</div>
-                  case 'document':
-                    return <div key={key}>Not Implemented</div>
-                  case 'audio':
-                    return <div key={key}>Not Implemented</div>
-                  case 'video':
-                    return <div key={key}>Not Implemented</div>
-                  default:
-                    return <div key={key}>Unknown part type: {(part as any).type}</div>
-                }
-              })}
+              {msg.parts.map((part, idx) => (
+                <MessagePart key={`${part.type}-${idx}`} part={part} idx={idx} />
+              ))}
             </div>
           </div>
         ))}
@@ -215,6 +147,78 @@ export function Chat() {
       </form>
     </div>
   )
+}
+
+function MessagePart<TTools extends ReadonlyArray<AnyClientTool> = any, TData = unknown>({
+  part,
+  idx,
+}: {
+  part: MessagePart<TTools, TData>
+  idx: number
+}) {
+  const key = `${part.type}-${idx}`
+
+  switch (part.type) {
+    case 'text':
+      return (
+        <div>
+          <TextContent content={part.content} />
+        </div>
+      )
+    case 'thinking':
+      return (
+        <Accordion
+          type="single"
+          collapsible
+          className="italic bg-muted text-muted-foreground overflow-auto"
+        >
+          <AccordionItem value={key}>
+            <AccordionTrigger>Thinking</AccordionTrigger>
+            <AccordionContent className="h-fit">{part.content}</AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      )
+    case 'tool-call':
+      return (
+        <Accordion
+          type="single"
+          collapsible
+          className="italic bg-muted text-muted-foreground overflow-auto"
+        >
+          <AccordionItem value={key}>
+            <AccordionTrigger>Tool Call: {part.name}</AccordionTrigger>
+            <AccordionContent>
+              <pre className="font-mono not-italic">{JSON.stringify(part, null, 2)}</pre>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      )
+    case 'tool-result':
+      return (
+        <Accordion
+          type="single"
+          collapsible
+          className="italic bg-muted text-muted-foreground overflow-auto"
+        >
+          <AccordionItem value={key}>
+            <AccordionTrigger>Tool Result</AccordionTrigger>
+            <AccordionContent>
+              <pre className="font-mono not-italic">{JSON.stringify(part, null, 2)}</pre>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      )
+    case 'image':
+      return <div>Not Implemented</div>
+    case 'document':
+      return <div>Not Implemented</div>
+    case 'audio':
+      return <div>Not Implemented</div>
+    case 'video':
+      return <div>Not Implemented</div>
+    default:
+      return <div>Unknown part type: {(part as any).type}</div>
+  }
 }
 
 function TextContent({ content }: { content: string }) {
