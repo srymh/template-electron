@@ -38,6 +38,6 @@
     "@tanstack/ai": "^0.29.0"
   },
   "devDependencies": {
-    "electron": "^41.5.0"
+    "electron": "^42.4.1"
   }
 }
