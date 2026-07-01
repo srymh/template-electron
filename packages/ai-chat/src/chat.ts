@@ -8,6 +8,14 @@ import type { OllamaModelMessage } from './ollama/ollama'
 import type { ChatRequest, OnChunk, OnDone, OnError } from './types'
 
 const SYSTEM_PROMPT = `このメッセージはSystem Promptとして扱ってください。あなたは自分の知識にないことを推測で答えてはいけません。知らないことはWebSearchツールを使って調べてから回答しなくてはいけません。WebSearchツールが使えない場合にはあなたは知らないと答えなくてはなりません。`
+const DEFAULT_MODEL = 'gpt-oss:20b-cloud'
+
+function getRequestedModel(data: unknown) {
+  if (data != null && typeof data === 'object' && 'model' in data) {
+    return (data as { model?: unknown }).model
+  }
+  return DEFAULT_MODEL
+}
 
 export async function chat(options: {
   request: ChatRequest
@@ -25,10 +33,9 @@ export async function chat(options: {
   } = options
 
   try {
-    console.log(`${new Date().toISOString()} Starting chat with messages:`, messages)
-    console.log(`${new Date().toISOString()} Chat request data:`, data)
+    console.log(`${new Date().toISOString()} Starting chat with ${messages.length} messages`)
 
-    const model = modelSchema.parse((data as any)?.model || 'gpt-oss:20b-cloud')
+    const model = modelSchema.parse(getRequestedModel(data))
     console.log(`${new Date().toISOString()} Using model:`, model)
 
     /** ------------------------------------------------------------------------
@@ -44,16 +51,14 @@ export async function chat(options: {
      *
      * ---------------------------------------------------------------------- */
     const filteredModelMessages: Array<OllamaModelMessage> = []
-    messages.forEach((msg) => {
+    for (const [idx, msg] of messages.entries()) {
       if (isOllamaModelMessage(msg)) {
         filteredModelMessages.push(msg)
       } else {
         // 非対応のメッセージ
-        throw new Error(
-          `${new Date().toISOString()} Skipping unsupported message format: ${JSON.stringify(msg)}`,
-        )
+        throw new Error(`${new Date().toISOString()} Unsupported message format at index ${idx}`)
       }
-    })
+    }
 
     /** ------------------------------------------------------------------------
      *

@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { clientTools } from '@tanstack/ai-client'
-import type { UIMessage } from '@tanstack/ai-client'
+import type { MultimodalContent, UIMessage } from '@tanstack/ai-client'
 import { useChat } from '@tanstack/ai-react'
 
 import { aiChatAdapter } from '@repo/ai-chat/react-adapter'
@@ -16,7 +16,7 @@ type ChatSessionValue = {
   // ツールのジェネリクスをアプリ全体に配管することなく変更できるように、
   // これらは意図的に広く保ちます。
   messages: Array<UIMessage>
-  sendMessage: (content: string) => Promise<void>
+  sendMessage: (content: string | MultimodalContent) => Promise<void>
   isLoading: boolean
   stop: () => void
   status: ReturnType<typeof useChat>['status']
@@ -77,7 +77,7 @@ export function ChatSessionProvider(props: ChatSessionProviderProps) {
       input,
       setInput,
       messages: chat.messages as Array<UIMessage>,
-      sendMessage: chat.sendMessage as (content: string) => Promise<void>,
+      sendMessage: chat.sendMessage,
       isLoading: chat.isLoading,
       stop: chat.stop,
       status: chat.status,
