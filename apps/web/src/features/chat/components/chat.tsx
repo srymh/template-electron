@@ -1,7 +1,16 @@
+import React from 'react'
 import ReactMarkdown from 'react-markdown'
 
 import type { AnyClientTool, MessagePart } from '@tanstack/ai-client'
-import { ArrowUpIcon, BotIcon, SquareIcon, User2Icon } from 'lucide-react'
+import {
+  ArrowUpIcon,
+  BotIcon,
+  FileTextIcon,
+  PlusIcon,
+  SquareIcon,
+  User2Icon,
+  XIcon,
+} from 'lucide-react'
 import remarkGfm from 'remark-gfm'
 
 import {
@@ -21,6 +30,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@repo/ui/components/alert-dialog'
+import { Button } from '@repo/ui/components/button'
 import { Field } from '@repo/ui/components/field'
 import {
   InputGroup,
@@ -32,6 +42,13 @@ import { Separator } from '@repo/ui/components/separator'
 
 import { useAuth } from '@/features/auth/api/auth'
 import { useChatSession } from '@/features/chat/components/chat-session-provider'
+import {
+  isChatAttachmentTextPart,
+  useChatAttachment,
+} from '@/features/chat/hooks/use-chat-attachment'
+import type { ChatAttachmentMetadata } from '@/features/chat/hooks/use-chat-attachment'
+import { formatBytes } from '@/features/chat/utils/format-bytes'
+import { loadChatAttachmentFromFileSystem } from '@/features/chat/utils/load-chat-attachment-from-file-system'
 import { useAutoScrollToBottom } from '@/hooks/use-auto-scroll-to-bottom'
 
 export function Chat() {
@@ -45,6 +62,15 @@ export function Chat() {
 
   const { scrollContainerRef, scrollBottomRef, onScroll } = useAutoScrollToBottom([messages])
 
+  const {
+    attachmentFile,
+    attachmentError,
+    selectAttachment,
+    clearAttachment,
+    clearAttachmentError,
+    createAttachmentMessagePart,
+  } = useChatAttachment({ loadAttachment: loadChatAttachmentFromFileSystem })
+
   const send = () => {
     if (isLoading) {
       // 生成中に送信された場合は、生成停止とみなす
@@ -54,7 +80,24 @@ export function Chat() {
       if (!input.trim()) {
         return
       }
-      sendMessage(input)
+
+      if (attachmentFile) {
+        clearAttachmentError()
+        sendMessage({
+          content: [
+            {
+              type: 'text',
+              content: input,
+            },
+            createAttachmentMessagePart(attachmentFile),
+          ],
+        })
+        clearAttachment()
+      } else {
+        clearAttachmentError()
+        sendMessage(input)
+      }
+
       setInput('')
     }
   }
@@ -73,6 +116,7 @@ export function Chat() {
   }
 
   const disabled = status === 'ready' && !input.trim()
+  const disabledAttachment = isLoading || isNotAvailable
 
   return (
     <div className="flex min-h-0 flex-1 flex-col w-full gap-4">
@@ -114,6 +158,25 @@ export function Chat() {
 
       <form onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
         <Field>
+          {attachmentFile ? (
+            <div className="mb-2 flex min-w-0 items-center gap-2 rounded border border-border bg-muted/40 px-2 py-1 text-xs text-muted-foreground">
+              <FileTextIcon className="size-3.5 shrink-0" />
+              <span className="truncate">{attachmentFile.name}</span>
+              <span className="shrink-0">{formatBytes(attachmentFile.size)}</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                className="ml-auto"
+                onClick={clearAttachment}
+              >
+                <XIcon />
+              </Button>
+            </div>
+          ) : null}
+          {attachmentError ? (
+            <div className="mb-2 text-xs text-destructive">{attachmentError}</div>
+          ) : null}
           <InputGroup>
             <InputGroupTextarea
               id="textarea-comment-31"
@@ -131,12 +194,20 @@ export function Chat() {
               onChange={(e) => setInput(e.target.value)}
               disabled={isLoading || isNotAvailable}
             />
-            <InputGroupAddon align="block-end">
+            <InputGroupAddon align="block-end" className="justify-between">
+              <InputGroupButton
+                variant="outline"
+                size="sm"
+                type="button"
+                disabled={disabledAttachment}
+                onClick={selectAttachment}
+              >
+                <PlusIcon className="fill-primary-foreground" />
+              </InputGroupButton>
               <InputGroupButton
                 variant="default"
                 size="sm"
                 type="submit"
-                className="ml-auto"
                 disabled={disabled || isNotAvailable}
               >
                 {isLoading ? <SquareIcon className="fill-primary-foreground" /> : <ArrowUpIcon />}
@@ -160,6 +231,10 @@ function MessagePart<TTools extends ReadonlyArray<AnyClientTool> = any, TData = 
 
   switch (part.type) {
     case 'text':
+      if (isChatAttachmentTextPart(part)) {
+        return <AttachmentPart metadata={part.metadata} />
+      }
+
       return (
         <div>
           <TextContent content={part.content} />
@@ -219,6 +294,16 @@ function MessagePart<TTools extends ReadonlyArray<AnyClientTool> = any, TData = 
     default:
       return <div>Unknown part type: {(part as any).type}</div>
   }
+}
+
+function AttachmentPart({ metadata }: { metadata: ChatAttachmentMetadata }) {
+  return (
+    <div className="flex min-w-0 items-center gap-2 rounded border border-border bg-muted/40 px-2 py-1 text-xs text-muted-foreground">
+      <FileTextIcon className="size-3.5 shrink-0" />
+      <span className="truncate">{metadata.name}</span>
+      <span className="shrink-0">{formatBytes(metadata.size)}</span>
+    </div>
+  )
 }
 
 function TextContent({ content }: { content: string }) {
