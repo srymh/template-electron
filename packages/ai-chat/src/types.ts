@@ -1,7 +1,7 @@
-import type { ModelMessage, StreamChunk } from '@tanstack/ai'
+import type { ModelMessage, StreamChunk, UIMessage } from '@tanstack/ai'
 
 export type ChatRequest = {
-  messages: ModelMessage[]
+  messages: ModelMessage[] | UIMessage[]
   data: unknown
 }
 export type ChatResponse =
