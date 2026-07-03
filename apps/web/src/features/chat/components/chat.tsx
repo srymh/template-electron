@@ -1,7 +1,5 @@
 import React from 'react'
-import ReactMarkdown from 'react-markdown'
 
-import type { AnyClientTool, MessagePart } from '@tanstack/ai-client'
 import {
   ArrowUpIcon,
   BotIcon,
@@ -11,25 +9,7 @@ import {
   User2Icon,
   XIcon,
 } from 'lucide-react'
-import remarkGfm from 'remark-gfm'
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@repo/ui/components/accordion'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@repo/ui/components/alert-dialog'
 import { Button } from '@repo/ui/components/button'
 import { Field } from '@repo/ui/components/field'
 import {
@@ -41,15 +21,13 @@ import {
 import { Separator } from '@repo/ui/components/separator'
 
 import { useAuth } from '@/features/auth/api/auth'
-import { useChatSession } from '@/features/chat/components/chat-session-provider'
-import {
-  isChatAttachmentTextPart,
-  useChatAttachment,
-} from '@/features/chat/hooks/use-chat-attachment'
-import type { ChatAttachmentMetadata } from '@/features/chat/hooks/use-chat-attachment'
-import { formatBytes } from '@/features/chat/utils/format-bytes'
-import { loadChatAttachmentFromFileSystem } from '@/features/chat/utils/load-chat-attachment-from-file-system'
 import { useAutoScrollToBottom } from '@/hooks/use-auto-scroll-to-bottom'
+
+import { useChatAttachment } from '../hooks/use-chat-attachment'
+import { formatBytes } from '../utils/format-bytes'
+import { loadChatAttachmentFromFileSystem } from '../utils/load-chat-attachment-from-file-system'
+import { useChatSession } from './chat-session-provider'
+import { MessagePart } from './message-part'
 
 export function Chat() {
   const {
@@ -218,191 +196,4 @@ export function Chat() {
       </form>
     </div>
   )
-}
-
-function MessagePart<TTools extends ReadonlyArray<AnyClientTool> = any, TData = unknown>({
-  part,
-  idx,
-}: {
-  part: MessagePart<TTools, TData>
-  idx: number
-}) {
-  const key = `${part.type}-${idx}`
-
-  switch (part.type) {
-    case 'text':
-      if (isChatAttachmentTextPart(part)) {
-        return <AttachmentPart metadata={part.metadata} />
-      }
-
-      return (
-        <div>
-          <TextContent content={part.content} />
-        </div>
-      )
-    case 'thinking':
-      return (
-        <Accordion
-          type="single"
-          collapsible
-          className="italic bg-muted text-muted-foreground overflow-auto"
-        >
-          <AccordionItem value={key}>
-            <AccordionTrigger>Thinking</AccordionTrigger>
-            <AccordionContent className="h-fit">{part.content}</AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      )
-    case 'tool-call':
-      return (
-        <Accordion
-          type="single"
-          collapsible
-          className="italic bg-muted text-muted-foreground overflow-auto"
-        >
-          <AccordionItem value={key}>
-            <AccordionTrigger>Tool Call: {part.name}</AccordionTrigger>
-            <AccordionContent>
-              <pre className="font-mono not-italic">{JSON.stringify(part, null, 2)}</pre>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      )
-    case 'tool-result':
-      return (
-        <Accordion
-          type="single"
-          collapsible
-          className="italic bg-muted text-muted-foreground overflow-auto"
-        >
-          <AccordionItem value={key}>
-            <AccordionTrigger>Tool Result</AccordionTrigger>
-            <AccordionContent>
-              <pre className="font-mono not-italic">{JSON.stringify(part, null, 2)}</pre>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      )
-    case 'image':
-      return <div>Not Implemented</div>
-    case 'document':
-      return <div>Not Implemented</div>
-    case 'audio':
-      return <div>Not Implemented</div>
-    case 'video':
-      return <div>Not Implemented</div>
-    default:
-      return <div>Unknown part type: {(part as any).type}</div>
-  }
-}
-
-function AttachmentPart({ metadata }: { metadata: ChatAttachmentMetadata }) {
-  return (
-    <div className="flex min-w-0 items-center gap-2 rounded border border-border bg-muted/40 px-2 py-1 text-xs text-muted-foreground">
-      <FileTextIcon className="size-3.5 shrink-0" />
-      <span className="truncate">{metadata.name}</span>
-      <span className="shrink-0">{formatBytes(metadata.size)}</span>
-    </div>
-  )
-}
-
-function TextContent({ content }: { content: string }) {
-  return (
-    <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
-      components={{
-        h1: (props) => <h1 className="text-2xl font-bold mt-6 mb-3" {...props} />,
-        h2: (props) => <h2 className="text-xl font-bold mt-5 mb-2" {...props} />,
-        h3: (props) => <h3 className="text-lg font-semibold mt-4 mb-2" {...props} />,
-
-        p: (props) => <p className="my-3 leading-7" {...props} />,
-        ul: (props) => <ul className="list-disc pl-6 my-3" {...props} />,
-        ol: (props) => <ol className="list-decimal pl-6 my-3" {...props} />,
-        li: (props) => <li className="my-1" {...props} />,
-
-        a: ({ href, ...props }) => {
-          const safeHref = toSafeExternalHref(href)
-
-          if (!safeHref) {
-            return (
-              <span className="underline underline-offset-4 text-muted-foreground" {...props} />
-            )
-          }
-
-          return (
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <span className="underline underline-offset-4" {...props} />
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>外部リンクにアクセスしようとしています</AlertDialogTitle>
-                  <AlertDialogDescription className="overflow-auto">
-                    本当にアクセスしますか？
-                    <br />
-                    {href}
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>キャンセル</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={() => {
-                      window.open(safeHref, '_blank', 'noopener,noreferrer')
-                    }}
-                  >
-                    アクセス
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          )
-        },
-
-        code: ({ className, children, ...props }) => {
-          const isBlock = /language-/.test(className || '')
-          if (isBlock)
-            return (
-              <code className={className} {...props}>
-                {children}
-              </code>
-            )
-          return (
-            <code className="px-1 py-0.5 rounded bg-black/5 font-mono text-[0.9em]" {...props}>
-              {children}
-            </code>
-          )
-        },
-        pre: (props) => <pre className="my-4 p-3 rounded overflow-x-auto bg-black/5" {...props} />,
-
-        table: (props) => <table className="my-4 w-full border-collapse" {...props} />,
-        th: (props) => <th className="border px-2 py-1 text-left bg-black/5" {...props} />,
-        td: (props) => <td className="border px-2 py-1 align-top" {...props} />,
-      }}
-    >
-      {content}
-    </ReactMarkdown>
-  )
-}
-
-function toSafeExternalHref(href: string | undefined): string | undefined {
-  if (!href) return undefined
-
-  // 相対リンクやアンカーは、チャット本文（非信頼）では無効化する。
-  if (href.startsWith('/') || href.startsWith('#')) return undefined
-
-  try {
-    const url = new URL(href)
-    if (url.username || url.password) return undefined
-
-    switch (url.protocol) {
-      case 'https:':
-      case 'http:':
-      case 'mailto:':
-        return url.toString()
-      default:
-        return undefined
-    }
-  } catch {
-    return undefined
-  }
 }
