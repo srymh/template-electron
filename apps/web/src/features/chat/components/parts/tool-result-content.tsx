@@ -1,4 +1,4 @@
-import type { ToolResultPart } from '@tanstack/ai'
+import type { ToolResultPart } from '@tanstack/ai-client'
 
 import { ExpandableSection } from '../utils/expandable-section'
 import { ParameterDisplay } from '../utils/parameter-display'

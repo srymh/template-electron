@@ -1,3 +1,4 @@
+import type { TextPart } from '@tanstack/ai-client'
 import { FileTextIcon } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -19,7 +20,7 @@ import type { ChatAttachmentMetadata } from '../../hooks/use-chat-attachment'
 import { formatBytes } from '../../utils/format-bytes'
 import { toSafeExternalHref } from '../../utils/to-safe-external-href'
 
-export function TextContent({ part }: { part: any }) {
+export function TextContent({ part }: { part: TextPart }) {
   if (isChatAttachmentTextPart(part)) {
     return <AttachmentPart metadata={part.metadata} />
   }

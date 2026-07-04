@@ -1,4 +1,4 @@
-import type { ThinkingPart } from '@tanstack/ai'
+import type { ThinkingPart } from '@tanstack/ai-client'
 
 import { ExpandableSection } from '../utils/expandable-section'
 
