@@ -33,7 +33,7 @@ export function Message({ children }: { children: React.ReactNode }) {
 export function MessageHeader({ message, username }: { message: UIMessage; username?: string }) {
   const timestamp = message.createdAt ? new Date(message.createdAt) : null
   return (
-    <div className="px-2 py-1 flex justify-between items-center">
+    <div className="p-1 flex justify-between items-center">
       {message.role === 'assistant' ? (
         <div className="flex items-end gap-1">
           <BotIcon className="size-5 text-primary" />
@@ -55,5 +55,5 @@ export function MessageHeader({ message, username }: { message: UIMessage; usern
 }
 
 export function MessageBody({ children }: { children: React.ReactNode }) {
-  return <div className="h-auto">{children}</div>
+  return <div className="p-1 h-auto w-full">{children}</div>
 }

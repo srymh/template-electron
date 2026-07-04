@@ -2,17 +2,13 @@ import type { UIMessage } from '@tanstack/ai'
 import type { AnyClientTool, MessagePart } from '@tanstack/ai-client'
 import { FileTextIcon } from 'lucide-react'
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@repo/ui/components/accordion'
-
 import { isChatAttachmentTextPart } from '../hooks/use-chat-attachment'
 import type { ChatAttachmentMetadata } from '../hooks/use-chat-attachment'
 import { formatBytes } from '../utils/format-bytes'
+import { ExpandableSection } from './expandable-section'
+import { ParameterDisplay } from './parameter-display'
 import { TextContent } from './text-content'
+import { ToolCallContent } from './tool-call-content'
 
 export function MessageParts({
   children,
@@ -22,7 +18,7 @@ export function MessageParts({
   messageParts: UIMessage['parts']
 }) {
   return (
-    <div className="p-2 flex flex-col gap-1">
+    <div className="flex flex-col gap-1">
       {messageParts.map((part, idx) => children(part, idx))}
     </div>
   )
@@ -30,13 +26,9 @@ export function MessageParts({
 
 export function MessagePart<TTools extends ReadonlyArray<AnyClientTool> = any, TData = unknown>({
   part,
-  idx,
 }: {
   part: MessagePart<TTools, TData>
-  idx: number
 }) {
-  const key = `${part.type}-${idx}`
-
   switch (part.type) {
     case 'text':
       if (isChatAttachmentTextPart(part)) {
@@ -44,52 +36,37 @@ export function MessagePart<TTools extends ReadonlyArray<AnyClientTool> = any, T
       }
 
       return (
-        <div>
+        <div className="w-full overflow-x-auto">
           <TextContent content={part.content} />
         </div>
       )
+
     case 'thinking':
-      return (
-        <Accordion
-          type="single"
-          collapsible
-          className="italic bg-muted text-muted-foreground overflow-auto"
-        >
-          <AccordionItem value={key}>
-            <AccordionTrigger>Thinking</AccordionTrigger>
-            <AccordionContent className="h-fit">{part.content}</AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      )
+      return <ExpandableSection title="Thinking">{part.content}</ExpandableSection>
+
     case 'tool-call':
-      return (
-        <Accordion
-          type="single"
-          collapsible
-          className="italic bg-muted text-muted-foreground overflow-auto"
-        >
-          <AccordionItem value={key}>
-            <AccordionTrigger>Tool Call: {part.name}</AccordionTrigger>
-            <AccordionContent>
-              <pre className="font-mono not-italic">{JSON.stringify(part, null, 2)}</pre>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      )
+      return <ToolCallContent part={part} />
+
     case 'tool-result':
       return (
-        <Accordion
-          type="single"
-          collapsible
-          className="italic bg-muted text-muted-foreground overflow-auto"
-        >
-          <AccordionItem value={key}>
-            <AccordionTrigger>Tool Result</AccordionTrigger>
-            <AccordionContent>
-              <pre className="font-mono not-italic">{JSON.stringify(part, null, 2)}</pre>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+        <ExpandableSection title={`Tool Result${part.error ? ' (Error)' : ''}`}>
+          {/* <pre className="font-mono not-italic">{JSON.stringify(part, null, 2)}</pre> */}
+          <ParameterDisplay
+            rows={[
+              {
+                label: 'content',
+                value:
+                  typeof part.content === 'string'
+                    ? part.content
+                    : JSON.stringify(part.content, null, 2),
+              },
+              { label: 'state', value: JSON.stringify(part.state, null, 2) },
+              ...(part.error
+                ? [{ label: 'error', value: JSON.stringify(part.error, null, 2) }]
+                : []),
+            ]}
+          />
+        </ExpandableSection>
       )
     case 'image':
       return <div>Not Implemented</div>
@@ -98,6 +75,8 @@ export function MessagePart<TTools extends ReadonlyArray<AnyClientTool> = any, T
     case 'audio':
       return <div>Not Implemented</div>
     case 'video':
+      return <div>Not Implemented</div>
+    case 'structured-output':
       return <div>Not Implemented</div>
     default:
       return <div>Unknown part type: {(part as any).type}</div>

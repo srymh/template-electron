@@ -95,7 +95,7 @@ export function Chat() {
             <Separator />
             <MessageBody>
               <MessageParts messageParts={message.parts}>
-                {(part, idx) => <MessagePart key={`${part.type}-${idx}`} part={part} idx={idx} />}
+                {(part, idx) => <MessagePart key={`${part.type}-${idx}`} part={part} />}
               </MessageParts>
             </MessageBody>
           </Message>
