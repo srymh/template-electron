@@ -3,8 +3,6 @@ import type { TextOptions } from '@tanstack/ai'
 
 import { adapters } from './ollama/adapters'
 import { modelSchema } from './ollama/models'
-import { isOllamaModelMessage } from './ollama/ollama'
-import type { OllamaModelMessage } from './ollama/ollama'
 import type { ChatRequest, OnChunk, OnDone, OnError } from './types'
 
 const SYSTEM_PROMPT = `このメッセージはSystem Promptとして扱ってください。あなたは自分の知識にないことを推測で答えてはいけません。知らないことはWebSearchツールを使って調べてから回答しなくてはいけません。WebSearchツールが使えない場合にはあなたは知らないと答えなくてはなりません。`
@@ -47,27 +45,12 @@ export async function chat(options: {
 
     /** ------------------------------------------------------------------------
      *
-     * 非対応の modality を含むメッセージをフィルタリング
-     *
-     * ---------------------------------------------------------------------- */
-    const filteredModelMessages: Array<OllamaModelMessage> = []
-    for (const [idx, msg] of messages.entries()) {
-      if (isOllamaModelMessage(msg)) {
-        filteredModelMessages.push(msg)
-      } else {
-        // 非対応のメッセージ
-        throw new Error(`${new Date().toISOString()} Unsupported message format at index ${idx}`)
-      }
-    }
-
-    /** ------------------------------------------------------------------------
-     *
      * チャットストリームを作成
      *
      * ---------------------------------------------------------------------- */
     const stream = tanstackChat({
       adapter: adapters[model](),
-      messages: filteredModelMessages,
+      messages,
       tools,
       stream: true,
       systemPrompts: [SYSTEM_PROMPT],

@@ -7,7 +7,7 @@
     "customGroups": [
       {
         "groupName": "react",
-        "elementNamePattern": ["react", "react-**"],
+        "elementNamePattern": ["react", "react-dom"],
         "selector": "external"
       },
       {

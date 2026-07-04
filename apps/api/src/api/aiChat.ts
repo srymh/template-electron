@@ -1,7 +1,7 @@
-import type { ModelMessage, ServerTool, StreamChunk } from '@tanstack/ai'
+import type { ServerTool, StreamChunk } from '@tanstack/ai'
 
 import { chat } from '@repo/ai-chat'
-import type { ChatResponse } from '@repo/ai-chat'
+import type { ChatRequest, ChatResponse } from '@repo/ai-chat'
 import {
   attachAiChatListener,
   clearAiChatSession,
@@ -38,7 +38,7 @@ export type AiChatContext = {
 
 export type AiChatApi = ApiInterface<{
   chat: (request: {
-    messages: ModelMessage[]
+    messages: ChatRequest['messages']
     // data の内容に id が含まれているが、外部ライブラリ依存の挙動なのでここでは利用しない
     data: unknown
     id: string

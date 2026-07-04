@@ -23,8 +23,8 @@ import {
 } from '@repo/ui/components/select'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@repo/ui/components/sidebar'
 
-import { Chat } from '@/features/chat/components/chat'
-import { ChatSessionProvider } from '@/features/chat/components/chat-session-provider'
+import { Chat } from './chat'
+import { ChatSessionProvider } from './chat-session-provider'
 
 function isInEmbeddedFrame() {
   try {

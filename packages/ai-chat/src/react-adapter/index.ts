@@ -1,4 +1,3 @@
-import { convertMessagesToModelMessages } from '@tanstack/ai'
 import type { ConnectionAdapter } from '@tanstack/ai-react'
 
 import { createAsyncQueue } from '@repo/async-queue'
@@ -19,7 +18,6 @@ export function aiChatAdapter({
   const connection: ConnectionAdapter = {
     async *connect(messages, data, abortSignal) {
       const id = crypto.randomUUID()
-      const modelMessages = convertMessagesToModelMessages(messages)
       const queue = createAsyncQueue<ChatResponse>()
 
       // IPC イベントリスナーを登録
@@ -33,7 +31,7 @@ export function aiChatAdapter({
       // IPC 経由でチャットを開始
       // 次の for を実行したいので、ここでは await しない
       chat({
-        messages: modelMessages,
+        messages,
         data,
         id,
       }).catch((error) => {
