@@ -1,14 +1,6 @@
 import React from 'react'
 
-import {
-  ArrowUpIcon,
-  BotIcon,
-  FileTextIcon,
-  PlusIcon,
-  SquareIcon,
-  User2Icon,
-  XIcon,
-} from 'lucide-react'
+import { ArrowUpIcon, FileTextIcon, PlusIcon, SquareIcon, XIcon } from 'lucide-react'
 
 import { Button } from '@repo/ui/components/button'
 import { Field } from '@repo/ui/components/field'
@@ -21,13 +13,13 @@ import {
 import { Separator } from '@repo/ui/components/separator'
 
 import { useAuth } from '@/features/auth/api/auth'
-import { useAutoScrollToBottom } from '@/hooks/use-auto-scroll-to-bottom'
 
 import { useChatAttachment } from '../hooks/use-chat-attachment'
 import { formatBytes } from '../utils/format-bytes'
 import { loadChatAttachmentFromFileSystem } from '../utils/load-chat-attachment-from-file-system'
 import { useChatSession } from './chat-session-provider'
-import { MessagePart } from './message-part'
+import { Message, MessageBody, MessageHeader, Messages } from './message'
+import { MessagePart, MessageParts } from './message-part'
 
 export function Chat() {
   const {
@@ -37,8 +29,6 @@ export function Chat() {
 
   const { isNotAvailable, input, setInput, messages, sendMessage, isLoading, stop, status } =
     useChatSession()
-
-  const { scrollContainerRef, scrollBottomRef, onScroll } = useAutoScrollToBottom([messages])
 
   const {
     attachmentFile,
@@ -98,41 +88,19 @@ export function Chat() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col w-full gap-4">
-      <div
-        ref={scrollContainerRef}
-        onScroll={onScroll}
-        className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-4"
-      >
-        {messages.map((msg) => (
-          <div key={msg.id} className="border border-border rounded bg-background text-foreground">
-            <div className="p-2">
-              {msg.role === 'assistant' ? (
-                <div className="flex items-end gap-1">
-                  <BotIcon className="size-5 text-primary" />
-                  <span className="font-bold">Assistant</span>
-                </div>
-              ) : msg.role === 'user' ? (
-                <div className="flex items-end gap-1">
-                  <User2Icon className="size-5 text-primary" />
-                  <span className="font-bold">{username}</span>
-                </div>
-              ) : (
-                msg.role
-              )}
-            </div>
-
+      <Messages messages={messages}>
+        {(message) => (
+          <Message key={message.id}>
+            <MessageHeader message={message} username={username} />
             <Separator />
-
-            <div className="p-2 flex flex-col gap-1">
-              {msg.parts.map((part, idx) => (
-                <MessagePart key={`${part.type}-${idx}`} part={part} idx={idx} />
-              ))}
-            </div>
-          </div>
-        ))}
-
-        <div ref={scrollBottomRef} />
-      </div>
+            <MessageBody>
+              <MessageParts messageParts={message.parts}>
+                {(part, idx) => <MessagePart key={`${part.type}-${idx}`} part={part} idx={idx} />}
+              </MessageParts>
+            </MessageBody>
+          </Message>
+        )}
+      </Messages>
 
       <form onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
         <Field>

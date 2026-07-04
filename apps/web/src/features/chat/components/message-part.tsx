@@ -1,3 +1,4 @@
+import type { UIMessage } from '@tanstack/ai'
 import type { AnyClientTool, MessagePart } from '@tanstack/ai-client'
 import { FileTextIcon } from 'lucide-react'
 
@@ -12,6 +13,20 @@ import { isChatAttachmentTextPart } from '../hooks/use-chat-attachment'
 import type { ChatAttachmentMetadata } from '../hooks/use-chat-attachment'
 import { formatBytes } from '../utils/format-bytes'
 import { TextContent } from './text-content'
+
+export function MessageParts({
+  children,
+  messageParts,
+}: {
+  children: (part: UIMessage['parts'][number], idx: number) => React.ReactNode
+  messageParts: UIMessage['parts']
+}) {
+  return (
+    <div className="p-2 flex flex-col gap-1">
+      {messageParts.map((part, idx) => children(part, idx))}
+    </div>
+  )
+}
 
 export function MessagePart<TTools extends ReadonlyArray<AnyClientTool> = any, TData = unknown>({
   part,
