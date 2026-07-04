@@ -5,8 +5,17 @@ import { useAuth } from '@/features/auth/api/auth'
 import { useChatAttachment } from '../hooks/use-chat-attachment'
 import { loadChatAttachmentFromFileSystem } from '../utils/load-chat-attachment-from-file-system'
 import { useChatSession } from './chat-session-provider'
+import {
+  ComposerAttachmentPreview,
+  Composer,
+  ComposerActions,
+  ComposerAttachButton,
+  ComposerAttachmentError,
+  ComposerInputGroup,
+  ComposerSendButton,
+  ComposerTextarea,
+} from './composer'
 import { MessageBody, MessageHeader, MessageParts, Messages } from './message'
-import { MessageComposer } from './message-composer'
 import { NotImplementedPartContent } from './parts/not-implemented-part-content'
 import { TextContent } from './parts/text-content'
 import { ThinkingContent } from './parts/thinking-content'
@@ -62,6 +71,9 @@ export function Chat() {
     }
   }
 
+  const disabledAttachment = isLoading || isNotAvailable
+  const disabledSubmit = (status === 'ready' && !input.trim()) || isNotAvailable
+
   return (
     <div className="flex min-h-0 flex-1 flex-col w-full gap-4">
       <Messages messages={messages}>
@@ -110,18 +122,22 @@ export function Chat() {
         )}
       </Messages>
 
-      <MessageComposer
-        value={input}
-        status={status}
-        isLoading={isLoading}
-        isNotAvailable={isNotAvailable}
-        attachment={attachmentFile}
-        attachmentError={attachmentError}
-        onValueChange={setInput}
-        onSubmit={send}
-        onSelectAttachment={selectAttachment}
-        onClearAttachment={clearAttachment}
-      />
+      <Composer onSubmit={send}>
+        <ComposerAttachmentPreview attachment={attachmentFile} onClear={clearAttachment} />
+        <ComposerAttachmentError error={attachmentError} />
+        <ComposerInputGroup>
+          <ComposerTextarea
+            value={input}
+            status={status}
+            disabled={isLoading || isNotAvailable}
+            onValueChange={setInput}
+          />
+          <ComposerActions>
+            <ComposerAttachButton disabled={disabledAttachment} onClick={selectAttachment} />
+            <ComposerSendButton isLoading={isLoading} disabled={disabledSubmit} />
+          </ComposerActions>
+        </ComposerInputGroup>
+      </Composer>
     </div>
   )
 }

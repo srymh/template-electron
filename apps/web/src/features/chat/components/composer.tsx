@@ -15,34 +15,13 @@ import {
 import type { ChatAttachment } from '../hooks/use-chat-attachment'
 import { formatBytes } from '../utils/format-bytes'
 
-export type MessageComposerProps = {
-  value: string
-  status: ChatClientState
-  isLoading: boolean
-  isNotAvailable: boolean
-  attachment: ChatAttachment | null
-  attachmentError: string | null
-  onValueChange: (value: string) => void
-  onSubmit: () => void
-  onSelectAttachment: () => void
-  onClearAttachment: () => void
-}
-
-export function MessageComposer({
-  value,
-  status,
-  isLoading,
-  isNotAvailable,
-  attachment,
-  attachmentError,
-  onValueChange,
+export function Composer({
+  children,
   onSubmit,
-  onSelectAttachment,
-  onClearAttachment,
-}: MessageComposerProps) {
-  const disabledAttachment = isLoading || isNotAvailable
-  const disabledSubmit = (status === 'ready' && !value.trim()) || isNotAvailable
-
+}: {
+  children: React.ReactNode
+  onSubmit: () => void
+}) {
   const handleSubmit: React.SubmitEventHandler = (e) => {
     e.preventDefault()
     onSubmit()
@@ -58,29 +37,12 @@ export function MessageComposer({
 
   return (
     <form onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
-      <Field>
-        <AttachmentPreview attachment={attachment} onClear={onClearAttachment} />
-        <FieldError>{attachmentError}</FieldError>
-        <InputGroup>
-          <ComposerTextarea
-            value={value}
-            status={status}
-            disabled={isLoading || isNotAvailable}
-            onValueChange={onValueChange}
-          />
-          <ComposerActions
-            isLoading={isLoading}
-            disabledAttachment={disabledAttachment}
-            disabledSubmit={disabledSubmit}
-            onSelectAttachment={onSelectAttachment}
-          />
-        </InputGroup>
-      </Field>
+      <Field>{children}</Field>
     </form>
   )
 }
 
-function AttachmentPreview({
+export function ComposerAttachmentPreview({
   attachment,
   onClear,
 }: {
@@ -101,7 +63,17 @@ function AttachmentPreview({
   )
 }
 
-function ComposerTextarea({
+export function ComposerAttachmentError({ error }: { error: string | null }) {
+  if (!error) return null
+
+  return <FieldError>{error}</FieldError>
+}
+
+export function ComposerInputGroup({ children }: { children: React.ReactNode }) {
+  return <InputGroup>{children}</InputGroup>
+}
+
+export function ComposerTextarea({
   value,
   status,
   disabled,
@@ -123,26 +95,21 @@ function ComposerTextarea({
   )
 }
 
-function ComposerActions({
-  isLoading,
-  disabledAttachment,
-  disabledSubmit,
-  onSelectAttachment,
-}: {
-  isLoading: boolean
-  disabledAttachment: boolean
-  disabledSubmit: boolean
-  onSelectAttachment: () => void
-}) {
+export function ComposerActions({ children }: { children: React.ReactNode }) {
   return (
     <InputGroupAddon align="block-end" className="justify-between">
-      <AttachButton disabled={disabledAttachment} onClick={onSelectAttachment} />
-      <SendButton disabled={disabledSubmit} isLoading={isLoading} />
+      {children}
     </InputGroupAddon>
   )
 }
 
-function AttachButton({ disabled, onClick }: { disabled: boolean; onClick: () => void }) {
+export function ComposerAttachButton({
+  disabled,
+  onClick,
+}: {
+  disabled: boolean
+  onClick: () => void
+}) {
   return (
     <InputGroupButton
       variant="outline"
@@ -156,7 +123,13 @@ function AttachButton({ disabled, onClick }: { disabled: boolean; onClick: () =>
   )
 }
 
-function SendButton({ disabled, isLoading }: { disabled: boolean; isLoading: boolean }) {
+export function ComposerSendButton({
+  disabled,
+  isLoading,
+}: {
+  disabled: boolean
+  isLoading: boolean
+}) {
   return (
     <InputGroupButton variant="default" size="sm" type="submit" disabled={disabled}>
       {isLoading ? <SquareIcon className="fill-primary-foreground" /> : <ArrowUpIcon />}
