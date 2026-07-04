@@ -45,7 +45,7 @@ export function ToolCallContent({ part }: { part: ToolCallPart }) {
               { label: 'state', value: JSON.stringify(part.state, null, 2) },
               {
                 label: 'arguments',
-                value: JSON.stringify(JSON.parse(part.arguments), null, 2),
+                value: formatToolArguments(part.arguments),
               },
               { label: 'output', value: JSON.stringify(part.output, null, 2) },
             ]}
@@ -62,7 +62,7 @@ export function ToolCallContent({ part }: { part: ToolCallPart }) {
               { label: 'state', value: JSON.stringify(part.state, null, 2) },
               {
                 label: 'arguments',
-                value: JSON.stringify(JSON.parse(part.arguments), null, 2),
+                value: formatToolArguments(part.arguments),
               },
               { label: 'output', value: JSON.stringify(part.output, null, 2) },
             ]}
@@ -71,5 +71,13 @@ export function ToolCallContent({ part }: { part: ToolCallPart }) {
       )
     default:
       return <div>Not Implemented: tool-call: UNKNOWN</div>
+  }
+}
+
+function formatToolArguments(toolArguments: string) {
+  try {
+    return JSON.stringify(JSON.parse(toolArguments), null, 2)
+  } catch {
+    return toolArguments
   }
 }
