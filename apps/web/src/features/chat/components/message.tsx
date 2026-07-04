@@ -1,4 +1,4 @@
-import type { UIMessage } from '@tanstack/ai'
+import type { UIMessage, MessagePart } from '@tanstack/ai-client'
 import { BotIcon, User2Icon } from 'lucide-react'
 
 import { useAutoScrollToBottom } from '@/hooks/use-auto-scroll-to-bottom'
@@ -58,4 +58,37 @@ export function MessageHeader({ message, username }: { message: UIMessage; usern
 
 export function MessageBody({ children }: { children: React.ReactNode }) {
   return <div className="p-1 h-auto w-full">{children}</div>
+}
+
+export function MessageParts({
+  children,
+  messageParts,
+}: {
+  children: (part: MessagePart) => React.ReactNode
+  messageParts: MessagePart[]
+}) {
+  return (
+    <div className="flex flex-col gap-1">
+      {messageParts.map((part, idx) => (
+        <MessagePart key={getMessagePartKey(part, idx)} part={part}>
+          {(part) => children(part)}
+        </MessagePart>
+      ))}
+    </div>
+  )
+}
+
+function MessagePart({
+  children,
+  part,
+}: {
+  children: (part: MessagePart) => React.ReactNode
+  part: MessagePart
+}) {
+  return <>{children(part)}</>
+}
+
+// @todo 安定IDを生成できるようにする
+function getMessagePartKey(part: MessagePart, index: number) {
+  return `${part.type}-${index}`
 }
