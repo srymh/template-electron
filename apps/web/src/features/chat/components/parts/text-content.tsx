@@ -1,3 +1,4 @@
+import { FileTextIcon } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
@@ -13,9 +14,24 @@ import {
   AlertDialogTrigger,
 } from '@repo/ui/components/alert-dialog'
 
+import { isChatAttachmentTextPart } from '../../hooks/use-chat-attachment'
+import type { ChatAttachmentMetadata } from '../../hooks/use-chat-attachment'
+import { formatBytes } from '../../utils/format-bytes'
 import { toSafeExternalHref } from '../../utils/to-safe-external-href'
 
-export function TextContent({ content }: { content: string }) {
+export function TextContent({ part }: { part: any }) {
+  if (isChatAttachmentTextPart(part)) {
+    return <AttachmentPart metadata={part.metadata} />
+  }
+
+  return (
+    <div className="w-full overflow-x-auto">
+      <MarkdownContentView content={part.content} />
+    </div>
+  )
+}
+
+function MarkdownContentView({ content }: { content: string }) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
@@ -90,5 +106,15 @@ export function TextContent({ content }: { content: string }) {
     >
       {content}
     </ReactMarkdown>
+  )
+}
+
+function AttachmentPart({ metadata }: { metadata: ChatAttachmentMetadata }) {
+  return (
+    <div className="flex min-w-0 items-center gap-2 rounded border border-border bg-muted/40 px-2 py-1 text-xs text-muted-foreground">
+      <FileTextIcon className="size-3.5 shrink-0" />
+      <span className="truncate">{metadata.name}</span>
+      <span className="shrink-0">{formatBytes(metadata.size)}</span>
+    </div>
   )
 }
