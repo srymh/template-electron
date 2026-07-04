@@ -7,7 +7,7 @@ export function Messages({
   children,
   messages,
 }: {
-  children: (message: UIMessage, idx: number) => React.ReactNode
+  children: (message: UIMessage) => React.ReactNode
   messages: UIMessage[]
 }) {
   const { scrollContainerRef, scrollBottomRef, onScroll } = useAutoScrollToBottom([messages])
@@ -18,13 +18,15 @@ export function Messages({
       onScroll={onScroll}
       className="min-h-0 flex-1 overflow-y-auto flex flex-col gap-4"
     >
-      {messages.map((msg, idx) => children(msg, idx))}
+      {messages.map((msg) => (
+        <Message key={msg.id}>{children(msg)}</Message>
+      ))}
       <div ref={scrollBottomRef} />
     </div>
   )
 }
 
-export function Message({ children }: { children: React.ReactNode }) {
+function Message({ children }: { children: React.ReactNode }) {
   return (
     <div className="border border-border rounded bg-background text-foreground">{children}</div>
   )

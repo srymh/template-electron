@@ -4,17 +4,21 @@ export function MessageParts({
   children,
   messageParts,
 }: {
-  children: (part: MessagePart, idx: number) => React.ReactNode
+  children: (part: MessagePart) => React.ReactNode
   messageParts: MessagePart[]
 }) {
   return (
     <div className="flex flex-col gap-1">
-      {messageParts.map((part, idx) => children(part, idx))}
+      {messageParts.map((part, idx) => (
+        <MessagePart key={getMessagePartKey(part, idx)} part={part}>
+          {(part) => children(part)}
+        </MessagePart>
+      ))}
     </div>
   )
 }
 
-export function MessagePart({
+function MessagePart({
   children,
   part,
 }: {
@@ -22,4 +26,9 @@ export function MessagePart({
   part: MessagePart
 }) {
   return <>{children(part)}</>
+}
+
+// @todo 安定IDを生成できるようにする
+function getMessagePartKey(part: MessagePart, index: number) {
+  return `${part.type}-${index}`
 }
