@@ -19,7 +19,7 @@ import { formatBytes } from '../utils/format-bytes'
 import { loadChatAttachmentFromFileSystem } from '../utils/load-chat-attachment-from-file-system'
 import { useChatSession } from './chat-session-provider'
 import { Message, MessageBody, MessageHeader, Messages } from './message'
-import { MessagePart, MessageParts } from './message-part'
+import { MessagePart, MessageParts } from './parts/message-part'
 
 export function Chat() {
   const {

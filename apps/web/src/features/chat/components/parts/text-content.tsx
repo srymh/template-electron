@@ -13,7 +13,7 @@ import {
   AlertDialogTrigger,
 } from '@repo/ui/components/alert-dialog'
 
-import { toSafeExternalHref } from '../utils/to-safe-external-href'
+import { toSafeExternalHref } from '../../utils/to-safe-external-href'
 
 export function TextContent({ content }: { content: string }) {
   return (

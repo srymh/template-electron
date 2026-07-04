@@ -1,7 +1,7 @@
 import type { ToolCallPart } from '@tanstack/ai'
 
-import { ExpandableSection } from './expandable-section'
-import { ParameterDisplay } from './parameter-display'
+import { ExpandableSection } from '../utils/expandable-section'
+import { ParameterDisplay } from '../utils/parameter-display'
 
 export function ToolCallContent({ part }: { part: ToolCallPart }) {
   switch (part.state) {
