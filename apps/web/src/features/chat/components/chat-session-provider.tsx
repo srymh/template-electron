@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { clientTools } from '@tanstack/ai-client'
-import type { MultimodalContent, UIMessage } from '@tanstack/ai-client'
+import type { ChatClientState, MultimodalContent, UIMessage } from '@tanstack/ai-client'
 import { useChat } from '@tanstack/ai-react'
 
 import { aiChatAdapter } from '@repo/ai-chat/react-adapter'
@@ -19,7 +19,7 @@ type ChatSessionValue = {
   sendMessage: (content: string | MultimodalContent) => Promise<void>
   isLoading: boolean
   stop: () => void
-  status: ReturnType<typeof useChat>['status']
+  status: ChatClientState
 }
 
 const ChatSessionContext = React.createContext<ChatSessionValue | null>(null)

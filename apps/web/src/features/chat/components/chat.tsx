@@ -1,24 +1,12 @@
-import React from 'react'
-
-import { ArrowUpIcon, FileTextIcon, PlusIcon, SquareIcon, XIcon } from 'lucide-react'
-
-import { Button } from '@repo/ui/components/button'
-import { Field } from '@repo/ui/components/field'
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupTextarea,
-} from '@repo/ui/components/input-group'
 import { Separator } from '@repo/ui/components/separator'
 
 import { useAuth } from '@/features/auth/api/auth'
 
 import { useChatAttachment } from '../hooks/use-chat-attachment'
-import { formatBytes } from '../utils/format-bytes'
 import { loadChatAttachmentFromFileSystem } from '../utils/load-chat-attachment-from-file-system'
 import { useChatSession } from './chat-session-provider'
 import { MessageBody, MessageHeader, MessageParts, Messages } from './message'
+import { MessageComposer } from './message-composer'
 import { NotImplementedPartContent } from './parts/not-implemented-part-content'
 import { TextContent } from './parts/text-content'
 import { ThinkingContent } from './parts/thinking-content'
@@ -74,22 +62,6 @@ export function Chat() {
     }
   }
 
-  const handleSubmit = (e: React.SubmitEvent) => {
-    e.preventDefault()
-    send()
-  }
-
-  const handleKeyDown: React.KeyboardEventHandler = (e) => {
-    // Ctrl+Enter で送信
-    if (e.key === 'Enter' && e.ctrlKey) {
-      e.preventDefault()
-      send()
-    }
-  }
-
-  const disabled = status === 'ready' && !input.trim()
-  const disabledAttachment = isLoading || isNotAvailable
-
   return (
     <div className="flex min-h-0 flex-1 flex-col w-full gap-4">
       <Messages messages={messages}>
@@ -138,66 +110,18 @@ export function Chat() {
         )}
       </Messages>
 
-      <form onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
-        <Field>
-          {attachmentFile ? (
-            <div className="mb-2 flex min-w-0 items-center gap-2 rounded border border-border bg-muted/40 px-2 py-1 text-xs text-muted-foreground">
-              <FileTextIcon className="size-3.5 shrink-0" />
-              <span className="truncate">{attachmentFile.name}</span>
-              <span className="shrink-0">{formatBytes(attachmentFile.size)}</span>
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-xs"
-                className="ml-auto"
-                onClick={clearAttachment}
-              >
-                <XIcon />
-              </Button>
-            </div>
-          ) : null}
-          {attachmentError ? (
-            <div className="mb-2 text-xs text-destructive">{attachmentError}</div>
-          ) : null}
-          <InputGroup>
-            <InputGroupTextarea
-              id="textarea-comment-31"
-              placeholder={
-                status === 'ready'
-                  ? 'メッセージを入力... (Ctrl+Enterで送信)'
-                  : status === 'submitted'
-                    ? '送信しました。応答を待っています...'
-                    : status === 'streaming'
-                      ? '応答を生成中...'
-                      : 'エラーが発生しました。'
-              }
-              className="min-h-[120px] max-h-[200px]"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              disabled={isLoading || isNotAvailable}
-            />
-            <InputGroupAddon align="block-end" className="justify-between">
-              <InputGroupButton
-                variant="outline"
-                size="sm"
-                type="button"
-                disabled={disabledAttachment}
-                onClick={selectAttachment}
-              >
-                <PlusIcon className="fill-primary-foreground" />
-              </InputGroupButton>
-              <InputGroupButton
-                variant="default"
-                size="sm"
-                type="submit"
-                disabled={disabled || isNotAvailable}
-              >
-                {isLoading ? <SquareIcon className="fill-primary-foreground" /> : <ArrowUpIcon />}
-              </InputGroupButton>
-            </InputGroupAddon>
-          </InputGroup>
-        </Field>
-      </form>
+      <MessageComposer
+        value={input}
+        status={status}
+        isLoading={isLoading}
+        isNotAvailable={isNotAvailable}
+        attachment={attachmentFile}
+        attachmentError={attachmentError}
+        onValueChange={setInput}
+        onSubmit={send}
+        onSelectAttachment={selectAttachment}
+        onClearAttachment={clearAttachment}
+      />
     </div>
   )
 }
