@@ -28,8 +28,17 @@ export function Chat() {
   } = useAuth()
   const username = user?.username || 'あなた'
 
-  const { isNotAvailable, input, setInput, messages, sendMessage, isLoading, stop, status } =
-    useChatSession()
+  const {
+    isNotAvailable,
+    input,
+    setInput,
+    messages,
+    sendMessage,
+    isLoading,
+    stop,
+    status,
+    addToolApprovalResponse,
+  } = useChatSession()
 
   const {
     attachmentFile,
@@ -92,7 +101,12 @@ export function Chat() {
                       return <ThinkingContent part={part} />
 
                     case 'tool-call':
-                      return <ToolCallContent part={part} />
+                      return (
+                        <ToolCallContent
+                          part={part}
+                          addToolApprovalResponse={addToolApprovalResponse}
+                        />
+                      )
 
                     case 'tool-result':
                       return <ToolResultContent part={part} />
