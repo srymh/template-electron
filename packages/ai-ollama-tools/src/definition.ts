@@ -17,4 +17,5 @@ export const webSearchToolDef = toolDefinition({
       source: z.string(),
     }),
   ),
+  needsApproval: true,
 })

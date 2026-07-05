@@ -20,6 +20,7 @@ type ChatSessionValue = {
   isLoading: boolean
   stop: () => void
   status: ChatClientState
+  addToolApprovalResponse: ReturnType<typeof useChat>['addToolApprovalResponse']
 }
 
 const ChatSessionContext = React.createContext<ChatSessionValue | null>(null)
@@ -81,8 +82,17 @@ export function ChatSessionProvider(props: ChatSessionProviderProps) {
       isLoading: chat.isLoading,
       stop: chat.stop,
       status: chat.status,
+      addToolApprovalResponse: chat.addToolApprovalResponse,
     }
-  }, [chat.isLoading, chat.messages, chat.sendMessage, chat.status, chat.stop, input])
+  }, [
+    chat.isLoading,
+    chat.messages,
+    chat.sendMessage,
+    chat.status,
+    chat.stop,
+    chat.addToolApprovalResponse,
+    input,
+  ])
 
   return <ChatSessionContext.Provider value={value}>{children}</ChatSessionContext.Provider>
 }
