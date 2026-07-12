@@ -19,6 +19,7 @@ async function main() {
     docName: 'example-doc',
     createHandlers: (dbPath) => {
       type ChunkEntry = {
+        documentId: string
         docName: string
         sourceChunkIndex: number
         subIndex: number
@@ -28,8 +29,9 @@ async function main() {
       const data: Array<ChunkEntry> = []
       return {
         initialize: () => {},
-        insert: (docName, sourceChunkIndex, subIndex, content, embeddingJson) => {
+        insert: (documentId, docName, sourceChunkIndex, subIndex, content, embeddingJson) => {
           data.push({
+            documentId,
             docName,
             sourceChunkIndex,
             subIndex,

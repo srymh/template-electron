@@ -16,7 +16,6 @@ async function main() {
   const question = 'このプロジェクトの主要機能は何ですか？'
   const result = await retrieveRagContext(question, {
     dbPath: path.join(__dirname, '..', '..', 'data', 'example.db'),
-    docName: 'example-doc',
     model: 'nomic-embed-text-v2-moe:latest',
     queryPrefix: 'search_query:',
     topK: 3,

@@ -1,13 +1,6 @@
 import { nativeTheme } from 'electron'
 
-import { retrieveRagContext } from '@repo/rag'
-import type { RetrieveRagContextOptions } from '@repo/rag'
-
-import {
-  switchThemeDarkToolDef,
-  switchThemeLightToolDef,
-  searchProjectDetailToolDef,
-} from './definitions'
+import { switchThemeDarkToolDef, switchThemeLightToolDef } from './definitions'
 
 export const switchThemeDarkTool = switchThemeDarkToolDef.server(async () => {
   nativeTheme.themeSource = 'dark'
@@ -24,17 +17,3 @@ export const switchThemeLightTool = switchThemeLightToolDef.server(async () => {
     content: [{ type: 'text', text: `テーマを「light」に変更しました。` }],
   }
 })
-
-export function createSearchProjectDetailTool(options: RetrieveRagContextOptions) {
-  const { dbPath, docName, model, queryPrefix, topK } = options
-  return searchProjectDetailToolDef.server(async ({ question }) => {
-    const context = await retrieveRagContext(question, {
-      dbPath,
-      docName,
-      model,
-      queryPrefix,
-      topK,
-    })
-    return { context }
-  })
-}

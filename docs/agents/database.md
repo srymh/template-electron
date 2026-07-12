@@ -17,10 +17,9 @@
 - `packages/sqlite` は driver 非依存の同期 SQLite 抽象だけを持つ。
 - `apps/desktop/src/main/infra/db.ts` が `better-sqlite3` を `@repo/sqlite` に接続する adapter を担当する。
 - `packages/auth` は認証スキーマと `AuthRuntime` を持ち、desktop 側は `apps/desktop/src/main/index.ts` で `userData/auth.db` を開く `createDb` を注入する。
-- `packages/rag` の既定ストレージは `node:sqlite` ベースで、desktop 側は `data/example.db` を検索用 DB として参照する。
 
 ## 変更時の確認ポイント
 
 - `apps/desktop/data/*.sql` を変えるときは、既存 DB・サンプルデータ・利用側クエリの互換性を確認する。
-- DB ファイル名や置き場を変えるときは、`apps/desktop/src/main/index.ts` の `kakeibo.db` / `auth.db` / `example.db` 参照箇所も更新する。
+- DB ファイル名や置き場を変えるときは、`apps/desktop/src/main/index.ts` の `kakeibo.db` / `auth.db` 参照箇所も更新する。
 - packaging を触る場合は、native rebuild、asar、extraResources の 3 点を同時に確認する。

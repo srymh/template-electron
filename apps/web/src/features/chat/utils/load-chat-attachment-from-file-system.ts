@@ -6,10 +6,18 @@ import {
 } from '@/features/chat/hooks/use-chat-attachment'
 import type { ChatAttachmentLoadResult } from '@/features/chat/hooks/use-chat-attachment'
 
-export async function loadChatAttachmentFromFileSystem(): Promise<ChatAttachmentLoadResult> {
+export type LoadChatAttachmentFromFileSystemOptions = {
+  title?: string
+  message?: string
+}
+
+export async function loadChatAttachmentFromFileSystem(
+  options: LoadChatAttachmentFromFileSystemOptions = {},
+): Promise<ChatAttachmentLoadResult> {
+  const { title = '添付ファイルを選択', message = '添付ファイルを選択してください' } = options
   const result = await fs.showOpenDialog({
-    title: '添付ファイルを選択',
-    message: '添付ファイルを選択してください',
+    title,
+    message,
     filters: [{ name: 'Text Files', extensions: [...CHAT_ATTACHMENT_EXTENSIONS] }],
     properties: ['openFile'],
   })

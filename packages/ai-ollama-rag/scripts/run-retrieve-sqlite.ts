@@ -1,4 +1,3 @@
-import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -14,12 +13,7 @@ main().catch((err) => {
 async function main() {
   const question = '主要機能'
   const result = await retrieveRagContext(question, {
-    dbPath: path.join(__dirname, '..', 'data', 'example.json'),
-    docName: 'example-doc',
-    loadChunks: async (dbPath, docName) => {
-      const data = await fs.readFile(dbPath, 'utf-8')
-      return JSON.parse(data).filter((item: any) => item.docName === docName)
-    },
+    dbPath: path.join(__dirname, '..', 'data', 'example.db'),
     model: 'nomic-embed-text-v2-moe:latest',
     queryPrefix: 'search_query:',
     topK: 3,

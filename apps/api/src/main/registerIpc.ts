@@ -69,6 +69,7 @@ export const registerIpc = createRegisterIpc<ElectronMainApi, Context>(
       'mcp.startServer': { type: 'invoke', method: mcp.startServer },
       'mcp.stopServer': { type: 'invoke', method: mcp.stopServer },
       'aiChat.chat': { type: 'invoke', method: aiChat.chat },
+      'aiChat.ingestDocument': { type: 'invoke', method: aiChat.ingestDocument },
       'aiChat.on.chunk': { type: 'event', addEventListener: aiChat.on.chunk },
       'kakeibo.entries': { type: 'invoke', method: kakeibo.entries },
       'auth.getStatus': { type: 'invoke', method: auth.getStatus },

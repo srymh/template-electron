@@ -5,7 +5,6 @@ import { adapters } from './ollama/adapters'
 import { modelSchema } from './ollama/models'
 import type { ChatRequest, OnChunk, OnDone, OnError } from './types'
 
-const SYSTEM_PROMPT = `このメッセージはSystem Promptとして扱ってください。あなたは自分の知識にないことを推測で答えてはいけません。知らないことはWebSearchツールを使って調べてから回答しなくてはいけません。WebSearchツールが使えない場合にはあなたは知らないと答えなくてはなりません。`
 const DEFAULT_MODEL = 'gpt-oss:20b-cloud'
 
 function getRequestedModel(data: unknown) {
@@ -21,6 +20,7 @@ export async function chat(options: {
   onDone?: OnDone
   onError?: OnError
   createTools?: () => TextOptions['tools'] | Promise<TextOptions['tools']>
+  systemPrompts?: string[]
 }) {
   const {
     request: { messages, data },
@@ -28,6 +28,7 @@ export async function chat(options: {
     onDone = () => {},
     onError = () => {},
     createTools = () => [],
+    systemPrompts = [],
   } = options
 
   try {
@@ -53,7 +54,7 @@ export async function chat(options: {
       messages,
       tools,
       stream: true,
-      systemPrompts: [SYSTEM_PROMPT],
+      systemPrompts: [...systemPrompts],
     })
 
     /** ------------------------------------------------------------------------
@@ -65,6 +66,7 @@ export async function chat(options: {
       // クライアントにチャットの応答を送信
       onChunk(chunk)
     }
+
     // チャットの完了を通知
     onDone()
   } catch (error) {

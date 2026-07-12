@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto'
 import type { DatabaseSync } from 'node:sqlite'
 
 import ollama from 'ollama'
@@ -11,6 +12,7 @@ import ollama from 'ollama'
 export type Initialize = () => void | Promise<void>
 
 export type Insert = (
+  documentId: string,
   docName: string,
   sourceChunkIndex: number,
   subIndex: number,
@@ -26,13 +28,25 @@ export type Handlers = {
   finalize: Finalize
 }
 
-export type CreateHandlers = (dbPath: string, docName: string) => Handlers | Promise<Handlers>
+export type IngestMode = 'append' | 'replace'
+
+export type CreateHandlers = (
+  dbPath: string,
+  documentId: string,
+  options: {
+    mode: IngestMode
+  },
+) => Handlers | Promise<Handlers>
 
 export type IngestDocumentsOptions = {
   /** データベースファイルのパス */
   dbPath: string
-  /** ドキュメント名（同名のドキュメントが既に存在する場合は上書きされる） */
-  docName: string
+  /** ドキュメントID。未指定の場合は取り込みごとに生成される。 */
+  documentId?: string
+  /** ドキュメント名。検索結果の source 表示や任意フィルターに使われる。 */
+  docName?: string
+  /** 同じ documentId の既存チャンクを置き換えるか、別ドキュメントとして追加するか */
+  mode?: IngestMode
   /** チャンクテーブルの行を操作するためのハンドラーを作成する関数
    *
    * デフォルトでは `node:sqlite` を使用する内部実装が使われる。
@@ -62,6 +76,12 @@ export type IngestDocumentsOptions = {
   onProgress?: (processed: number, total: number) => void
 }
 
+export type IngestDocumentsResult = {
+  documentId: string
+  docName: string
+  chunkCount: number
+}
+
 // -----------------------------------------------------------------------------
 //
 // 定数
@@ -76,7 +96,8 @@ const DEFAULT_EMBEDDING_OVERLAP = 120
 
 /**
  * - id: チャンクの一意なID
- * - doc_name: ドキュメント名
+ * - document_id: ドキュメントの一意なID
+ * - doc_name: ドキュメント名（source 表示用）
  * - source_chunk_index: 元のテキストにおけるチャンクのインデックス
  * - sub_index: チャンク内のサブインデックス（オーバーラップ分を区別するため）
  * - content: チャンクのテキスト内容
@@ -84,20 +105,25 @@ const DEFAULT_EMBEDDING_OVERLAP = 120
  */
 const SQL_CREATE_TABLE = `CREATE TABLE IF NOT EXISTS chunks (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  document_id TEXT NOT NULL,
   doc_name TEXT NOT NULL,
   source_chunk_index INTEGER NOT NULL,
   sub_index INTEGER NOT NULL,
   content TEXT NOT NULL,
   embedding_json TEXT NOT NULL
 );
+`
 
+const SQL_CREATE_INDEXES = `
+CREATE INDEX IF NOT EXISTS idx_chunks_document ON chunks(document_id);
 CREATE INDEX IF NOT EXISTS idx_chunks_doc ON chunks(doc_name);
-CREATE INDEX IF NOT EXISTS idx_chunks_doc_src ON chunks(doc_name, source_chunk_index);`
+CREATE INDEX IF NOT EXISTS idx_chunks_doc_src ON chunks(doc_name, source_chunk_index);
+CREATE INDEX IF NOT EXISTS idx_chunks_document_src ON chunks(document_id, source_chunk_index);`
 
-const SQL_DELETE_CHUNKS = `DELETE FROM chunks WHERE doc_name = ?`
+const SQL_DELETE_DOCUMENT_CHUNKS = `DELETE FROM chunks WHERE document_id = ?`
 
-const SQL_INSERT_CHUNKS = `INSERT INTO chunks (doc_name, source_chunk_index, sub_index, content, embedding_json)
-VALUES (?, ?, ?, ?, ?)`
+const SQL_INSERT_CHUNKS = `INSERT INTO chunks (document_id, doc_name, source_chunk_index, sub_index, content, embedding_json)
+VALUES (?, ?, ?, ?, ?, ?)`
 
 // -----------------------------------------------------------------------------
 //
@@ -110,16 +136,21 @@ VALUES (?, ?, ?, ?, ?)`
  *
  * テキストを指定したサイズのチャンクに分割し、各チャンクを埋め込みベクトルに変換して
  * データベースに保存します。
- * 同名のドキュメントが既に存在する場合は、既存のチャンクが削除されてから新しいチャンクが
- * 追加されます。
+ * デフォルトでは取り込みごとに新しい documentId を生成し、既存 corpus に追加します。
+ * 既存ドキュメントを置き換える場合は同じ documentId と mode: 'replace' を指定してください。
  *
  * @param text 取り込むテキスト
  * @param options 取り込みオプション
  */
-export async function ingestDocuments(text: string, options: IngestDocumentsOptions) {
+export async function ingestDocuments(
+  text: string,
+  options: IngestDocumentsOptions,
+): Promise<IngestDocumentsResult> {
   const {
     dbPath,
-    docName,
+    documentId = randomUUID(),
+    docName = documentId,
+    mode = 'append',
     createHandlers = createHandlersWithNodeSqlite,
     chunkSize = DEFAULT_CHUNK_SIZE,
     overlap = DEFAULT_OVERLAP,
@@ -130,10 +161,11 @@ export async function ingestDocuments(text: string, options: IngestDocumentsOpti
     onProgress,
   } = options
 
-  const { initialize, insert, finalize } = await createHandlers(dbPath, docName)
+  const { initialize, insert, finalize } = await createHandlers(dbPath, documentId, { mode })
+  let insertedChunks = 0
 
   try {
-    // 初期化する（データベース接続とテーブル作成、既存ドキュメントの削除）
+    // 初期化する（データベース接続とテーブル作成、必要に応じた既存ドキュメントの削除）
     await initialize()
 
     // テキストをチャンクに分割する
@@ -159,7 +191,8 @@ export async function ingestDocuments(text: string, options: IngestDocumentsOpti
         const embedding = await embedText(part, { model, prefix })
 
         // データベースに保存する
-        await insert(docName, idx, subIdx, part, JSON.stringify(embedding))
+        await insert(documentId, docName, idx, subIdx, part, JSON.stringify(embedding))
+        insertedChunks++
       }
 
       // 進捗を通知する
@@ -170,6 +203,12 @@ export async function ingestDocuments(text: string, options: IngestDocumentsOpti
   } finally {
     // 途中で失敗してもデータベース接続を閉じる
     await finalize()
+  }
+
+  return {
+    documentId,
+    docName,
+    chunkCount: insertedChunks,
   }
 }
 
@@ -264,7 +303,10 @@ async function embedText(
 
 async function createHandlersWithNodeSqlite(
   dbPath: string,
-  docName: string,
+  documentId: string,
+  options: {
+    mode: IngestMode
+  },
 ): Promise<{
   initialize: Initialize
   insert: Insert
@@ -283,15 +325,19 @@ async function createHandlersWithNodeSqlite(
     // データベースに接続する
     db = new DatabaseSync(dbPath)
     db.exec(SQL_CREATE_TABLE)
+    migrateChunksTable(db)
+    db.exec(SQL_CREATE_INDEXES)
 
-    // 同名のドキュメントの再取り込み対策: 既存を削除
-    db.prepare(SQL_DELETE_CHUNKS).run(docName)
+    if (options.mode === 'replace') {
+      db.prepare(SQL_DELETE_DOCUMENT_CHUNKS).run(documentId)
+    }
 
     // INSERT文を事前にプリペアする（insert() で再利用）
     insertStmt = db.prepare(SQL_INSERT_CHUNKS)
   }
 
   const insert = (
+    documentId: string,
     docName: string,
     sourceChunkIndex: number,
     subIndex: number,
@@ -301,7 +347,7 @@ async function createHandlersWithNodeSqlite(
     if (!insertStmt) {
       throw new Error('Database not initialized. Call initialize() first.')
     }
-    insertStmt.run(docName, sourceChunkIndex, subIndex, content, embeddingJson)
+    insertStmt.run(documentId, docName, sourceChunkIndex, subIndex, content, embeddingJson)
   }
 
   const finalize = () => {
@@ -315,4 +361,23 @@ async function createHandlersWithNodeSqlite(
   }
 
   return { initialize, insert, finalize }
+}
+
+function migrateChunksTable(db: DatabaseSync) {
+  const tableInfo = db.prepare('PRAGMA table_info(chunks)').all()
+  const hasDocumentId = tableInfo.some((column) => {
+    const { name } = column as { name?: unknown }
+    return name === 'document_id'
+  })
+
+  if (hasDocumentId) {
+    return
+  }
+
+  db.exec('ALTER TABLE chunks ADD COLUMN document_id TEXT')
+  db.exec('UPDATE chunks SET document_id = doc_name WHERE document_id IS NULL')
+  db.exec('CREATE INDEX IF NOT EXISTS idx_chunks_document ON chunks(document_id)')
+  db.exec(
+    'CREATE INDEX IF NOT EXISTS idx_chunks_document_src ON chunks(document_id, source_chunk_index)',
+  )
 }

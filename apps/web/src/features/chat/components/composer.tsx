@@ -1,9 +1,16 @@
 import React from 'react'
 
 import type { ChatClientState } from '@tanstack/ai-client'
-import { ArrowUpIcon, FileTextIcon, PlusIcon, SquareIcon, XIcon } from 'lucide-react'
+import { ArrowUpIcon, FileTextIcon, PlusIcon, SquareIcon, XIcon, BookIcon } from 'lucide-react'
 
 import { Button } from '@repo/ui/components/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@repo/ui/components/dropdown-menu'
 import { Field, FieldError } from '@repo/ui/components/field'
 import {
   InputGroup,
@@ -103,7 +110,22 @@ export function ComposerActions({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function ComposerAttachButton({
+export function ComposerAddMenu({ children }: { children: React.ReactNode }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <InputGroupButton variant="outline" size="sm" type="button">
+          <PlusIcon className="fill-primary-foreground" />
+        </InputGroupButton>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuGroup>{children}</DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+export function ComposerAttachTextFileItem({
   disabled,
   onClick,
 }: {
@@ -111,15 +133,25 @@ export function ComposerAttachButton({
   onClick: () => void
 }) {
   return (
-    <InputGroupButton
-      variant="outline"
-      size="sm"
-      type="button"
-      disabled={disabled}
-      onClick={onClick}
-    >
-      <PlusIcon className="fill-primary-foreground" />
-    </InputGroupButton>
+    <DropdownMenuItem role="button" disabled={disabled} onClick={onClick}>
+      <FileTextIcon className="fill-primary-foreground" />
+      ファイルを添付
+    </DropdownMenuItem>
+  )
+}
+
+export function ComposerSaveKnowledgeItem({
+  disabled,
+  onClick,
+}: {
+  disabled: boolean
+  onClick: () => void
+}) {
+  return (
+    <DropdownMenuItem role="button" disabled={disabled} onClick={onClick}>
+      <BookIcon className="fill-primary-foreground" />
+      知識に保存
+    </DropdownMenuItem>
   )
 }
 
