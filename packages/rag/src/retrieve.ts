@@ -1,3 +1,5 @@
+import type { DatabaseSync } from 'node:sqlite'
+
 import ollama from 'ollama'
 
 // -----------------------------------------------------------------------------
@@ -10,7 +12,9 @@ import ollama from 'ollama'
 export type ChunkRow = {
   /** チャンクID */
   id: number
-  /** ドキュメント名（ingest時のdocName） */
+  /** ドキュメントID */
+  documentId: string
+  /** ドキュメント名（source 表示用） */
   docName: string
   /** ドキュメント内のチャンクのインデックス（0始まり） */
   sourceChunkIdx: number
@@ -32,12 +36,17 @@ export type ChunkRowWithScore = Omit<ChunkRow, 'id' | 'embedding'> & {
   score: number
 }
 
+export type RetrieveFilter = {
+  documentIds?: Array<string>
+  docNames?: Array<string>
+}
+
 /** RAGコンテキストを取得するためのオプション */
 export type RetrieveRagContextOptions = {
   /** データベースファイルのパス */
   dbPath: string
-  /** ドキュメント名 */
-  docName: string
+  /** 検索対象の絞り込み。未指定の場合は corpus 全体から検索する。 */
+  filter?: RetrieveFilter
 
   /**
    * チャンクテーブルからチャンクを読み込む関数
@@ -47,7 +56,7 @@ export type RetrieveRagContextOptions = {
    * const loadChunks = () => {
    *   const db = new sqlite3.Database('chunks.db')
    *   return new Promise<ChunkRow[]>((resolve, reject) => {
-   *     db.all('SELECT id, docName, sourceChunkIdx, subIdx, content, embeddingJson FROM chunks', (err, rows) => {
+   *     db.all('SELECT id, documentId, docName, sourceChunkIdx, subIdx, content, embeddingJson FROM chunks', (err, rows) => {
    *       if (err) reject(err)
    *       else resolve(rows)
    *     })
@@ -55,7 +64,10 @@ export type RetrieveRagContextOptions = {
    * }
    * ```
    */
-  loadChunks?: (dbPath: string, docName: string) => Array<ChunkRow> | Promise<Array<ChunkRow>>
+  loadChunks?: (
+    dbPath: string,
+    filter?: RetrieveFilter,
+  ) => Array<ChunkRow> | Promise<Array<ChunkRow>>
 
   /** 使用する埋め込みモデル（例: 'nomic-embed-text-v2-moe:latest'） */
   model: string
@@ -77,9 +89,8 @@ export type RagContext = Array<ChunkRowWithScore>
 /** 取得する類似ドキュメントの数 */
 const TOP_K = 6
 
-const SQL_SELECT_CHUNKS = `SELECT id, doc_name, source_chunk_index, sub_index, content, embedding_json
-FROM chunks
-WHERE doc_name = ?`
+const SQL_SELECT_CHUNKS = `SELECT id, document_id, doc_name, source_chunk_index, sub_index, content, embedding_json
+FROM chunks`
 
 // -----------------------------------------------------------------------------
 //
@@ -103,7 +114,7 @@ export async function retrieveRagContext(
 ): Promise<RagContext> {
   const {
     dbPath,
-    docName,
+    filter,
     loadChunks = loadChunksWithNodeSqlite,
     model,
     queryPrefix = '',
@@ -111,7 +122,7 @@ export async function retrieveRagContext(
   } = options
 
   // チャンクを読み込む
-  const rows = await loadChunks(dbPath, docName)
+  const rows = await loadChunks(dbPath, filter)
   if (rows.length === 0) {
     throw new Error('チャンクテーブルが空です。チャンクをロードしてください。')
   }
@@ -129,6 +140,7 @@ export async function retrieveRagContext(
 
     scoredRows.push({
       content: row.content,
+      documentId: row.documentId,
       docName: row.docName,
       sourceChunkIdx: row.sourceChunkIdx,
       subIdx: row.subIdx,
@@ -165,17 +177,28 @@ function assertType<T extends keyof TypeMap>(
   }
 }
 
-async function loadChunksWithNodeSqlite(dbPath: string, docName: string): Promise<Array<ChunkRow>> {
+async function loadChunksWithNodeSqlite(
+  dbPath: string,
+  filter?: RetrieveFilter,
+): Promise<Array<ChunkRow>> {
   // 動的インポートを使用して、node:sqliteのDatabaseSyncクラスを読み込む
   // import { DatabaseSync } from 'node:sqlite'
   const { DatabaseSync } = await import('node:sqlite')
   const db = new DatabaseSync(dbPath)
-  const stmt = db.prepare(SQL_SELECT_CHUNKS)
-  const rows = stmt.all(docName)
+  const hasDocumentId = hasColumn(db, 'chunks', 'document_id')
+  const selectColumns = hasDocumentId
+    ? SQL_SELECT_CHUNKS
+    : `SELECT id, doc_name AS document_id, doc_name, source_chunk_index, sub_index, content, embedding_json
+FROM chunks`
+  const { sql, params } = buildSelectChunksQuery(selectColumns, filter, hasDocumentId)
+  const stmt = db.prepare(sql)
+  const rows = stmt.all(...params)
   const result = rows.map((row) => {
-    const { id, doc_name, source_chunk_index, sub_index, content, embedding_json } = row
+    const { id, document_id, doc_name, source_chunk_index, sub_index, content, embedding_json } =
+      row
 
     assertType(id, 'number', 'id')
+    assertType(document_id, 'string', 'document_id')
     assertType(doc_name, 'string', 'doc_name')
     assertType(source_chunk_index, 'number', 'source_chunk_index')
     assertType(sub_index, 'number', 'sub_index')
@@ -186,6 +209,7 @@ async function loadChunksWithNodeSqlite(dbPath: string, docName: string): Promis
 
     return {
       id: id,
+      documentId: document_id,
       docName: doc_name,
       sourceChunkIdx: source_chunk_index,
       subIdx: sub_index,
@@ -195,6 +219,49 @@ async function loadChunksWithNodeSqlite(dbPath: string, docName: string): Promis
   })
   db.close()
   return result
+}
+
+function hasColumn(db: DatabaseSync, table: string, name: string) {
+  const rows = db.prepare(`PRAGMA table_info(${table})`).all()
+  return rows.some((row) => {
+    const { name: columnName } = row as { name?: unknown }
+    return columnName === name
+  })
+}
+
+function buildSelectChunksQuery(
+  baseSql: string,
+  filter: RetrieveFilter | undefined,
+  hasDocumentId: boolean,
+): {
+  sql: string
+  params: Array<string>
+} {
+  const conditions: Array<string> = []
+  const params: Array<string> = []
+
+  if (filter?.documentIds && filter.documentIds.length > 0) {
+    const columnName = hasDocumentId ? 'document_id' : 'doc_name'
+    conditions.push(`${columnName} IN (${filter.documentIds.map(() => '?').join(', ')})`)
+    params.push(...filter.documentIds)
+  }
+
+  if (filter?.docNames && filter.docNames.length > 0) {
+    conditions.push(`doc_name IN (${filter.docNames.map(() => '?').join(', ')})`)
+    params.push(...filter.docNames)
+  }
+
+  if (conditions.length === 0) {
+    return {
+      sql: baseSql,
+      params,
+    }
+  }
+
+  return {
+    sql: `${baseSql}\nWHERE ${conditions.join(' AND ')}`,
+    params,
+  }
 }
 
 /**

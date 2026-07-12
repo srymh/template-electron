@@ -2,6 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+import type { ChunkRow } from '../src/retrieve.ts'
 import { retrieveRagContext } from '../src/retrieve.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -15,10 +16,17 @@ async function main() {
   const question = '主要機能'
   const result = await retrieveRagContext(question, {
     dbPath: path.join(__dirname, '..', 'data', 'example.json'),
-    docName: 'example-doc',
-    loadChunks: async (dbPath, docName) => {
+    loadChunks: async (dbPath, filter) => {
       const data = await fs.readFile(dbPath, 'utf-8')
-      return JSON.parse(data).filter((item: any) => item.docName === docName)
+      const rows = JSON.parse(data) as Array<ChunkRow>
+      if (!filter?.documentIds && !filter?.docNames) {
+        return rows
+      }
+      return rows.filter((item) => {
+        return (
+          filter.documentIds?.includes(item.documentId) || filter.docNames?.includes(item.docName)
+        )
+      })
     },
     model: 'nomic-embed-text-v2-moe:latest',
     queryPrefix: 'search_query:',
