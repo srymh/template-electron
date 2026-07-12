@@ -472,11 +472,17 @@ importers:
         specifier: workspace:*
         version: link:../async-queue
 
+  packages/ai-ollama-rag:
+    dependencies:
+      ollama:
+        specifier: ^0.6.3
+        version: 0.6.3
+
   packages/ai-ollama-tools:
     dependencies:
-      '@repo/rag':
+      '@repo/ai-ollama-rag':
         specifier: workspace:*
-        version: link:../rag
+        version: link:../ai-ollama-rag
       '@tanstack/ai':
         specifier: ^0.29.0
         version: 0.29.0
@@ -489,9 +495,9 @@ importers:
 
   packages/ai-tools:
     dependencies:
-      '@repo/rag':
+      '@repo/ai-ollama-rag':
         specifier: workspace:*
-        version: link:../rag
+        version: link:../ai-ollama-rag
       '@tanstack/ai':
         specifier: ^0.29.0
         version: 0.29.0
@@ -538,12 +544,6 @@ importers:
       '@types/express':
         specifier: ^5.0.6
         version: 5.0.6
-
-  packages/rag:
-    dependencies:
-      ollama:
-        specifier: ^0.6.3
-        version: 0.6.3
 
   packages/shadcn:
     dependencies:

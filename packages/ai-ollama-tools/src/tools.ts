@@ -1,4 +1,4 @@
-import { ingestDocuments, retrieveRagContext } from '@repo/rag'
+import { ingestDocuments, retrieveRagContext } from '@repo/ai-ollama-rag'
 
 import { webSearchToolDef, addKnowledgeToolDef, searchKnowledgeToolDef } from './definition'
 import { createWebSearch } from './web-search'
