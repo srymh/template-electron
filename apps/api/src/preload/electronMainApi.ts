@@ -48,6 +48,7 @@ export const electronMainApi = createElectronApi<ElectronMainApi>(
       },
       aiChat: {
         chat: useChannelAsInvoke('aiChat.chat'),
+        ingestDocument: useChannelAsInvoke('aiChat.ingestDocument'),
         on: {
           chunk: useChannelAsEvent('aiChat.on.chunk'),
         },

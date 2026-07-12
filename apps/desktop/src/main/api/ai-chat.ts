@@ -27,9 +27,6 @@ export const createAiChatContext: CreateApiContext<AiChatContext> = ({
       appContext.toolsByMcp = toolsByMcp
       return toolsByMcp
     },
-    getSearchProjectDetailDbPath: () => {
-      return path.join(appRuntime.paths.dataPath, 'example.db')
-    },
     getAiChatSession: () => {
       return windowState.aiChatSession
     },
@@ -47,6 +44,9 @@ export const createAiChatContext: CreateApiContext<AiChatContext> = ({
       }
 
       return undefined
+    },
+    getRagDbPath: () => {
+      return path.join(appRuntime.paths.userDataPath, 'sample-rag.db')
     },
   }
 }
