@@ -1,4 +1,7 @@
+import { toast } from 'sonner'
+
 import { Separator } from '@repo/ui/components/separator'
+import { aiChat } from '@your-app-name/api/renderer'
 
 import { useAuth } from '@/features/auth/api/auth'
 
@@ -9,11 +12,13 @@ import {
   ComposerAttachmentPreview,
   Composer,
   ComposerActions,
-  ComposerAttachButton,
   ComposerAttachmentError,
   ComposerInputGroup,
   ComposerSendButton,
   ComposerTextarea,
+  ComposerAddMenu,
+  ComposerAttachTextFileItem,
+  ComposerSaveKnowledgeItem,
 } from './composer'
 import { MessageBody, MessageHeader, MessageParts, Messages } from './message'
 import { NotImplementedPartContent } from './parts/not-implemented-part-content'
@@ -80,7 +85,23 @@ export function Chat() {
     }
   }
 
-  const disabledAttachment = isLoading || isNotAvailable
+  const saveKnowledgeFromFile = async () => {
+    const result = await loadChatAttachmentFromFileSystem({
+      title: '知識に保存するファイルを選択',
+      message: '知識として保存するテキストファイルを選択してください',
+    })
+    if (result.status === 'selected' && result.attachment) {
+      await aiChat.ingestDocument(result.attachment.content)
+      toast.success('知識に保存しました。次回以降、AI が必要に応じて参照します。')
+    } else if (result.status === 'canceled') {
+      toast.error('知識への保存をキャンセルしました。')
+    } else {
+      toast.error('知識への保存に失敗しました。')
+    }
+  }
+
+  const disabledTextFileAttachment = isLoading || isNotAvailable
+  const disabledKnowledgeSave = isLoading || isNotAvailable
   const disabledSubmit = (status === 'ready' && !input.trim()) || isNotAvailable
 
   return (
@@ -147,7 +168,16 @@ export function Chat() {
             onValueChange={setInput}
           />
           <ComposerActions>
-            <ComposerAttachButton disabled={disabledAttachment} onClick={selectAttachment} />
+            <ComposerAddMenu>
+              <ComposerAttachTextFileItem
+                disabled={disabledTextFileAttachment}
+                onClick={selectAttachment}
+              />
+              <ComposerSaveKnowledgeItem
+                disabled={disabledKnowledgeSave}
+                onClick={saveKnowledgeFromFile}
+              />
+            </ComposerAddMenu>
             <ComposerSendButton isLoading={isLoading} disabled={disabledSubmit} />
           </ComposerActions>
         </ComposerInputGroup>
