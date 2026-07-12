@@ -1,5 +1,3 @@
-import { nativeTheme } from 'electron'
-
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { z } from 'zod'
 
@@ -22,24 +20,6 @@ export function createMcpServer() {
       console.log(message)
       return {
         content: [{ type: 'text', text: `ログに「${message}」を出力しました。` }],
-      }
-    },
-  )
-
-  server.registerTool(
-    `change_theme`,
-    {
-      title: 'テーマ変更',
-      description: `テーマを変更します。lightかdarkを指定してください。`,
-      inputSchema: {
-        theme: z.enum(['light', 'dark']),
-      },
-    },
-    async ({ theme }) => {
-      nativeTheme.themeSource = theme
-      console.log('theme', theme)
-      return {
-        content: [{ type: 'text', text: `テーマを「${theme}」に変更しました。` }],
       }
     },
   )

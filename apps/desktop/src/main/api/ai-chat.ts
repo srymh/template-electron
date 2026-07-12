@@ -1,6 +1,7 @@
 import path from 'node:path'
 
-import { mcpToTanStackAiTools } from '@repo/tanstack-ai-mcp'
+import { createMCPClient } from '@tanstack/ai-mcp'
+
 import type { AiChatContext } from '@your-app-name/api/aiChat'
 
 import type { CreateApiContext } from './types'
@@ -11,21 +12,19 @@ export const createAiChatContext: CreateApiContext<AiChatContext> = ({
   windowState,
 }) => {
   return {
-    getToolsByMcp: async () => {
+    getMcpClient: async () => {
       if (appContext.mcpServer == null) {
-        return []
-      } else if (appContext.toolsByMcp != null) {
-        return appContext.toolsByMcp
+        return null
       }
 
-      const toolsByMcp = await mcpToTanStackAiTools({
-        httpOptions: {
+      const mcp = await createMCPClient({
+        transport: {
+          type: 'http',
           url: `http://localhost:${appContext.mcpServer.port}/mcp`,
         },
       })
 
-      appContext.toolsByMcp = toolsByMcp
-      return toolsByMcp
+      return mcp
     },
     getAiChatSession: () => {
       return windowState.aiChatSession

@@ -7,9 +7,6 @@ export const createMcpContext: CreateApiContext<McpApiContext> = ({ appContext }
     getMcpServer: () => appContext.mcpServer,
     setMcpServer: (server) => {
       appContext.mcpServer = server
-      // MCPサーバーが変更された場合は、toolsByMcpもリセットしておく
-      // @note mcpToTanstackAiTools() とのレースは残る
-      appContext.toolsByMcp = null
     },
   }
 }

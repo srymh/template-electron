@@ -275,8 +275,6 @@ MCP サーバーは Express HTTP サーバーとして実装されている。@m
 - print_hello: 引数で受け取ったメッセージをログに出力する。
 - change_theme: テーマをライトまたはダークに変更する。
 
-electron/shared/lib/tanstack-ai-mcp/index.ts には mcpToTanStackAiTools ユーティリティが実装されている。これは MCP ツールを TanStack AI の ServerTool 形式に変換する。stdio、HTTP、transport、client の4つの接続モードをサポートする。
-
 ========================================
 データベース
 ========================================
@@ -538,7 +536,6 @@ template-electron/
 │   ├── shared/                  # メイン・レンダラー共有ライブラリ
 │   │   └── lib/
 │   │       ├── ipc/             # 型安全 IPC フレームワーク
-│   │       ├── tanstack-ai-mcp/ # MCP ↔ TanStack AI ブリッジ
 │   │       └── rag/             # RAG ライブラリ
 │   └── electron-env.d.ts        # Window.api 型宣言
 ├── scripts/

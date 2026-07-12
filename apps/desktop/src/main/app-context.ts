@@ -1,7 +1,5 @@
 import type { WebContents } from 'electron'
 
-import type { ServerTool } from '@tanstack/ai'
-
 import type { AiChatSession } from '@repo/ai-chat-session'
 import type { AuthRuntime } from '@repo/auth'
 import type { McpServer } from '@repo/mcp-server-example'
@@ -47,7 +45,6 @@ class ApiContextRegistry<TScope> {
 export type AppContext = {
   mcpServer: McpServer | null
   db: Database | null
-  toolsByMcp: ServerTool[] | null
   authRuntime: AuthRuntime | null
   apiContexts: ApiContextRegistry<WindowContext>
 }
@@ -56,7 +53,6 @@ export async function createAppContext(): Promise<AppContext> {
   return {
     mcpServer: null,
     db: null,
-    toolsByMcp: null,
     authRuntime: null,
     apiContexts: new ApiContextRegistry<WindowContext>(),
   }

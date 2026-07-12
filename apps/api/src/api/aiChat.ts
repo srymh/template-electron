@@ -1,4 +1,5 @@
-import type { ServerTool, StreamChunk } from '@tanstack/ai'
+import type { StreamChunk } from '@tanstack/ai'
+import type { MCPClient } from '@tanstack/ai-mcp'
 
 import { chat } from '@repo/ai-chat'
 import type { ChatRequest, ChatResponse } from '@repo/ai-chat'
@@ -26,7 +27,7 @@ export const AI_CHAT_API_KEY = 'aiChat' as const
 export type AIChatApiKey = typeof AI_CHAT_API_KEY
 
 export type AiChatContext = {
-  getToolsByMcp: () => Promise<ServerTool[]>
+  getMcpClient: () => Promise<MCPClient | null>
   getAiChatSession: () => AiChatSession | null
   setAiChatSession: (session: AiChatSession | null) => void
   getApiKey: (provider: 'ollama') => Promise<string | undefined>
@@ -75,7 +76,7 @@ const SYSTEM_PROMPT = `あなたは、ユーザーの依頼に正確で役立つ
 const createChat =
   <TKey>(getContext: (key: TKey) => AiChatContext): WithCallerKey<AiChatApi['chat'], TKey> =>
   async (request, key) => {
-    const { getToolsByMcp, getAiChatSession, setAiChatSession, getApiKey, getRagDbPath } =
+    const { getMcpClient, getAiChatSession, setAiChatSession, getApiKey, getRagDbPath } =
       getContext(key)
     const { messages, data, id } = request
 
@@ -111,7 +112,6 @@ const createChat =
     }
 
     const createTools = async () => {
-      const toolsByMcp = await getToolsByMcp()
       const webSearchTool = createWebSearchTool(() => getApiKey('ollama'))
       const addKnowledgeTool = createAddKnowledgeTool({ getDbPath: getRagDbPath })
       const searchKnowledgeTool = createSearchKnowledgeTool({ getDbPath: getRagDbPath })
@@ -119,12 +119,13 @@ const createChat =
         switchThemeDarkTool,
         switchThemeLightTool,
         clockToolDef,
-        ...toolsByMcp,
         webSearchTool,
         addKnowledgeTool,
         searchKnowledgeTool,
       ]
     }
+
+    const mcpClient = await getMcpClient()
 
     try {
       await chat({
@@ -134,6 +135,7 @@ const createChat =
         onError: sendError,
         createTools,
         systemPrompts: [SYSTEM_PROMPT],
+        mcpClient: mcpClient ?? undefined,
       })
     } catch (error) {
       console.error(`${new Date().toISOString()} Error in AiChatApi chat:`, error)
