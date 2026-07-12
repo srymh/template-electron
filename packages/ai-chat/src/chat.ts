@@ -1,5 +1,6 @@
 import { chat as tanstackChat } from '@tanstack/ai'
 import type { TextOptions } from '@tanstack/ai'
+import type { MCPClient } from '@tanstack/ai-mcp'
 
 import { adapters } from './ollama/adapters'
 import { modelSchema } from './ollama/models'
@@ -21,6 +22,7 @@ export async function chat(options: {
   onError?: OnError
   createTools?: () => TextOptions['tools'] | Promise<TextOptions['tools']>
   systemPrompts?: string[]
+  mcpClient?: MCPClient
 }) {
   const {
     request: { messages, data },
@@ -29,6 +31,7 @@ export async function chat(options: {
     onError = () => {},
     createTools = () => [],
     systemPrompts = [],
+    mcpClient,
   } = options
 
   try {
@@ -55,6 +58,7 @@ export async function chat(options: {
       tools,
       stream: true,
       systemPrompts: [...systemPrompts],
+      ...(mcpClient ? { mcp: { clients: [mcpClient] } } : {}),
     })
 
     /** ------------------------------------------------------------------------

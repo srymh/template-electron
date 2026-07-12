@@ -25,6 +25,7 @@
   "dependencies": {
     "@repo/async-queue": "workspace:*",
     "@tanstack/ai": "^0.29.0",
+    "@tanstack/ai-mcp": "^0.2.2",
     "@tanstack/ai-ollama": "^0.8.2",
     "@tanstack/ai-react": "^0.15.5",
     "zod": "^4.4.3"
