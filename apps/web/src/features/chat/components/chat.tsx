@@ -1,5 +1,17 @@
+import * as React from 'react'
+
 import { toast } from 'sonner'
 
+import { MODELS, modelSchema } from '@repo/ai-chat/shared'
+import type { Model } from '@repo/ai-chat/shared'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@repo/ui/components/select'
 import { Separator } from '@repo/ui/components/separator'
 import { aiChat } from '@your-app-name/api/renderer'
 
@@ -7,7 +19,7 @@ import { useAuth } from '@/features/auth/api/auth'
 
 import { useChatAttachment } from '../hooks/use-chat-attachment'
 import { loadChatAttachmentFromFileSystem } from '../utils/load-chat-attachment-from-file-system'
-import { useChatSession } from './chat-session-provider'
+import { ChatSessionProvider, useChatSession } from './chat-session-provider'
 import {
   ComposerAttachmentPreview,
   Composer,
@@ -28,6 +40,22 @@ import { ToolCallContent } from './parts/tool-call-content'
 import { ToolResultContent } from './parts/tool-result-content'
 
 export function Chat() {
+  const [selectedModel, setSelectedModel] = React.useState<Model>('gpt-oss:20b-cloud')
+
+  return (
+    <ChatSessionProvider model={selectedModel}>
+      <ChatInner selectedModel={selectedModel} setSelectedModel={setSelectedModel} />
+    </ChatSessionProvider>
+  )
+}
+
+function ChatInner({
+  selectedModel,
+  setSelectedModel,
+}: {
+  selectedModel: Model
+  setSelectedModel: (model: Model) => void
+}) {
   const {
     auth: { user },
   } = useAuth()
@@ -105,7 +133,27 @@ export function Chat() {
   const disabledSubmit = (status === 'ready' && !input.trim()) || isNotAvailable
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col w-full gap-4">
+    <div className="flex min-h-0 flex-1 flex-col w-full gap-2">
+      <div className="flex shrink-0 justify-end">
+        <Select
+          onValueChange={(value) => setSelectedModel(modelSchema.parse(value))}
+          value={selectedModel}
+        >
+          <SelectTrigger className="max-w-48" size="sm">
+            <SelectValue placeholder="モデル選択" />
+          </SelectTrigger>
+          <SelectContent position="popper">
+            <SelectGroup>
+              {MODELS.map((model) => (
+                <SelectItem key={model} value={model}>
+                  {model}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+
       <Messages messages={messages}>
         {(message) => (
           <>
