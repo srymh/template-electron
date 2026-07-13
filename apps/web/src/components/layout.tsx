@@ -9,6 +9,9 @@ import {
 import { cn } from '@repo/ui/lib/utils'
 
 import { AppSidebar } from '@/components/app-sidebar'
+import { useAuth } from '@/features/auth/api/auth'
+import { ChatProvider } from '@/features/chat/components/chat'
+import { OpenChatDialog, OpenChatProvider } from '@/features/chat/components/open-chat'
 
 import { Breadcrumbs } from './breadcrumbs'
 
@@ -17,13 +20,34 @@ export function Layout(props: { children?: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <div className="w-(--traffic-light-width) group-has-data-[collapsible=icon]/sidebar-wrapper:bg-sidebar h-(--traffic-light-height) group-has-data-[collapsible=icon]/sidebar-wrapper:border-r fixed top-0 left-0 z-99999 pointer-events-none"></div>
-      <AppSidebar variant="sidebar" />
-      <SidebarInset className="h-screen overflow-hidden">
-        <SiteHeader />
-        <div className="w-full h-full overflow-auto">{children}</div>
-      </SidebarInset>
+      <AuthenticatedChatBoundary>
+        <div className="w-(--traffic-light-width) group-has-data-[collapsible=icon]/sidebar-wrapper:bg-sidebar h-(--traffic-light-height) group-has-data-[collapsible=icon]/sidebar-wrapper:border-r fixed top-0 left-0 z-99999 pointer-events-none"></div>
+        <AppSidebar variant="sidebar" />
+        <SidebarInset className="h-screen overflow-hidden">
+          <SiteHeader />
+          <div className="w-full h-full overflow-auto">{children}</div>
+        </SidebarInset>
+      </AuthenticatedChatBoundary>
     </SidebarProvider>
+  )
+}
+
+function AuthenticatedChatBoundary({ children }: { children: React.ReactNode }) {
+  const {
+    auth: { isAuthenticated },
+  } = useAuth()
+
+  if (!isAuthenticated) {
+    return <>{children}</>
+  }
+
+  return (
+    <ChatProvider>
+      <OpenChatProvider>
+        {children}
+        <OpenChatDialog />
+      </OpenChatProvider>
+    </ChatProvider>
   )
 }
 

@@ -39,14 +39,43 @@ import { ThinkingContent } from './parts/thinking-content'
 import { ToolCallContent } from './parts/tool-call-content'
 import { ToolResultContent } from './parts/tool-result-content'
 
-export function Chat() {
+type ChatProviderValue = {
+  selectedModel: Model
+  setSelectedModel: React.Dispatch<React.SetStateAction<Model>>
+}
+
+const ChatContext = React.createContext<ChatProviderValue | null>(null)
+
+export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [selectedModel, setSelectedModel] = React.useState<Model>('gpt-oss:20b-cloud')
 
-  return (
-    <ChatSessionProvider model={selectedModel}>
-      <ChatInner selectedModel={selectedModel} setSelectedModel={setSelectedModel} />
-    </ChatSessionProvider>
+  const value = React.useMemo<ChatProviderValue>(
+    () => ({
+      selectedModel,
+      setSelectedModel,
+    }),
+    [selectedModel],
   )
+
+  return (
+    <ChatContext.Provider value={value}>
+      <ChatSessionProvider model={selectedModel}>{children}</ChatSessionProvider>
+    </ChatContext.Provider>
+  )
+}
+
+export function Chat() {
+  const { selectedModel, setSelectedModel } = useChatModel()
+
+  return <ChatInner selectedModel={selectedModel} setSelectedModel={setSelectedModel} />
+}
+
+function useChatModel() {
+  const ctx = React.useContext(ChatContext)
+  if (!ctx) {
+    throw new Error('useChatModel must be used within <ChatProvider />')
+  }
+  return ctx
 }
 
 function ChatInner({
