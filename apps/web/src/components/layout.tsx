@@ -10,8 +10,7 @@ import { cn } from '@repo/ui/lib/utils'
 
 import { AppSidebar } from '@/components/app-sidebar'
 import { useAuth } from '@/features/auth/api/auth'
-import { ChatProvider } from '@/features/chat/components/chat'
-import { OpenChatDialog, OpenChatProvider } from '@/features/chat/components/open-chat'
+import { ChatHost } from '@/features/chat/components/chat-host'
 
 import { Breadcrumbs } from './breadcrumbs'
 
@@ -42,12 +41,9 @@ function AuthenticatedChatBoundary({ children }: { children: React.ReactNode }) 
   }
 
   return (
-    <ChatProvider>
-      <OpenChatProvider>
-        {children}
-        <OpenChatDialog />
-      </OpenChatProvider>
-    </ChatProvider>
+    <ChatHost>
+      {children}
+    </ChatHost>
   )
 }
 

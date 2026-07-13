@@ -1,5 +1,3 @@
-import * as React from 'react'
-
 import { toast } from 'sonner'
 
 import { MODELS, modelSchema } from '@repo/ai-chat/shared'
@@ -19,7 +17,8 @@ import { useAuth } from '@/features/auth/api/auth'
 
 import { useChatAttachment } from '../hooks/use-chat-attachment'
 import { loadChatAttachmentFromFileSystem } from '../utils/load-chat-attachment-from-file-system'
-import { ChatSessionProvider, useChatSession } from './chat-session-provider'
+import { useChatModel } from './chat-context'
+import { useChatSession } from './chat-session-provider'
 import {
   ComposerAttachmentPreview,
   Composer,
@@ -39,43 +38,10 @@ import { ThinkingContent } from './parts/thinking-content'
 import { ToolCallContent } from './parts/tool-call-content'
 import { ToolResultContent } from './parts/tool-result-content'
 
-type ChatProviderValue = {
-  selectedModel: Model
-  setSelectedModel: React.Dispatch<React.SetStateAction<Model>>
-}
-
-const ChatContext = React.createContext<ChatProviderValue | null>(null)
-
-export function ChatProvider({ children }: { children: React.ReactNode }) {
-  const [selectedModel, setSelectedModel] = React.useState<Model>('gpt-oss:20b-cloud')
-
-  const value = React.useMemo<ChatProviderValue>(
-    () => ({
-      selectedModel,
-      setSelectedModel,
-    }),
-    [selectedModel],
-  )
-
-  return (
-    <ChatContext.Provider value={value}>
-      <ChatSessionProvider model={selectedModel}>{children}</ChatSessionProvider>
-    </ChatContext.Provider>
-  )
-}
-
 export function Chat() {
   const { selectedModel, setSelectedModel } = useChatModel()
 
   return <ChatInner selectedModel={selectedModel} setSelectedModel={setSelectedModel} />
-}
-
-function useChatModel() {
-  const ctx = React.useContext(ChatContext)
-  if (!ctx) {
-    throw new Error('useChatModel must be used within <ChatProvider />')
-  }
-  return ctx
 }
 
 function ChatInner({
