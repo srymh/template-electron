@@ -33,7 +33,7 @@ export function Layout(props: { children?: React.ReactNode }) {
 
 function AuthenticatedChatBoundary({ children }: { children: React.ReactNode }) {
   const {
-    auth: { isAuthenticated },
+    auth: { isAuthenticated, user },
   } = useAuth()
 
   if (!isAuthenticated) {
@@ -41,7 +41,7 @@ function AuthenticatedChatBoundary({ children }: { children: React.ReactNode }) 
   }
 
   return (
-    <ChatHost>
+    <ChatHost username={isAuthenticated ? user?.username || 'あなた' : undefined}>
       {children}
     </ChatHost>
   )

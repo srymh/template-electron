@@ -13,7 +13,7 @@ import {
 import { Chat } from './chat'
 import { useChatDialog, useChatModel } from './chat-context'
 
-export function ChatDialog() {
+export function ChatDialog({ username }: { username?: string }) {
   const { open, setOpen } = useChatDialog()
   const { selectedModel, setSelectedModel } = useChatModel()
 
@@ -42,7 +42,11 @@ export function ChatDialog() {
           </DialogTitle>
           <DialogDescription className="sr-only">AI と会話します。</DialogDescription>
         </DialogHeader>
-        <Chat selectedModel={selectedModel} setSelectedModel={setSelectedModel} />
+        <Chat
+          selectedModel={selectedModel}
+          setSelectedModel={setSelectedModel}
+          username={username}
+        />
       </DialogContent>
     </Dialog>
   )

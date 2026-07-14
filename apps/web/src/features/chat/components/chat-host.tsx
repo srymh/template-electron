@@ -6,7 +6,7 @@ import { ChatContextProvider } from './chat-context'
 import { ChatDialog } from './chat-dialog'
 import { ChatSessionProvider } from './chat-session-provider'
 
-export function ChatHost({ children }: { children: React.ReactNode }) {
+export function ChatHost({ children, username }: { children: React.ReactNode; username?: string }) {
   const [open, setOpen] = React.useState(false)
   const [selectedModel, setSelectedModel] = React.useState<Model>('gpt-oss:20b-cloud')
 
@@ -24,7 +24,7 @@ export function ChatHost({ children }: { children: React.ReactNode }) {
     <ChatContextProvider value={value}>
       <ChatSessionProvider model={selectedModel}>
         {children}
-        <ChatDialog />
+        <ChatDialog username={username} />
       </ChatSessionProvider>
     </ChatContextProvider>
   )

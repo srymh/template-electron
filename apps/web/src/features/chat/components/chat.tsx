@@ -4,8 +4,6 @@ import type { Model } from '@repo/ai-chat/shared'
 import { Separator } from '@repo/ui/components/separator'
 import { aiChat } from '@your-app-name/api/renderer'
 
-import { useAuth } from '@/features/auth/api/auth'
-
 import { useChatAttachment } from '../hooks/use-chat-attachment'
 import { loadChatAttachmentFromFileSystem } from '../utils/load-chat-attachment-from-file-system'
 import { useChatSession } from './chat-session-provider'
@@ -32,14 +30,13 @@ import { SelectModel } from './select-model'
 export function Chat({
   selectedModel,
   setSelectedModel,
+  username,
 }: {
   selectedModel: Model
   setSelectedModel: (model: Model) => void
+  username?: string
 }) {
-  const {
-    auth: { user },
-  } = useAuth()
-  const username = user?.username || 'あなた'
+  const displayUsername = username || 'あなた'
 
   const {
     isNotAvailable,
@@ -121,7 +118,7 @@ export function Chat({
       <Messages messages={messages}>
         {(message) => (
           <>
-            <MessageHeader message={message} username={username} />
+            <MessageHeader message={message} username={displayUsername} />
             <Separator />
             <MessageBody>
               <MessageParts messageParts={message.parts}>
