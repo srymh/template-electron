@@ -10,7 +10,7 @@ import {
 import { useChatDialog } from './chat-context'
 
 export function OpenChat() {
-  const { open, setOpen } = useChatDialog()
+  const { setOpen } = useChatDialog()
   const { isMobile, setOpenMobile } = useSidebar()
 
   const handleOpen = () => {
@@ -26,8 +26,6 @@ export function OpenChat() {
         <SidebarMenuButton
           variant="outline"
           className="bg-sidebar text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-          aria-expanded={open}
-          data-open={open ? true : undefined}
           onClick={handleOpen}
         >
           <BotIcon />
