@@ -1,15 +1,6 @@
 import { toast } from 'sonner'
 
-import { MODELS, modelSchema } from '@repo/ai-chat/shared'
 import type { Model } from '@repo/ai-chat/shared'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@repo/ui/components/select'
 import { Separator } from '@repo/ui/components/separator'
 import { aiChat } from '@your-app-name/api/renderer'
 
@@ -17,7 +8,6 @@ import { useAuth } from '@/features/auth/api/auth'
 
 import { useChatAttachment } from '../hooks/use-chat-attachment'
 import { loadChatAttachmentFromFileSystem } from '../utils/load-chat-attachment-from-file-system'
-import { useChatModel } from './chat-context'
 import { useChatSession } from './chat-session-provider'
 import {
   ComposerAttachmentPreview,
@@ -37,14 +27,9 @@ import { TextContent } from './parts/text-content'
 import { ThinkingContent } from './parts/thinking-content'
 import { ToolCallContent } from './parts/tool-call-content'
 import { ToolResultContent } from './parts/tool-result-content'
+import { SelectModel } from './select-model'
 
-export function Chat() {
-  const { selectedModel, setSelectedModel } = useChatModel()
-
-  return <ChatInner selectedModel={selectedModel} setSelectedModel={setSelectedModel} />
-}
-
-function ChatInner({
+export function Chat({
   selectedModel,
   setSelectedModel,
 }: {
@@ -130,23 +115,7 @@ function ChatInner({
   return (
     <div className="flex min-h-0 flex-1 flex-col w-full gap-2">
       <div className="flex shrink-0 justify-end">
-        <Select
-          onValueChange={(value) => setSelectedModel(modelSchema.parse(value))}
-          value={selectedModel}
-        >
-          <SelectTrigger className="max-w-48" size="sm">
-            <SelectValue placeholder="モデル選択" />
-          </SelectTrigger>
-          <SelectContent position="popper">
-            <SelectGroup>
-              {MODELS.map((model) => (
-                <SelectItem key={model} value={model}>
-                  {model}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <SelectModel selectedModel={selectedModel} setSelectedModel={setSelectedModel} />
       </div>
 
       <Messages messages={messages}>

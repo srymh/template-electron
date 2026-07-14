@@ -11,10 +11,11 @@ import {
 } from '@repo/ui/components/dialog'
 
 import { Chat } from './chat'
-import { useChatDialog } from './chat-context'
+import { useChatDialog, useChatModel } from './chat-context'
 
 export function ChatDialog() {
   const { open, setOpen } = useChatDialog()
+  const { selectedModel, setSelectedModel } = useChatModel()
 
   return (
     <Dialog modal={false} open={open} onOpenChange={setOpen}>
@@ -41,7 +42,7 @@ export function ChatDialog() {
           </DialogTitle>
           <DialogDescription className="sr-only">AI と会話します。</DialogDescription>
         </DialogHeader>
-        <Chat />
+        <Chat selectedModel={selectedModel} setSelectedModel={setSelectedModel} />
       </DialogContent>
     </Dialog>
   )
