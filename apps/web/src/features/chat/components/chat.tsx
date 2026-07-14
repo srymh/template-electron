@@ -1,9 +1,8 @@
 import { toast } from 'sonner'
 
+import type { Model } from '@repo/ai-chat/shared'
 import { Separator } from '@repo/ui/components/separator'
 import { aiChat } from '@your-app-name/api/renderer'
-
-import { useAuth } from '@/features/auth/api/auth'
 
 import { useChatAttachment } from '../hooks/use-chat-attachment'
 import { loadChatAttachmentFromFileSystem } from '../utils/load-chat-attachment-from-file-system'
@@ -26,12 +25,18 @@ import { TextContent } from './parts/text-content'
 import { ThinkingContent } from './parts/thinking-content'
 import { ToolCallContent } from './parts/tool-call-content'
 import { ToolResultContent } from './parts/tool-result-content'
+import { SelectModel } from './select-model'
 
-export function Chat() {
-  const {
-    auth: { user },
-  } = useAuth()
-  const username = user?.username || 'あなた'
+export function Chat({
+  selectedModel,
+  setSelectedModel,
+  username,
+}: {
+  selectedModel: Model
+  setSelectedModel: (model: Model) => void
+  username?: string
+}) {
+  const displayUsername = username || 'あなた'
 
   const {
     isNotAvailable,
@@ -105,11 +110,15 @@ export function Chat() {
   const disabledSubmit = (status === 'ready' && !input.trim()) || isNotAvailable
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col w-full gap-4">
+    <div className="flex min-h-0 flex-1 flex-col w-full gap-2">
+      <div className="flex shrink-0 justify-end">
+        <SelectModel selectedModel={selectedModel} setSelectedModel={setSelectedModel} />
+      </div>
+
       <Messages messages={messages}>
         {(message) => (
           <>
-            <MessageHeader message={message} username={username} />
+            <MessageHeader message={message} username={displayUsername} />
             <Separator />
             <MessageBody>
               <MessageParts messageParts={message.parts}>
