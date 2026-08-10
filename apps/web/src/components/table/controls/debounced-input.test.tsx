@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent, render } from '@testing-library/react'
 
-import { DebouncedInput } from '@/components/table/debounced-input'
+import { DebouncedInput } from './debounced-input'
 
 describe('DebouncedInput', () => {
   afterEach(() => {

@@ -12,7 +12,7 @@ import {
 import type { ColumnFiltersState } from '@tanstack/react-table'
 
 import { BasicTable } from '@/components/table/basic-table'
-import { fuzzyFilter, fuzzySort } from '@/components/table/tableUtils'
+import { fuzzyFilter, fuzzySort } from '@/components/table/controls/tableUtils'
 import type { Person } from '@/data/demo-table-data'
 import { makeData } from '@/data/demo-table-data'
 

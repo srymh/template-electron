@@ -20,7 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@repo/ui/components/ta
 import { kakeibo } from '@your-app-name/api/renderer'
 
 import { BasicTable } from '@/components/table/basic-table'
-import { fuzzyFilter } from '@/components/table/tableUtils'
+import { fuzzyFilter } from '@/components/table/controls/tableUtils'
 
 export type Entry = Awaited<ReturnType<typeof kakeibo.entries>>[number]
 
