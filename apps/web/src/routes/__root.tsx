@@ -1,5 +1,6 @@
 import { aiDevtoolsPlugin } from '@tanstack/react-ai-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
+import { formDevtoolsPlugin } from '@tanstack/react-form-devtools'
 import type { QueryClient } from '@tanstack/react-query'
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
@@ -43,9 +44,11 @@ function Component() {
               render: <TanStackRouterDevtoolsPanel />,
             },
             TanStackQueryDevtools,
+            formDevtoolsPlugin(),
             aiDevtoolsPlugin(),
           ]}
           eventBusConfig={{
+            debug: false,
             connectToServerBus: true, // おそらく意味がない
           }}
         />

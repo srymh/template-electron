@@ -2,6 +2,9 @@ import type { WebContents } from 'electron'
 
 import type { BrowserWindow } from 'electron/main'
 
+import { createAppAssetRootRegistry } from '@repo/asset-protocol'
+import type { AppAssetRootRegistry } from '@repo/asset-protocol'
+
 import type { Logger } from '../infra/logger'
 import type { MainPaths } from '../infra/paths'
 import type { SecretStorage } from '../infra/safe-storage'
@@ -9,7 +12,24 @@ import type { SecretStorage } from '../infra/safe-storage'
 /** 破棄処理のデフォルトタイムアウト時間（ミリ秒） */
 const DEFAULT_DISPOSE_TIMEOUT_MS = 5_000
 
-export class AppRuntime {
+export interface IAppRuntime {
+  devServerUrl: string | null
+  rendererRootUrl: string | null
+  allowedDevOrigin: string | null
+  paths: MainPaths
+  logger: Logger
+  secretStorage: SecretStorage
+  appAssetRoots: AppAssetRootRegistry
+
+  addDispose(dispose: () => void | Promise<void>): void
+  dispose(): Promise<boolean>
+  registerWindow(window: BrowserWindow): () => void
+  getWindow(id: number): BrowserWindow | undefined
+  storeSecret(key: string, value: string): Promise<void>
+  retrieveSecret(key: string): Promise<string>
+}
+
+export class AppRuntime implements IAppRuntime {
   /** before-quit で呼ばれる破棄処理（同期/非同期混在可） */
   private readonly disposeSet: Set<(() => void) | (() => Promise<void>)> = new Set()
   private isDisposing = false
@@ -23,6 +43,7 @@ export class AppRuntime {
   private windowsById = new Map<number, BrowserWindow>()
   logger: Logger
   secretStorage: SecretStorage
+  appAssetRoots: AppAssetRootRegistry
 
   constructor({
     paths,
@@ -45,6 +66,7 @@ export class AppRuntime {
     this.rendererRootUrl = rendererRootUrl
     this.logger = logger
     this.secretStorage = secretStorage
+    this.appAssetRoots = createAppAssetRootRegistry([])
   }
 
   addDispose(dispose: () => void | Promise<void>) {

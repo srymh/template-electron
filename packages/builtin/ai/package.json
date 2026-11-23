@@ -1,0 +1,70 @@
+{
+  "name": "@repo/ai",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./chat": {
+      "types": "./src/chat/index.ts",
+      "import": "./src/chat/index.ts"
+    },
+    "./chat/session": {
+      "types": "./src/chat/session/ai-chat-session.ts",
+      "import": "./src/chat/session/ai-chat-session.ts"
+    },
+    "./shared": {
+      "types": "./src/chat/shared/index.ts",
+      "import": "./src/chat/shared/index.ts"
+    },
+    "./react": {
+      "types": "./src/chat/react-adapter/index.ts",
+      "import": "./src/chat/react-adapter/index.ts"
+    },
+    "./ollama/rag": {
+      "types": "./src/ollama/rag/index.ts",
+      "import": "./src/ollama/rag/index.ts"
+    },
+    "./ollama/tools": {
+      "types": "./src/ollama/tools/index.ts",
+      "import": "./src/ollama/tools/index.ts"
+    },
+    "./tools/client/definitions": {
+      "types": "./src/tools/client/definitions.ts",
+      "import": "./src/tools/client/definitions.ts"
+    },
+    "./tools/client": {
+      "types": "./src/tools/client/tools.ts",
+      "import": "./src/tools/client/tools.ts"
+    },
+    "./tools/server/definitions": {
+      "types": "./src/tools/server/definitions.ts",
+      "import": "./src/tools/server/definitions.ts"
+    },
+    "./tools/server": {
+      "types": "./src/tools/server/tools.ts",
+      "import": "./src/tools/server/tools.ts"
+    },
+    "./ollama/tools/definitions": {
+      "types": "./src/ollama/tools/definition.ts",
+      "import": "./src/ollama/tools/definition.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "tsc --noEmit && vitest run",
+    "build": "tsdown src/chat/index.ts src/ollama/tools/index.ts",
+    "example:chat": "node examples/chat/index.ts",
+    "example:web-search": "node examples/ollama-tools/index.ts"
+  },
+  "dependencies": {
+    "@repo/async-queue": "workspace:*",
+    "@tanstack/ai": "catalog:",
+    "@tanstack/ai-client": "catalog:",
+    "@tanstack/ai-ollama": "^1.1.1",
+    "ollama": "^0.6.4",
+    "zod": "catalog:"
+  },
+  "peerDependencies": {
+    "electron": "^45.3.3"
+  }
+}

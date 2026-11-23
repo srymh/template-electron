@@ -31,6 +31,12 @@ export const Route = createFileRoute('/(app)/settings')({
   component: RouteComponent,
 })
 
+const languageOptions = [
+  { value: 'ja', label: '日本語' },
+  { value: 'en', label: 'English' },
+] as const
+
+/** 外観、起動時の動作、アカウントの設定を表示する。 */
 function RouteComponent() {
   const { auth } = Route.useRouteContext()
 
@@ -44,11 +50,11 @@ function RouteComponent() {
   const [downloadDir, setDownloadDir] = useLocalStorageState('settings.downloadDir', '')
 
   return (
-    <div className="w-full h-full">
-      <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <div className="h-full w-full">
+      <div className="mx-auto max-w-4xl space-y-6 p-6">
         <div className="space-y-1">
           <h1 className="text-xl font-semibold">設定</h1>
-          <p className="text-sm text-muted-foreground">テーマ、見た目、動作に関する基本設定</p>
+          <p className="text-muted-foreground text-sm">テーマ、見た目、動作に関する基本設定</p>
         </div>
 
         <Card>
@@ -61,7 +67,7 @@ function RouteComponent() {
             <div className="space-y-2">
               <div className="text-sm font-medium">モード</div>
               <ModeSwitcher className="justify-start" />
-              <div className="text-xs text-muted-foreground">ライト / ダーク / システム</div>
+              <div className="text-muted-foreground text-xs">ライト / ダーク / システム</div>
             </div>
           </CardContent>
         </Card>
@@ -76,17 +82,26 @@ function RouteComponent() {
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-1">
                 <div className="text-sm font-medium">言語</div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-muted-foreground text-sm">
                   表示言語（画面の文言は順次対応）
                 </div>
               </div>
-              <Select value={language} onValueChange={(v) => setLanguage(v as 'ja' | 'en')}>
+              <Select
+                items={languageOptions}
+                value={language}
+                onValueChange={(value) => {
+                  if (value !== null) setLanguage(value)
+                }}
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="選択" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ja">日本語</SelectItem>
-                  <SelectItem value="en">English</SelectItem>
+                <SelectContent alignItemWithTrigger={false}>
+                  {languageOptions.map(({ value, label }) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
@@ -128,7 +143,7 @@ function RouteComponent() {
                 value={downloadDir}
                 onChange={(e) => setDownloadDir(e.target.value)}
               />
-              <div className="text-xs text-muted-foreground">
+              <div className="text-muted-foreground text-xs">
                 ここはUIサンプル（実際のダウンロード処理に接続する想定）
               </div>
             </div>
@@ -146,7 +161,7 @@ function RouteComponent() {
               <div className="flex items-center justify-between gap-4">
                 <div className="space-y-1">
                   <div className="text-sm font-medium">ログイン中</div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-muted-foreground text-sm">
                     ユーザー: {auth.user?.username}
                   </div>
                 </div>
@@ -158,14 +173,15 @@ function RouteComponent() {
               <div className="flex items-center justify-between gap-4">
                 <div className="space-y-1">
                   <div className="text-sm font-medium">未ログイン</div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-muted-foreground text-sm">
                     ログインしてデモ機能を有効化します
                   </div>
                 </div>
-                <Button asChild>
-                  <Link to="/login" search={{ redirect: '/settings' }}>
-                    ログイン
-                  </Link>
+                <Button
+                  nativeButton={false}
+                  render={<Link to="/login" search={{ redirect: '/settings' }} />}
+                >
+                  ログイン
                 </Button>
               </div>
             )}
@@ -175,7 +191,7 @@ function RouteComponent() {
             <SetSecretRow />
           </CardContent>
           <CardFooter className="justify-end">
-            <div className="text-xs text-muted-foreground">
+            <div className="text-muted-foreground text-xs">
               認証はSQLite（Main側）で管理されます
             </div>
           </CardFooter>
@@ -197,7 +213,7 @@ function SettingSwitchRow(props: {
     <div className="flex items-start justify-between gap-4">
       <div className="space-y-1">
         <div className="text-sm font-medium">{title}</div>
-        <div className="text-sm text-muted-foreground">{description}</div>
+        <div className="text-muted-foreground text-sm">{description}</div>
       </div>
       <Switch checked={checked} onCheckedChange={onCheckedChange} />
     </div>

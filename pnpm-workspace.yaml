@@ -1,11 +1,22 @@
 packages:
   - 'apps/*'
-  - 'packages/*'
+  - 'packages/**'
+
+catalog:
+  '@tanstack/ai': ^1.4.0
+  '@tanstack/ai-client': ^1.1.0
+  '@types/node': 24.13.2
+  oxfmt: 0.78.0
+  oxlint: 1.93.0
+  tsdown: 0.23.7
+  typescript: 7.0.2
+  vite: ^8.3.8
+  vitest: 5.1.0
+  zod: ^4.6.7
 
 minimumReleaseAge: 10080
 
 allowBuilds:
-  better-sqlite3: true
   electron-winstaller: true
   esbuild: false
   msw: false

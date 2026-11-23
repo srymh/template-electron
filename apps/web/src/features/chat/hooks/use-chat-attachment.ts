@@ -48,8 +48,10 @@ export type UseChatAttachmentOptions = {
 /**
  * チャット添付ファイルの選択状態とエラー状態を管理する。
  *
+ * @param options - 添付ファイルを選択・取得する能力
  * @returns 添付ファイル UI から利用するための API。
  * - `attachmentFile`: 現在選択されている添付ファイル。未選択時は `null`。
+ * - `setAttachment`: 選択済みの添付を設定する。`null` で解除する。
  * - `attachmentError`: 直近の選択エラー文言。正常時は `null`。
  * - `selectAttachment`: ファイル選択を実行し、結果に応じて添付状態とエラー状態を更新する。
  * - `clearAttachment`: 添付ファイルとエラー状態を同時にクリアする。
@@ -100,6 +102,7 @@ export function useChatAttachment(options: UseChatAttachmentOptions) {
 
   return {
     attachmentFile,
+    setAttachment: setAttachmentFile,
     attachmentError,
     selectAttachment,
     clearAttachment,

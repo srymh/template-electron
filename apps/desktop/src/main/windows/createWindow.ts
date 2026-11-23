@@ -1,6 +1,7 @@
 import { BrowserWindow, shell } from 'electron'
 import type { BrowserWindowConstructorOptions } from 'electron'
 
+import type { Logger } from '../infra/logger'
 import { createContextMenu } from './createContextMenu'
 
 type NavigationPolicy = {
@@ -27,6 +28,7 @@ export const recommendedSecureOptions = {
 export async function createWindow(
   loadRenderer: (win: BrowserWindow) => Promise<void>,
   options: {
+    logger?: Logger
     browserWindowOptions?: BrowserWindowConstructorOptions
     /**
      * ナビゲーションポリシー
@@ -124,6 +126,32 @@ export async function createWindow(
       x: params.x,
       y: params.y,
     })
+  })
+
+  win.webContents.on('before-input-event', (event, input) => {
+    // for MacOS:
+    // `Cmd + [` で戻る、`Cmd + ]` で進む
+    if (input.meta && !input.control && !input.shift && !input.alt) {
+      if (input.key === '[') {
+        event.preventDefault()
+        win.webContents.navigationHistory.goBack()
+      } else if (input.key === ']') {
+        event.preventDefault()
+        win.webContents.navigationHistory.goForward()
+      }
+    }
+
+    // for MacOS:
+    // `Cmd + Option + ←` で戻る、`Cmd + Option + →` で進む
+    if (input.meta && input.alt && !input.control && !input.shift) {
+      if (input.key === 'ArrowLeft') {
+        event.preventDefault()
+        win.webContents.navigationHistory.goBack()
+      } else if (input.key === 'ArrowRight') {
+        event.preventDefault()
+        win.webContents.navigationHistory.goForward()
+      }
+    }
   })
 
   /**

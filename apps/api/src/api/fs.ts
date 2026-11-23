@@ -9,7 +9,7 @@ import type {
   SaveDialogReturnValue,
 } from 'electron'
 
-import type { ApiInterface } from '@repo/ipc'
+import type { ApiInterface, WithCallerKeyApi } from '@repo/ipc'
 
 // -----------------------------------------------------------------------------
 // 型定義
@@ -34,6 +34,17 @@ export type FileDetails = {
   extension: string // 拡張子がある場合のみ
   lastAccessTime: Date // 最終アクセス時間
   mimeType?: string // MIME タイプ（オプション）
+}
+
+export type AppAssetDirectoryRoot = {
+  rootId: string
+  basePath: string
+}
+
+export type FileSystemContext = {
+  registerAppAssetDirectory: (options: { path: string }) => Promise<AppAssetDirectoryRoot>
+  unregisterAppAssetRoot: (options: { rootId: string }) => Promise<boolean>
+  createAppAssetUrl: (options: { rootId: string; path: string }) => Promise<string>
 }
 
 // -----------------------------------------------------------------------------
@@ -104,6 +115,24 @@ export type FileSystemApi = ApiInterface<{
    */
   openFileByDefaultApp: (options: { path: string }) => Promise<void>
   getFileDetails: (options: { path: string }) => Promise<FileDetails>
+  /**
+   * app-asset:// の公開 root としてディレクトリを登録します。
+   * @param options.path 登録するディレクトリパス
+   * @returns 登録された root ID と正規化済みパス
+   */
+  registerAppAssetDirectory: (options: { path: string }) => Promise<AppAssetDirectoryRoot>
+  /**
+   * 動的に登録した app-asset:// root を解除します。
+   * @param options.rootId 解除する root ID
+   * @returns 解除された場合は true
+   */
+  unregisterAppAssetRoot: (options: { rootId: string }) => Promise<boolean>
+  /**
+   * 登録済み root 配下のファイルパスから app-asset:// URL を作成します。
+   * @param options.rootId 登録済み root ID
+   * @param options.path root 配下のファイルパス
+   */
+  createAppAssetUrl: (options: { rootId: string; path: string }) => Promise<string>
 }>
 
 /**
@@ -209,17 +238,29 @@ const getFileDetails: FileSystemApi['getFileDetails'] = async (options) => {
   }
 }
 
-export function getFileSystemApi(): FileSystemApi {
+/**
+ * 呼び出し元キーを受け取って各操作を返すファイルシステム API を構成する。
+ * @param getContext - 呼び出し元キーに対応する context を取得する関数
+ * @returns 各操作をキーに対応する context へ接続する API
+ */
+export function getFileSystemApi<TKey>(
+  getContext: (key: TKey) => FileSystemContext,
+): WithCallerKeyApi<FileSystemApi, TKey> {
   return {
-    joinPath,
-    readFileAsText,
-    readFileAsArrayBuffer,
-    writeFileAsText,
-    writeFileAsArrayBuffer,
-    showOpenDialog,
-    showSaveDialog,
-    readDirectory,
-    openFileByDefaultApp,
-    getFileDetails,
+    joinPath: () => joinPath,
+    readFileAsText: () => readFileAsText,
+    readFileAsArrayBuffer: () => readFileAsArrayBuffer,
+    writeFileAsText: () => writeFileAsText,
+    writeFileAsArrayBuffer: () => writeFileAsArrayBuffer,
+    showOpenDialog: () => showOpenDialog,
+    showSaveDialog: () => showSaveDialog,
+    readDirectory: () => readDirectory,
+    openFileByDefaultApp: () => openFileByDefaultApp,
+    getFileDetails: () => getFileDetails,
+    registerAppAssetDirectory: (key) => async (options) =>
+      getContext(key).registerAppAssetDirectory(options),
+    unregisterAppAssetRoot: (key) => async (options) =>
+      getContext(key).unregisterAppAssetRoot(options),
+    createAppAssetUrl: (key) => async (options) => getContext(key).createAppAssetUrl(options),
   }
 }

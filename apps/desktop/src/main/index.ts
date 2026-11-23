@@ -3,13 +3,16 @@ import { fileURLToPath } from 'node:url'
 
 import { registerIpc } from '@your-app-name/api/main'
 
-import { createWindowApiContext } from './api'
-import { createAppContext, createWindowState } from './app-context'
 import type { AppRuntime } from './app/app-runtime'
+import { createApiFeature } from './app/create-api-feature'
 import { createAppRuntime } from './app/create-app-runtime'
 import { startApp } from './app/startApp'
 import { getAppIconPath } from './infra/paths'
-import { registerCustomProtocol } from './infra/registerCustomProtocol'
+import {
+  registerCustomProtocol,
+  registerCustomProtocolPrivileges,
+} from './infra/registerCustomProtocol'
+import { ApiContextRegistry } from './ipc/context-registry'
 import { createTitleBarOverlay } from './windows/create-title-bar-overlay'
 import { createWindow, recommendedSecureOptions } from './windows/createWindow'
 
@@ -19,12 +22,21 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 /** 開発時の Vite dev server URL */
 const VITE_DEV_SERVER_URL = process.env.VITE_DEV_SERVER_URL
 
+// -----------------------------------------------------------------------------
+// app 準備前の処理
+
+registerCustomProtocolPrivileges()
+
+// -----------------------------------------------------------------------------
+// app 起動処理
+
 const appRuntime = await createAppRuntime({
   dirname: __dirname,
   devServerUrl: VITE_DEV_SERVER_URL,
 })
 
-const appContext = await createAppContext()
+const apiFeature = createApiFeature({ appRuntime })
+const apiContexts = new ApiContextRegistry()
 
 startApp({
   appRuntime,
@@ -34,12 +46,17 @@ startApp({
    *
    * ------------------------------------------------------------------------ */
   onAppReady: async ({ appRuntime }) => {
-    registerCustomProtocol()
+    // カスタムプロトコルの登録
+    registerCustomProtocol(appRuntime.appAssetRoots, {
+      onInternalError: (error, context) => {
+        appRuntime.logger.error('[app-asset] provider failed:', context, error)
+      },
+    })
 
     // IPC登録（window が load して renderer が invoke する前に必ず登録しておく）
     registerIpc({
       getContext: (webContents) => {
-        return appContext.apiContexts.getOrThrow(webContents).apiContext
+        return apiContexts.getOrThrow(webContents)
       },
       cache: appRuntime.registerIpcCache,
     })
@@ -67,6 +84,7 @@ function openMainWindow({ appRuntime }: { appRuntime: AppRuntime }) {
       }
     },
     {
+      logger: appRuntime.logger,
       /** --------------------------------------------------------------------
        * BrowserWindow のオプション設定
        * ------------------------------------------------------------------ */
@@ -94,13 +112,9 @@ function openMainWindow({ appRuntime }: { appRuntime: AppRuntime }) {
        * ライフサイクルフック
        * ------------------------------------------------------------------ */
       onCreated: (win) => {
-        const windowState = createWindowState()
-        const apiContext = createWindowApiContext({ win, appRuntime, windowState, appContext })
+        const apiContext = apiFeature.createWindowContext({ win })
         unregisterWindow = appRuntime.registerWindow(win)
-        unregisterWindowContext = appContext.apiContexts.register(win.webContents, {
-          apiContext,
-          state: windowState,
-        })
+        unregisterWindowContext = apiContexts.register(win.webContents, apiContext)
       },
       onClosed: () => {
         unregisterWindowContext?.()

@@ -59,7 +59,7 @@ export function ComposerAttachmentPreview({
   if (!attachment) return null
 
   return (
-    <div className="flex min-w-0 items-center gap-2 rounded border border-border bg-muted/40 px-2 py-1 text-xs text-muted-foreground">
+    <div className="border-border bg-muted/40 text-muted-foreground flex min-w-0 items-center gap-2 rounded border px-2 py-1 text-xs">
       <FileTextIcon className="size-3.5 shrink-0" />
       <span className="truncate">{attachment.name}</span>
       <span className="shrink-0">{formatBytes(attachment.size)}</span>
@@ -94,7 +94,7 @@ export function ComposerTextarea({
   return (
     <InputGroupTextarea
       placeholder={getComposerPlaceholder(status)}
-      className="min-h-[120px] max-h-[200px]"
+      className="max-h-[200px] min-h-[120px]"
       value={value}
       onChange={(e) => onValueChange(e.target.value)}
       disabled={disabled}
@@ -110,13 +110,12 @@ export function ComposerActions({ children }: { children: React.ReactNode }) {
   )
 }
 
+/** チャット入力欄の添付と知識保存のメニューを表示する。 */
 export function ComposerAddMenu({ children }: { children: React.ReactNode }) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <InputGroupButton variant="outline" size="sm" type="button">
-          <PlusIcon className="fill-primary-foreground" />
-        </InputGroupButton>
+      <DropdownMenuTrigger render={<InputGroupButton variant="outline" size="sm" type="button" />}>
+        <PlusIcon className="fill-primary-foreground" />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuGroup>{children}</DropdownMenuGroup>

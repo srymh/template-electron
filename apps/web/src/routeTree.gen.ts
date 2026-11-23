@@ -9,33 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as appRouteRouteImport } from './routes/(app)/route'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as appSettingsRouteImport } from './routes/(app)/settings'
-import { Route as appUiRouteRouteImport } from './routes/(app)/ui/route'
-import { Route as appDemoRouteRouteImport } from './routes/(app)/demo.route'
-import { Route as appUiIndexRouteImport } from './routes/(app)/ui/index'
-import { Route as appDemoIndexRouteImport } from './routes/(app)/demo.index'
-import { Route as appUiComponentRouteImport } from './routes/(app)/ui/$component'
-import { Route as appDemoWebRouteImport } from './routes/(app)/demo.web'
-import { Route as appDemoTanstackQueryRouteImport } from './routes/(app)/demo.tanstack-query'
-import { Route as appDemoTableRouteImport } from './routes/(app)/demo.table'
-import { Route as appDemoKakeiboRouteImport } from './routes/(app)/demo.kakeibo'
-import { Route as appDemoFsRouteImport } from './routes/(app)/demo.fs'
+import { Route as appStorageDemoRouteImport } from './routes/(app)/storage-demo'
+import { Route as appTodoRouteImport } from './routes/(app)/todo'
+import { Route as DemoTableRouteImport } from './routes/demo.table'
 
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const appRouteRoute = appRouteRouteImport.update({
   id: '/(app)',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const appSettingsRoute = appSettingsRouteImport.update({
@@ -43,176 +36,93 @@ const appSettingsRoute = appSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => appRouteRoute,
 } as any)
-const appUiRouteRoute = appUiRouteRouteImport.update({
-  id: '/ui',
-  path: '/ui',
+const appStorageDemoRoute = appStorageDemoRouteImport.update({
+  id: '/storage-demo',
+  path: '/storage-demo',
   getParentRoute: () => appRouteRoute,
 } as any)
-const appDemoRouteRoute = appDemoRouteRouteImport.update({
-  id: '/demo',
-  path: '/demo',
+const appTodoRoute = appTodoRouteImport.update({
+  id: '/todo',
+  path: '/todo',
   getParentRoute: () => appRouteRoute,
 } as any)
-const appUiIndexRoute = appUiIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => appUiRouteRoute,
-} as any)
-const appDemoIndexRoute = appDemoIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => appDemoRouteRoute,
-} as any)
-const appUiComponentRoute = appUiComponentRouteImport.update({
-  id: '/$component',
-  path: '/$component',
-  getParentRoute: () => appUiRouteRoute,
-} as any)
-const appDemoWebRoute = appDemoWebRouteImport.update({
-  id: '/web',
-  path: '/web',
-  getParentRoute: () => appDemoRouteRoute,
-} as any)
-const appDemoTanstackQueryRoute = appDemoTanstackQueryRouteImport.update({
-  id: '/tanstack-query',
-  path: '/tanstack-query',
-  getParentRoute: () => appDemoRouteRoute,
-} as any)
-const appDemoTableRoute = appDemoTableRouteImport.update({
-  id: '/table',
-  path: '/table',
-  getParentRoute: () => appDemoRouteRoute,
-} as any)
-const appDemoKakeiboRoute = appDemoKakeiboRouteImport.update({
-  id: '/kakeibo',
-  path: '/kakeibo',
-  getParentRoute: () => appDemoRouteRoute,
-} as any)
-const appDemoFsRoute = appDemoFsRouteImport.update({
-  id: '/fs',
-  path: '/fs',
-  getParentRoute: () => appDemoRouteRoute,
+const DemoTableRoute = DemoTableRouteImport.update({
+  id: '/demo/table',
+  path: '/demo/table',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/demo': typeof appDemoRouteRouteWithChildren
-  '/ui': typeof appUiRouteRouteWithChildren
   '/settings': typeof appSettingsRoute
-  '/demo/fs': typeof appDemoFsRoute
-  '/demo/kakeibo': typeof appDemoKakeiboRoute
-  '/demo/table': typeof appDemoTableRoute
-  '/demo/tanstack-query': typeof appDemoTanstackQueryRoute
-  '/demo/web': typeof appDemoWebRoute
-  '/ui/$component': typeof appUiComponentRoute
-  '/demo/': typeof appDemoIndexRoute
-  '/ui/': typeof appUiIndexRoute
+  '/storage-demo': typeof appStorageDemoRoute
+  '/todo': typeof appTodoRoute
+  '/demo/table': typeof DemoTableRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/settings': typeof appSettingsRoute
-  '/demo/fs': typeof appDemoFsRoute
-  '/demo/kakeibo': typeof appDemoKakeiboRoute
-  '/demo/table': typeof appDemoTableRoute
-  '/demo/tanstack-query': typeof appDemoTanstackQueryRoute
-  '/demo/web': typeof appDemoWebRoute
-  '/ui/$component': typeof appUiComponentRoute
-  '/demo': typeof appDemoIndexRoute
-  '/ui': typeof appUiIndexRoute
+  '/storage-demo': typeof appStorageDemoRoute
+  '/todo': typeof appTodoRoute
+  '/demo/table': typeof DemoTableRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/(app)': typeof appRouteRouteWithChildren
   '/login': typeof LoginRoute
-  '/(app)/demo': typeof appDemoRouteRouteWithChildren
-  '/(app)/ui': typeof appUiRouteRouteWithChildren
   '/(app)/settings': typeof appSettingsRoute
-  '/(app)/demo/fs': typeof appDemoFsRoute
-  '/(app)/demo/kakeibo': typeof appDemoKakeiboRoute
-  '/(app)/demo/table': typeof appDemoTableRoute
-  '/(app)/demo/tanstack-query': typeof appDemoTanstackQueryRoute
-  '/(app)/demo/web': typeof appDemoWebRoute
-  '/(app)/ui/$component': typeof appUiComponentRoute
-  '/(app)/demo/': typeof appDemoIndexRoute
-  '/(app)/ui/': typeof appUiIndexRoute
+  '/(app)/storage-demo': typeof appStorageDemoRoute
+  '/(app)/todo': typeof appTodoRoute
+  '/demo/table': typeof DemoTableRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | '/login'
-    | '/demo'
-    | '/ui'
-    | '/settings'
-    | '/demo/fs'
-    | '/demo/kakeibo'
-    | '/demo/table'
-    | '/demo/tanstack-query'
-    | '/demo/web'
-    | '/ui/$component'
-    | '/demo/'
-    | '/ui/'
+    '/' | '/login' | '/settings' | '/storage-demo' | '/todo' | '/demo/table'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/login'
-    | '/settings'
-    | '/demo/fs'
-    | '/demo/kakeibo'
-    | '/demo/table'
-    | '/demo/tanstack-query'
-    | '/demo/web'
-    | '/ui/$component'
-    | '/demo'
-    | '/ui'
+  to: '/' | '/login' | '/settings' | '/storage-demo' | '/todo' | '/demo/table'
   id:
     | '__root__'
     | '/'
     | '/(app)'
     | '/login'
-    | '/(app)/demo'
-    | '/(app)/ui'
     | '/(app)/settings'
-    | '/(app)/demo/fs'
-    | '/(app)/demo/kakeibo'
-    | '/(app)/demo/table'
-    | '/(app)/demo/tanstack-query'
-    | '/(app)/demo/web'
-    | '/(app)/ui/$component'
-    | '/(app)/demo/'
-    | '/(app)/ui/'
+    | '/(app)/storage-demo'
+    | '/(app)/todo'
+    | '/demo/table'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   appRouteRoute: typeof appRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
+  DemoTableRoute: typeof DemoTableRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/(app)': {
-      id: '/(app)'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof appRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(app)': {
+      id: '/(app)'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof appRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(app)/settings': {
@@ -222,125 +132,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appSettingsRouteImport
       parentRoute: typeof appRouteRoute
     }
-    '/(app)/ui': {
-      id: '/(app)/ui'
-      path: '/ui'
-      fullPath: '/ui'
-      preLoaderRoute: typeof appUiRouteRouteImport
+    '/(app)/storage-demo': {
+      id: '/(app)/storage-demo'
+      path: '/storage-demo'
+      fullPath: '/storage-demo'
+      preLoaderRoute: typeof appStorageDemoRouteImport
       parentRoute: typeof appRouteRoute
     }
-    '/(app)/demo': {
-      id: '/(app)/demo'
-      path: '/demo'
-      fullPath: '/demo'
-      preLoaderRoute: typeof appDemoRouteRouteImport
+    '/(app)/todo': {
+      id: '/(app)/todo'
+      path: '/todo'
+      fullPath: '/todo'
+      preLoaderRoute: typeof appTodoRouteImport
       parentRoute: typeof appRouteRoute
     }
-    '/(app)/ui/': {
-      id: '/(app)/ui/'
-      path: '/'
-      fullPath: '/ui/'
-      preLoaderRoute: typeof appUiIndexRouteImport
-      parentRoute: typeof appUiRouteRoute
-    }
-    '/(app)/demo/': {
-      id: '/(app)/demo/'
-      path: '/'
-      fullPath: '/demo/'
-      preLoaderRoute: typeof appDemoIndexRouteImport
-      parentRoute: typeof appDemoRouteRoute
-    }
-    '/(app)/ui/$component': {
-      id: '/(app)/ui/$component'
-      path: '/$component'
-      fullPath: '/ui/$component'
-      preLoaderRoute: typeof appUiComponentRouteImport
-      parentRoute: typeof appUiRouteRoute
-    }
-    '/(app)/demo/web': {
-      id: '/(app)/demo/web'
-      path: '/web'
-      fullPath: '/demo/web'
-      preLoaderRoute: typeof appDemoWebRouteImport
-      parentRoute: typeof appDemoRouteRoute
-    }
-    '/(app)/demo/tanstack-query': {
-      id: '/(app)/demo/tanstack-query'
-      path: '/tanstack-query'
-      fullPath: '/demo/tanstack-query'
-      preLoaderRoute: typeof appDemoTanstackQueryRouteImport
-      parentRoute: typeof appDemoRouteRoute
-    }
-    '/(app)/demo/table': {
-      id: '/(app)/demo/table'
-      path: '/table'
+    '/demo/table': {
+      id: '/demo/table'
+      path: '/demo/table'
       fullPath: '/demo/table'
-      preLoaderRoute: typeof appDemoTableRouteImport
-      parentRoute: typeof appDemoRouteRoute
-    }
-    '/(app)/demo/kakeibo': {
-      id: '/(app)/demo/kakeibo'
-      path: '/kakeibo'
-      fullPath: '/demo/kakeibo'
-      preLoaderRoute: typeof appDemoKakeiboRouteImport
-      parentRoute: typeof appDemoRouteRoute
-    }
-    '/(app)/demo/fs': {
-      id: '/(app)/demo/fs'
-      path: '/fs'
-      fullPath: '/demo/fs'
-      preLoaderRoute: typeof appDemoFsRouteImport
-      parentRoute: typeof appDemoRouteRoute
+      preLoaderRoute: typeof DemoTableRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface appDemoRouteRouteChildren {
-  appDemoFsRoute: typeof appDemoFsRoute
-  appDemoKakeiboRoute: typeof appDemoKakeiboRoute
-  appDemoTableRoute: typeof appDemoTableRoute
-  appDemoTanstackQueryRoute: typeof appDemoTanstackQueryRoute
-  appDemoWebRoute: typeof appDemoWebRoute
-  appDemoIndexRoute: typeof appDemoIndexRoute
-}
-
-const appDemoRouteRouteChildren: appDemoRouteRouteChildren = {
-  appDemoFsRoute: appDemoFsRoute,
-  appDemoKakeiboRoute: appDemoKakeiboRoute,
-  appDemoTableRoute: appDemoTableRoute,
-  appDemoTanstackQueryRoute: appDemoTanstackQueryRoute,
-  appDemoWebRoute: appDemoWebRoute,
-  appDemoIndexRoute: appDemoIndexRoute,
-}
-
-const appDemoRouteRouteWithChildren = appDemoRouteRoute._addFileChildren(
-  appDemoRouteRouteChildren,
-)
-
-interface appUiRouteRouteChildren {
-  appUiComponentRoute: typeof appUiComponentRoute
-  appUiIndexRoute: typeof appUiIndexRoute
-}
-
-const appUiRouteRouteChildren: appUiRouteRouteChildren = {
-  appUiComponentRoute: appUiComponentRoute,
-  appUiIndexRoute: appUiIndexRoute,
-}
-
-const appUiRouteRouteWithChildren = appUiRouteRoute._addFileChildren(
-  appUiRouteRouteChildren,
-)
-
 interface appRouteRouteChildren {
-  appDemoRouteRoute: typeof appDemoRouteRouteWithChildren
-  appUiRouteRoute: typeof appUiRouteRouteWithChildren
   appSettingsRoute: typeof appSettingsRoute
+  appStorageDemoRoute: typeof appStorageDemoRoute
+  appTodoRoute: typeof appTodoRoute
 }
 
 const appRouteRouteChildren: appRouteRouteChildren = {
-  appDemoRouteRoute: appDemoRouteRouteWithChildren,
-  appUiRouteRoute: appUiRouteRouteWithChildren,
   appSettingsRoute: appSettingsRoute,
+  appStorageDemoRoute: appStorageDemoRoute,
+  appTodoRoute: appTodoRoute,
 }
 
 const appRouteRouteWithChildren = appRouteRoute._addFileChildren(
@@ -351,6 +176,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   appRouteRoute: appRouteRouteWithChildren,
   LoginRoute: LoginRoute,
+  DemoTableRoute: DemoTableRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

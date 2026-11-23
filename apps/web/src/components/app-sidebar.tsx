@@ -3,13 +3,11 @@ import * as React from 'react'
 import { Link, useLocation } from '@tanstack/react-router'
 import {
   BookOpen,
-  Frame,
+  DatabaseIcon,
   HomeIcon,
+  ListChecksIcon,
   LogInIcon,
-  Map,
-  Pickaxe,
-  PieChart,
-  ToggleLeftIcon,
+  TableIcon,
 } from 'lucide-react'
 
 import {
@@ -30,6 +28,8 @@ import { NavUser } from '@/components/nav-user'
 import { useAuth } from '@/features/auth/api/auth'
 import { OpenChat } from '@/features/chat/components/open-chat'
 
+import pkgJson from '../../package.json'
+
 // This is sample data.
 const data = {
   navMain: [
@@ -39,37 +39,19 @@ const data = {
       icon: HomeIcon,
     },
     {
-      title: 'Demo',
-      url: '/demo/',
-      icon: Pickaxe,
-      isActive: true,
-      items: [
-        {
-          title: 'TanStack Query',
-          url: '/demo/tanstack-query',
-        },
-        {
-          title: 'TanStack Table',
-          url: '/demo/table',
-        },
-        {
-          title: 'File System',
-          url: '/demo/fs',
-        },
-        {
-          title: 'Web Events',
-          url: '/demo/web',
-        },
-        {
-          title: 'Kakeibo',
-          url: '/demo/kakeibo',
-        },
-      ],
+      title: 'やること',
+      url: '/todo',
+      icon: ListChecksIcon,
     },
     {
-      title: 'UI',
-      url: '/ui/',
-      icon: ToggleLeftIcon,
+      title: '保存機能デモ',
+      url: '/storage-demo',
+      icon: DatabaseIcon,
+    },
+    {
+      title: 'テーブルの検証',
+      url: '/demo/table',
+      icon: TableIcon,
     },
     {
       title: 'Documentation',
@@ -99,25 +81,9 @@ const data = {
       ],
     },
   ],
-  projects: [
-    {
-      name: 'Design Engineering',
-      url: '#',
-      icon: Frame,
-    },
-    {
-      name: 'Sales & Marketing',
-      url: '#',
-      icon: PieChart,
-    },
-    {
-      name: 'Travel',
-      url: '#',
-      icon: Map,
-    },
-  ],
 }
 
+/** アプリのナビゲーションと現在のログイン状態に応じた操作を表示する。 */
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const {
     auth: { isAuthenticated, user, logout },
@@ -127,32 +93,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar collapsible="icon" {...props}>
-      <div className="w-full mt-(--traffic-light-height) border-b" />
+      <div className="mt-(--traffic-light-height) w-full border-b" />
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <Link to="/">
-                <div className="size-8 aspect-square flex items-center justify-center rounded p-0.5">
-                  <img src={logo} alt="Logo" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Your App Name</span>
-                  <span className="truncate text-xs">template-electron</span>
-                </div>
-              </Link>
+            <SidebarMenuButton size="lg" render={<Link to="/" />}>
+              <div className="flex aspect-square size-8 items-center justify-center rounded p-0.5">
+                <img src={logo} alt="Logo" />
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-medium">Your App Name</span>
+                <span className="truncate text-xs">v{pkgJson.version}</span>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarSeparator className="data-[orientation=horizontal]:w-[95%] mx-auto" />
+      <SidebarSeparator className="mx-auto data-[orientation=horizontal]:w-[95%]" />
 
       <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>
 
-      <SidebarSeparator className="data-[orientation=horizontal]:w-[95%] mx-auto" />
+      <SidebarSeparator className="mx-auto data-[orientation=horizontal]:w-[95%]" />
 
       <SidebarFooter>
         {isAuthenticated ? (
@@ -170,16 +134,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ) : (
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link
-                  className="bg-sidebar-accent text-sidebar-accent-foreground flex w-full items-center  px-3 py-2 text-sm font-medium hover:bg-sidebar-accent/80"
-                  to="/login"
-                  search={{ redirect: location.href }}
-                  disabled={location.pathname === '/login'}
-                >
-                  <LogInIcon className="mr-2 h-4 w-4" />
-                  Login
-                </Link>
+              <SidebarMenuButton
+                className="bg-sidebar-accent text-sidebar-accent-foreground hover:bg-sidebar-accent/80 flex w-full items-center px-3 py-2 text-sm font-medium"
+                render={
+                  <Link
+                    to="/login"
+                    search={{ redirect: location.href }}
+                    disabled={location.pathname === '/login'}
+                  />
+                }
+              >
+                <LogInIcon className="mr-2 h-4 w-4" />
+                Login
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

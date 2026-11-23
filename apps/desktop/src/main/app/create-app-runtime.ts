@@ -20,11 +20,12 @@ export async function createAppRuntime({
   const paths = resolveMainPaths({
     isPackaged: app.isPackaged,
     dirname,
-    userDataPath: app.getPath('userData'),
+    homePath: app.getPath('home'),
   })
 
-  await ensureDirectory(paths.userDataPath)
-  const secretsDir = path.join(paths.userDataPath, 'secrets')
+  // app-data/ 以下は各機能の runtime が遅延初期化時に作成する。
+  await ensureDirectory(paths.electronDataPath)
+  const secretsDir = path.join(paths.electronDataPath, 'secrets')
   await ensureDirectory(secretsDir)
 
   const appRuntime = new AppRuntime({
@@ -32,12 +33,12 @@ export async function createAppRuntime({
     devServerUrl: devServerUrl ?? null,
     allowedDevOrigin: getAllowedDevOrigin(devServerUrl),
     rendererRootUrl: getRendererRootUrl(paths),
-    logger: new Logger(path.join(paths.userDataPath, 'log.txt'), !app.isPackaged),
-    secretStorage: new SecretStorage(path.join(paths.userDataPath, 'secrets')),
+    logger: new Logger(path.join(paths.electronDataPath, 'log.txt'), !app.isPackaged),
+    secretStorage: new SecretStorage(secretsDir),
   })
 
   // ここで logger の dispose を登録すると一番最初に logger が dispose される。
-  // その他の登録した dispose　　関数で　logger を使えなくなる。
+  // その他の登録した dispose 関数で logger を使えなくなる。
   // そのため、 appRuntime 側で最後に logger を dispose するようにしている。
   // appRuntime.addDispose(() => appRuntime.logger.dispose())
 

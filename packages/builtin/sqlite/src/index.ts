@@ -1,0 +1,8 @@
+export { Database, createDatabase } from './database'
+export type { SqliteDatabaseHandle, SqliteStatement } from './database'
+export type { ConnectionOptions } from './connection-options'
+export { runInTransaction } from './transaction'
+export type { TransactionOptions } from './transaction'
+export { runInSavepoint, runWithRollback } from './savepoint'
+export type { SavepointOptions } from './savepoint'
+export type { SynchronousOperation } from './synchronous-operation'

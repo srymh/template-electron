@@ -20,11 +20,11 @@ export function Layout(props: { children?: React.ReactNode }) {
   return (
     <SidebarProvider>
       <AuthenticatedChatBoundary>
-        <div className="w-(--traffic-light-width) group-has-data-[collapsible=icon]/sidebar-wrapper:bg-sidebar h-(--traffic-light-height) group-has-data-[collapsible=icon]/sidebar-wrapper:border-r fixed top-0 left-0 z-99999 pointer-events-none"></div>
+        <div className="group-has-data-[collapsible=icon]/sidebar-wrapper:bg-sidebar pointer-events-none fixed top-0 left-0 z-99999 h-(--traffic-light-height) w-(--traffic-light-width) group-has-data-[collapsible=icon]/sidebar-wrapper:border-r"></div>
         <AppSidebar variant="sidebar" />
         <SidebarInset className="h-screen overflow-hidden">
           <SiteHeader />
-          <div className="w-full h-full overflow-auto">{children}</div>
+          <div className="h-full w-full overflow-auto">{children}</div>
         </SidebarInset>
       </AuthenticatedChatBoundary>
     </SidebarProvider>
@@ -52,7 +52,7 @@ function SiteHeader() {
 
   return (
     <header className="flex h-[calc(var(--header-height)+1px)] shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-[calc(var(--header-height)+1px)]">
-      <div className="w-full flex items-center gap-2 pl-4 pr-(--title-bar-overlay-width)">
+      <div className="flex w-full items-center gap-2 pr-(--title-bar-overlay-width) pl-4">
         <SidebarTrigger
           className={cn({
             'group-has-data-[collapsible=icon]/sidebar-wrapper:ml-[max(0px,calc(var(--traffic-light-width)-48px))]':
@@ -63,7 +63,7 @@ function SiteHeader() {
         <Breadcrumbs />
         <div
           data-custom-title-bar
-          className="h-(--header-height) flex-1 min-w-0 flex items-center justify-center"
+          className="flex h-(--header-height) min-w-0 flex-1 items-center justify-center"
         ></div>
       </div>
     </header>

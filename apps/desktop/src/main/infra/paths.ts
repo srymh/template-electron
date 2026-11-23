@@ -29,8 +29,10 @@ import path from 'node:path'
  *   preloadPath:   '$root/dist/preload/index.cjs',
  *   indexHtmlPath: '',
  *   dataPath:      '$root/data',
- *   userDataPath:  'C:\\Users\\ユーザー名\\AppData\\Roaming\\your-app-name\\app' (Windowsの場合)
- *   userDataPath:  '/Users/ユーザー名/Library/Application Support/your-app-name/app' (macOSの場合)
+ *   appDataPath:      'C:\\Users\\ユーザー名\\.your-app-name\\app-data' (Windowsの場合)
+ *   appDataPath:      '/Users/ユーザー名/.your-app-name/app-data' (macOSの場合)
+ *   electronDataPath: 'C:\\Users\\ユーザー名\\.your-app-name\\electron' (Windowsの場合)
+ *   electronDataPath: '/Users/ユーザー名/.your-app-name/electron' (macOSの場合)
  * }
  * ```
  *
@@ -61,8 +63,10 @@ import path from 'node:path'
  *   preloadPath:   '$root/resources/app.asar/dist/preload/index.cjs',
  *   indexHtmlPath: '$root/resources/app.asar/web/dist/index.html',
  *   dataPath:      '$root/resources/data',
- *   userDataPath:  'C:\\Users\\ユーザー名\\AppData\\Roaming\\your-app-name\\app' (Windowsの場合)
- *   userDataPath:  '/Users/ユーザー名/Library/Application Support/your-app-name/app' (macOSの場合)
+ *   appDataPath:      'C:\\Users\\ユーザー名\\.your-app-name\\app-data' (Windowsの場合)
+ *   appDataPath:      '/Users/ユーザー名/.your-app-name/app-data' (macOSの場合)
+ *   electronDataPath: 'C:\\Users\\ユーザー名\\.your-app-name\\electron' (Windowsの場合)
+ *   electronDataPath: '/Users/ユーザー名/.your-app-name/electron' (macOSの場合)
  * }
  * ```
  *
@@ -93,8 +97,10 @@ import path from 'node:path'
  *   preloadPath:   '$root/resources/app/dist/preload/index.cjs',
  *   indexHtmlPath: '$root/resources/app/web/dist/index.html',
  *   dataPath:      '$root/resources/data',
- *   userDataPath:  'C:\\Users\\ユーザー名\\AppData\\Roaming\\your-app-name\\app' (Windowsの場合)
- *   userDataPath:  '/Users/ユーザー名/Library/Application Support/your-app-name/app' (macOSの場合)
+ *   appDataPath:      'C:\\Users\\ユーザー名\\.your-app-name\\app-data' (Windowsの場合)
+ *   appDataPath:      '/Users/ユーザー名/.your-app-name/app-data' (macOSの場合)
+ *   electronDataPath: 'C:\\Users\\ユーザー名\\.your-app-name\\electron' (Windowsの場合)
+ *   electronDataPath: '/Users/ユーザー名/.your-app-name/electron' (macOSの場合)
  * }
  * ```
  */
@@ -122,8 +128,10 @@ export type MainPaths = {
   indexHtmlPath: string
   /** ビルトインの読み取り用データディレクトリ */
   dataPath: string
-  /** ユーザーデータ用ディレクトリ */
-  userDataPath: string
+  /** 実行環境をまたいで共有する業務データ（主DB・オブジェクトストア）の保存先 */
+  appDataPath: string
+  /** Electron版だけが保存するファイル（認証・Todo・RAGのDB、ログ、secrets）の保存先 */
+  electronDataPath: string
 }
 
 /**
@@ -135,15 +143,16 @@ export type MainPaths = {
  *
  * @param args.dirname `src/main/index.ts` における `__dirname` 相当
  * @param args.viteDevServerUrl 開発時の Vite dev server URL（prod では `undefined`）
+ * @param args.homePath ユーザーのホームディレクトリ。開発時・配布時とも同じ保存先の基点にする
  * @returns main/renderer/preload 等で利用するパス一式
  */
 export function resolveMainPaths(args: {
   isPackaged: boolean
   /** Equivalent to `path.dirname(fileURLToPath(import.meta.url))` in `src/main/index.ts` */
   dirname: string
-  userDataPath: string
+  homePath: string
 }): MainPaths {
-  const { isPackaged: isProd, dirname, userDataPath } = args
+  const { isPackaged: isProd, dirname, homePath } = args
 
   const appRoot = path.join(dirname, '..', '..')
 
@@ -164,7 +173,7 @@ export function resolveMainPaths(args: {
 
   const dataPath = isProd ? path.join(process.resourcesPath, 'data') : path.join(appRoot, 'data')
 
-  const userDataPathResolved = path.join(userDataPath, 'app')
+  const storageRoot = path.join(homePath, '.your-app-name')
 
   return {
     appRoot,
@@ -175,7 +184,8 @@ export function resolveMainPaths(args: {
     preloadPath,
     indexHtmlPath,
     dataPath,
-    userDataPath: userDataPathResolved,
+    appDataPath: path.join(storageRoot, 'app-data'),
+    electronDataPath: path.join(storageRoot, 'electron'),
   }
 }
 

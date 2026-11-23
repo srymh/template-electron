@@ -4,6 +4,17 @@ import type { WebContents } from 'electron'
 export const createContextMenu = (webContents: WebContents) => {
   const menu = Menu.buildFromTemplate([
     {
+      label: '戻る',
+      click: () => webContents.navigationHistory.goBack(),
+    },
+    {
+      label: '進む',
+      click: () => webContents.navigationHistory.goForward(),
+    },
+    {
+      type: 'separator',
+    },
+    {
       label: 'コピー',
       role: 'copy',
     },

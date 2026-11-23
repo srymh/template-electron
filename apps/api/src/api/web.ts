@@ -30,15 +30,25 @@ export type WebApi = ApiInterface<{
 // -----------------------------------------------------------------------------
 // 実装
 
+/**
+ * 呼び出し元キーを受け取って各操作を返すWebContents 操作 API を構成する。
+ * @param getContext - 呼び出し元キーに対応する context を取得する関数
+ * @returns 各操作をキーに対応する context へ接続する API
+ */
 export function getWebApi<TKey>(
   getContext: (key: TKey) => WebContext,
 ): WithCallerKeyApi<WebApi, TKey> {
   return {
-    findInPage: async ({ text }, key) => getContext(key).getWebContents().findInPage(text),
-    stopFindInPage: async ({ action }, key) =>
-      getContext(key).getWebContents().stopFindInPage(action),
+    findInPage:
+      (key) =>
+      async ({ text }) =>
+        getContext(key).getWebContents().findInPage(text),
+    stopFindInPage:
+      (key) =>
+      async ({ action }) =>
+        getContext(key).getWebContents().stopFindInPage(action),
     on: {
-      blur: (listener, key) => {
+      blur: (key) => (listener) => {
         const webContents = getContext(key).getWebContents()
         const listenerWrapper = () => listener()
         webContents.on('blur', listenerWrapper)
@@ -49,7 +59,7 @@ export function getWebApi<TKey>(
           webContents.off('blur', listenerWrapper)
         }
       },
-      focus: (listener, key) => {
+      focus: (key) => (listener) => {
         const webContents = getContext(key).getWebContents()
         const listenerWrapper = () => listener()
         webContents.on('focus', listenerWrapper)
@@ -60,7 +70,7 @@ export function getWebApi<TKey>(
           webContents.off('focus', listenerWrapper)
         }
       },
-      foundInPage: (listener, key) => {
+      foundInPage: (key) => (listener) => {
         const webContents = getContext(key).getWebContents()
         const listenerWrapper = (_: Event, result: Result) => {
           listener(result)

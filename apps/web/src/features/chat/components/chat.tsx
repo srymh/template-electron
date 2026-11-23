@@ -1,10 +1,8 @@
-import { toast } from 'sonner'
-
-import type { Model } from '@repo/ai-chat/shared'
+import type { Model } from '@repo/ai/shared'
 import { Separator } from '@repo/ui/components/separator'
+import { toast } from '@repo/ui/components/toast'
 import { aiChat } from '@your-app-name/api/renderer'
 
-import { useChatAttachment } from '../hooks/use-chat-attachment'
 import { loadChatAttachmentFromFileSystem } from '../utils/load-chat-attachment-from-file-system'
 import { useChatSession } from './chat-session-provider'
 import {
@@ -27,6 +25,7 @@ import { ToolCallContent } from './parts/tool-call-content'
 import { ToolResultContent } from './parts/tool-result-content'
 import { SelectModel } from './select-model'
 
+/** メッセージ一覧と入力欄を表示し、添付・送信・生成停止の操作を接続する。 */
 export function Chat({
   selectedModel,
   setSelectedModel,
@@ -38,57 +37,20 @@ export function Chat({
 }) {
   const displayUsername = username || 'あなた'
 
-  const {
-    isNotAvailable,
-    input,
-    setInput,
-    messages,
-    sendMessage,
-    isLoading,
-    stop,
-    status,
-    addToolApprovalResponse,
-  } = useChatSession()
+  const { isNotAvailable, composer, messages, isLoading, status, error, interrupts, resuming } =
+    useChatSession()
 
   const {
+    input,
+    setInput,
     attachmentFile,
     attachmentError,
     selectAttachment,
     clearAttachment,
-    clearAttachmentError,
-    createAttachmentMessagePart,
-  } = useChatAttachment({ loadAttachment: loadChatAttachmentFromFileSystem })
-
-  const send = () => {
-    if (isLoading) {
-      // 生成中に送信された場合は、生成停止とみなす
-      stop()
-    } else {
-      // 生成中でない場合は、通常の送信処理
-      if (!input.trim()) {
-        return
-      }
-
-      if (attachmentFile) {
-        clearAttachmentError()
-        sendMessage({
-          content: [
-            {
-              type: 'text',
-              content: input,
-            },
-            createAttachmentMessagePart(attachmentFile),
-          ],
-        })
-        clearAttachment()
-      } else {
-        clearAttachmentError()
-        sendMessage(input)
-      }
-
-      setInput('')
-    }
-  }
+    isSending,
+    submit,
+  } = composer
+  const isAwaitingInterrupt = interrupts.length > 0 || resuming
 
   const saveKnowledgeFromFile = async () => {
     const result = await loadChatAttachmentFromFileSystem({
@@ -97,20 +59,24 @@ export function Chat({
     })
     if (result.status === 'selected' && result.attachment) {
       await aiChat.ingestDocument(result.attachment.content)
-      toast.success('知識に保存しました。次回以降、AI が必要に応じて参照します。')
+      toast.add({
+        title: '知識に保存しました。次回以降、AI が必要に応じて参照します。',
+        type: 'success',
+      })
     } else if (result.status === 'canceled') {
-      toast.error('知識への保存をキャンセルしました。')
+      toast.add({ title: '知識への保存をキャンセルしました。', type: 'error' })
     } else {
-      toast.error('知識への保存に失敗しました。')
+      toast.add({ title: '知識への保存に失敗しました。', type: 'error' })
     }
   }
 
-  const disabledTextFileAttachment = isLoading || isNotAvailable
+  const disabledInput = isLoading || isSending || isNotAvailable || isAwaitingInterrupt
   const disabledKnowledgeSave = isLoading || isNotAvailable
-  const disabledSubmit = (status === 'ready' && !input.trim()) || isNotAvailable
+  const disabledSubmit =
+    isNotAvailable || (!isLoading && (isAwaitingInterrupt || isSending || !input.trim()))
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col w-full gap-2">
+    <div className="flex min-h-0 w-full flex-1 flex-col gap-2">
       <div className="flex shrink-0 justify-end">
         <SelectModel selectedModel={selectedModel} setSelectedModel={setSelectedModel} />
       </div>
@@ -134,7 +100,10 @@ export function Chat({
                       return (
                         <ToolCallContent
                           part={part}
-                          addToolApprovalResponse={addToolApprovalResponse}
+                          approval={interrupts
+                            .filter((interrupt) => interrupt.kind === 'tool-approval')
+                            .find((interrupt) => interrupt.toolCallId === part.id)}
+                          resuming={resuming}
                         />
                       )
 
@@ -166,22 +135,26 @@ export function Chat({
         )}
       </Messages>
 
-      <Composer onSubmit={send}>
+      {/* 送信拒否と、SDK が受信したストリーム・IPC エラーの詳細を示す。 */}
+      {error && (
+        <p role="alert" className="text-destructive text-sm">
+          {error.message}
+        </p>
+      )}
+
+      <Composer onSubmit={submit}>
         <ComposerAttachmentPreview attachment={attachmentFile} onClear={clearAttachment} />
         <ComposerAttachmentError error={attachmentError} />
         <ComposerInputGroup>
           <ComposerTextarea
             value={input}
             status={status}
-            disabled={isLoading || isNotAvailable}
+            disabled={disabledInput}
             onValueChange={setInput}
           />
           <ComposerActions>
             <ComposerAddMenu>
-              <ComposerAttachTextFileItem
-                disabled={disabledTextFileAttachment}
-                onClick={selectAttachment}
-              />
+              <ComposerAttachTextFileItem disabled={disabledInput} onClick={selectAttachment} />
               <ComposerSaveKnowledgeItem
                 disabled={disabledKnowledgeSave}
                 onClick={saveKnowledgeFromFile}
