@@ -7,15 +7,16 @@ export const Route = createFileRoute('/')({
   loader: () => ({ crumb: 'Home' }),
 })
 
+/** テンプレートの最初に表示するホーム画面。ロゴとアプリ名だけを中央に表示する。 */
 function App() {
   return (
-    <div className="w-full h-full items-center justify-center overflow-hidden bg-background text-foreground text-[calc(10px+2vmin)] flex flex-col">
+    <div className="bg-background text-foreground flex h-full w-full flex-col items-center justify-center overflow-hidden text-[calc(10px+2vmin)]">
       <img
         src={logo}
         aria-hidden="true"
-        className="h-[40vmin] animate-[spin_20s_linear_infinite] pointer-events-none select-none"
+        className="pointer-events-none h-[40vmin] animate-[spin_20s_linear_infinite] select-none"
       />
-      <div className="z-10 backdrop-blur-xs rounded">Electron Template</div>
+      <div className="z-10 rounded backdrop-blur-xs">Electron Template</div>
     </div>
   )
 }

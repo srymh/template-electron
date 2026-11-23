@@ -39,6 +39,7 @@
     ],
     "internalPattern": ["~/", "@/", "#/"]
   },
+  "sortTailwindcss": true,
   "ignorePatterns": [
     "package-lock.json",
     "pnpm-lock.yaml",
@@ -48,9 +49,9 @@
     "index.html",
     "README.md",
     "tsconfig.json",
-    "packages/shadcn/src/**",
     "packages/ui/src/**",
     "AGENTS.md",
+    "cspell.config.yaml",
     ".*/**"
   ]
 }

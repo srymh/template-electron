@@ -1,16 +1,23 @@
-import type { ToolCallPart } from '@tanstack/ai-client'
+import type { ToolApprovalInterrupt, ToolCallPart } from '@tanstack/ai-client'
 
 import { Button } from '@repo/ui/components/button'
 
 import { ExpandableSection } from '../utils/expandable-section'
 import { ParameterDisplay } from '../utils/parameter-display'
 
+type ApprovalInterrupt = Pick<ToolApprovalInterrupt, 'canResolve' | 'status' | 'errors'> & {
+  resolveInterrupt: (approved: boolean) => void
+}
+
+/** ツールの引数・結果を表示し、対応する Interrupt の承認・拒否を行う。 */
 export function ToolCallContent({
   part,
-  addToolApprovalResponse = () => {},
+  approval,
+  resuming = false,
 }: {
   part: ToolCallPart
-  addToolApprovalResponse?: (response: { id: string; approved: boolean }) => void
+  approval?: ApprovalInterrupt
+  resuming?: boolean
 }) {
   switch (part.state) {
     case 'awaiting-input':
@@ -48,9 +55,9 @@ export function ToolCallContent({
               ]}
             />
           </ExpandableSection>
-          <div className="flex flex-col gap-2 p-2 border rounded-md border-border">
+          <div className="border-border flex flex-col gap-2 rounded-md border p-2">
             <div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 このツール（{part.name}
                 ）呼び出しは、実行する前に承認が必要です。上記の詳細を確認し、リクエストを承認または拒否することを選択してください。
               </p>
@@ -58,18 +65,33 @@ export function ToolCallContent({
             <div className="flex justify-end gap-2">
               <Button
                 variant="default"
-                onClick={() => addToolApprovalResponse({ id: part.approval!.id, approved: true })}
+                disabled={
+                  !approval?.canResolve ||
+                  !['pending', 'error'].includes(approval.status) ||
+                  resuming
+                }
+                onClick={() => approval?.resolveInterrupt(true)}
               >
                 承認
               </Button>
               <Button
                 variant="destructive"
-                onClick={() => addToolApprovalResponse({ id: part.approval!.id, approved: false })}
+                disabled={
+                  !approval?.canResolve ||
+                  !['pending', 'error'].includes(approval.status) ||
+                  resuming
+                }
+                onClick={() => approval?.resolveInterrupt(false)}
               >
                 拒否
               </Button>
             </div>
           </div>{' '}
+          {approval?.errors.map((error, index) => (
+            <p key={index} role="alert" className="text-destructive text-sm">
+              {error.message}
+            </p>
+          ))}
         </>
       )
     case 'approval-responded':

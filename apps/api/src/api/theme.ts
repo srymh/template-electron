@@ -38,17 +38,18 @@ const getTheme: ThemeApi['getTheme'] = async () => {
 const createSetTheme = <TKey>(
   getContext: (key: TKey) => ThemeContext,
 ): WithCallerKey<ThemeApi['setTheme'], TKey> => {
-  return async ({ theme }, key) => {
-    const { setTitleBarOverlay } = getContext(key)
-    let symbolColor = theme === 'dark' ? '#FFFFFF' : '#000000'
-    // もしテーマが system なら OS のダークモード設定に応じてシンボルカラーを決定する
-    if (theme === 'system') {
-      const shouldUseDarkColors = nativeTheme.shouldUseDarkColors
-      symbolColor = shouldUseDarkColors ? '#FFFFFF' : '#000000'
+  return (key) =>
+    async ({ theme }) => {
+      const { setTitleBarOverlay } = getContext(key)
+      let symbolColor = theme === 'dark' ? '#FFFFFF' : '#000000'
+      // もしテーマが system なら OS のダークモード設定に応じてシンボルカラーを決定する
+      if (theme === 'system') {
+        const shouldUseDarkColors = nativeTheme.shouldUseDarkColors
+        symbolColor = shouldUseDarkColors ? '#FFFFFF' : '#000000'
+      }
+      setTitleBarOverlay({ symbolColor })
+      nativeTheme.themeSource = theme
     }
-    setTitleBarOverlay({ symbolColor })
-    nativeTheme.themeSource = theme
-  }
 }
 
 const getAccentColor: ThemeApi['getAccentColor'] = async () => {
@@ -93,16 +94,21 @@ const onUpdated: ThemeApi['on']['updated'] = (listener) => {
   }
 }
 
+/**
+ * 呼び出し元キーを受け取って各操作を返すテーマ操作 API を構成する。
+ * @param getContext - 呼び出し元キーに対応する context を取得する関数
+ * @returns 各操作をキーに対応する context へ接続する API
+ */
 export function getThemeApi<TKey>(
   getContext: (key: TKey) => ThemeContext,
 ): WithCallerKeyApi<ThemeApi, TKey> {
   return {
-    getTheme,
+    getTheme: () => getTheme,
     setTheme: createSetTheme(getContext),
-    getAccentColor,
+    getAccentColor: () => getAccentColor,
     on: {
-      accentColorChanged: onAccentColorChanged,
-      updated: onUpdated,
+      accentColorChanged: () => onAccentColorChanged,
+      updated: () => onUpdated,
     },
   }
 }

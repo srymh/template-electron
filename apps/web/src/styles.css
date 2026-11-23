@@ -1,3 +1,16 @@
+@import 'tailwindcss' source(none);
+@import '@repo/ui/globals.css';
+
+/* アプリの実装と入口 HTML だけを探索する。共有 UI は取り込み先で登録する。 */
+@source './**/*.{ts,tsx}';
+@source '../index.html';
+
+@layer base {
+  html {
+    @apply font-sans;
+  }
+}
+
 :root {
   --header-height: 29px;
   --title-bar-overlay-width: 0px;

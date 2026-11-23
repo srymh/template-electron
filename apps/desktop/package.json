@@ -4,31 +4,36 @@
   "private": true,
   "type": "module",
   "main": "dist/main/index.js",
+  "imports": {
+    "#infra/*": "./src/main/infra/*.ts"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build && electron-builder",
-    "typecheck": "tsgo --noEmit",
-    "test": "tsgo --noEmit && vitest run",
-    "postinstall": "install-electron && electron-rebuild -f -w better-sqlite3"
+    "typecheck": "tsc --noEmit",
+    "test": "tsc --noEmit && vitest run",
+    "postinstall": "install-electron"
   },
   "dependencies": {
-    "@repo/ai-chat-session": "workspace:*",
+    "@repo/ai": "workspace:*",
+    "@repo/asset-protocol": "workspace:*",
     "@repo/auth": "workspace:*",
+    "@repo/cas": "workspace:*",
     "@repo/ipc": "workspace:*",
-    "@repo/mcp-server-example": "workspace:*",
+    "@repo/object-store": "workspace:*",
     "@repo/sqlite": "workspace:*",
-    "@tanstack/ai": "^0.29.0",
-    "@tanstack/ai-mcp": "^0.2.2",
+    "@repo/sqlite-table-editor": "workspace:*",
+    "@repo/todo": "workspace:*",
+    "@tanstack/ai": "catalog:",
     "@your-app-name/api": "workspace:*",
-    "better-sqlite3": "^12.11.1",
-    "zod": "^4.4.3"
+    "mime-types": "^3.0.2",
+    "zod": "catalog:"
   },
   "devDependencies": {
-    "@electron/rebuild": "^4.0.4",
     "@srymh/vite-plugin-electron": "0.2.0-beta.6",
-    "@types/better-sqlite3": "^7.6.13",
-    "electron": "^42.4.1",
-    "electron-builder": "^26.8.1",
-    "vite": "^8.0.10"
+    "@types/mime-types": "^3.0.1",
+    "electron": "^45.3.3",
+    "electron-builder": "^26.18.1",
+    "vite": "catalog:"
   }
 }

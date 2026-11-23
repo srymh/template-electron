@@ -6,13 +6,6 @@ export default defineConfig(({ mode }) => {
   const minify = mode === 'production'
   const sourcemap = mode !== 'production'
 
-  // pnpm の strict node_modules 構造では、asar 内で推移的依存の解決が
-  // 失敗する（例: express → body-parser, ollama → whatwg-fetch）。
-  // ネイティブモジュール（.node バイナリを含むもの）のみ external にし、
-  // 残りはすべて Vite にバンドルさせることで asar 内の解決問題を回避する。
-  const nativeModules = ['better-sqlite3']
-  const external = nativeModules
-
   return {
     server: {
       port: 5174,
@@ -27,7 +20,6 @@ export default defineConfig(({ mode }) => {
               sourcemap,
               minify,
               outDir: 'dist/main',
-              rolldownOptions: { external },
             },
             resolve: { tsconfigPaths: true },
           },
@@ -39,7 +31,6 @@ export default defineConfig(({ mode }) => {
               sourcemap: sourcemap ? 'inline' : false,
               minify,
               outDir: 'dist/preload',
-              rolldownOptions: { external },
             },
             resolve: { tsconfigPaths: true },
           },

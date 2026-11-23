@@ -27,15 +27,15 @@ export function getAuthApi<TKey>(
   getContext: (key: TKey) => AuthContext,
 ): WithCallerKeyApi<AuthApi, TKey> {
   return {
-    getStatus: async (key) => {
+    getStatus: (key) => async () => {
       return getContext(key).getRuntime().getStatus()
     },
 
-    login: async (username, password, key) => {
+    login: (key) => async (username, password) => {
       return getContext(key).getRuntime().login(username, password)
     },
 
-    logout: async (key) => {
+    logout: (key) => async () => {
       getContext(key).getRuntime().logout()
     },
   }

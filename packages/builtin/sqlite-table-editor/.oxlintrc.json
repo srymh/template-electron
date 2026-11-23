@@ -1,0 +1,42 @@
+{
+  "$schema": "../../../node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "import"],
+  "categories": {
+    "correctness": "error"
+  },
+  "env": {
+    "builtin": true
+  },
+  "ignorePatterns": ["**/*.d.ts", "**/*.test.ts"],
+  "rules": {
+    "import/no-cycle": ["error", { "ignoreTypes": false }],
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "regex": "^node:.+(?:/.*)?$",
+            "message": "Node.js の組み込みモジュールはインポートすべきではありません。"
+          },
+          {
+            "regex": "^(?:electron(?:/.*)?|@your-app-name/.*|@repo/(?!sqlite$).*)$",
+            "message": "編集の仕組みは環境固有adapterや利用側packageに依存できません。接続は @repo/sqlite のルートから受け取ってください。"
+          },
+          {
+            "regex": "^(?:\\.\\./)+.+(?:/.*)?$",
+            "message": "境界違反: sqlite-table-editor から他のディレクトリへの相対パスインポートは禁止されています。"
+          }
+        ]
+      }
+    ],
+    "import/no-duplicates": "error",
+    "typescript/consistent-type-imports": [
+      "error",
+      {
+        "prefer": "type-imports",
+        "fixStyle": "separate-type-imports"
+      }
+    ],
+    "import/consistent-type-specifier-style": ["error", "prefer-top-level"]
+  }
+}

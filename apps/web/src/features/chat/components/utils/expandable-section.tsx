@@ -5,6 +5,7 @@ import {
   AccordionTrigger,
 } from '@repo/ui/components/accordion'
 
+/** チャットの補足情報を、開閉可能な見出しの下に表示する。 */
 export function ExpandableSection({
   children,
   title,
@@ -13,11 +14,7 @@ export function ExpandableSection({
   title: string
 }) {
   return (
-    <Accordion
-      type="single"
-      collapsible
-      className="italic bg-muted text-muted-foreground overflow-auto"
-    >
+    <Accordion className="bg-muted text-muted-foreground overflow-auto italic">
       <AccordionItem value={title}>
         <AccordionTrigger className="py-1">{title}</AccordionTrigger>
         <AccordionContent>{children}</AccordionContent>

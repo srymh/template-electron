@@ -1,5 +1,5 @@
-import { MODELS, modelSchema } from '@repo/ai-chat/shared'
-import type { Model } from '@repo/ai-chat/shared'
+import { MODELS, modelSchema } from '@repo/ai/shared'
+import type { Model } from '@repo/ai/shared'
 import {
   Select,
   SelectContent,
@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from '@repo/ui/components/select'
 
+/** 利用可能なチャットモデルを表示し、検証済みの選択値を親へ通知する。 */
 export function SelectModel({
   selectedModel,
   setSelectedModel,
@@ -18,13 +19,15 @@ export function SelectModel({
 }) {
   return (
     <Select
-      onValueChange={(value) => setSelectedModel(modelSchema.parse(value))}
+      onValueChange={(value) => {
+        if (value !== null) setSelectedModel(modelSchema.parse(value))
+      }}
       value={selectedModel}
     >
       <SelectTrigger className="max-w-48" size="sm">
         <SelectValue placeholder="モデル選択" />
       </SelectTrigger>
-      <SelectContent position="popper">
+      <SelectContent alignItemWithTrigger={false}>
         <SelectGroup>
           {MODELS.map((model) => (
             <SelectItem key={model} value={model}>

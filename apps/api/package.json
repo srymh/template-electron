@@ -22,23 +22,20 @@
     }
   },
   "scripts": {
-    "typecheck": "tsgo --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@repo/ai-chat": "workspace:*",
-    "@repo/ai-chat-session": "workspace:*",
-    "@repo/ai-ollama-tools": "workspace:*",
-    "@repo/ai-tools": "workspace:*",
+    "@repo/ai": "workspace:*",
     "@repo/auth": "workspace:*",
     "@repo/deep-merge": "workspace:*",
-    "@repo/frame-rpc": "workspace:*",
     "@repo/ipc": "workspace:*",
-    "@repo/mcp-server-example": "workspace:*",
+    "@repo/object-store": "workspace:*",
     "@repo/sqlite": "workspace:*",
-    "@tanstack/ai": "^0.29.0",
-    "@tanstack/ai-mcp": "^0.2.2"
+    "@repo/sqlite-table-editor": "workspace:*",
+    "@repo/todo": "workspace:*",
+    "@tanstack/ai": "catalog:"
   },
   "devDependencies": {
-    "electron": "^42.4.1"
+    "electron": "^45.3.3"
   }
 }

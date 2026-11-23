@@ -22,6 +22,9 @@ export const electronMainApi = createElectronApi<ElectronMainApi>(
         readDirectory: useChannelAsInvoke('fs.readDirectory'),
         openFileByDefaultApp: useChannelAsInvoke('fs.openFileByDefaultApp'),
         getFileDetails: useChannelAsInvoke('fs.getFileDetails'),
+        registerAppAssetDirectory: useChannelAsInvoke('fs.registerAppAssetDirectory'),
+        unregisterAppAssetRoot: useChannelAsInvoke('fs.unregisterAppAssetRoot'),
+        createAppAssetUrl: useChannelAsInvoke('fs.createAppAssetUrl'),
       },
       theme: {
         getTheme: useChannelAsInvoke('theme.getTheme'),
@@ -41,20 +44,12 @@ export const electronMainApi = createElectronApi<ElectronMainApi>(
           foundInPage: useChannelAsEvent('web.on.foundInPage'),
         },
       },
-      mcp: {
-        getServerStatus: useChannelAsInvoke('mcp.getServerStatus'),
-        startServer: useChannelAsInvoke('mcp.startServer'),
-        stopServer: useChannelAsInvoke('mcp.stopServer'),
-      },
       aiChat: {
         chat: useChannelAsInvoke('aiChat.chat'),
         ingestDocument: useChannelAsInvoke('aiChat.ingestDocument'),
         on: {
           chunk: useChannelAsEvent('aiChat.on.chunk'),
         },
-      },
-      kakeibo: {
-        entries: useChannelAsInvoke('kakeibo.entries'),
       },
       auth: {
         getStatus: useChannelAsInvoke('auth.getStatus'),
@@ -63,6 +58,29 @@ export const electronMainApi = createElectronApi<ElectronMainApi>(
       },
       secret: {
         setSecret: useChannelAsInvoke('secret.setSecret'),
+      },
+      todo: {
+        list: useChannelAsInvoke('todo.list'),
+        get: useChannelAsInvoke('todo.get'),
+        create: useChannelAsInvoke('todo.create'),
+        update: useChannelAsInvoke('todo.update'),
+        setCompleted: useChannelAsInvoke('todo.setCompleted'),
+        remove: useChannelAsInvoke('todo.remove'),
+      },
+      storageDemo: {
+        objects: {
+          list: useChannelAsInvoke('storageDemo.objects.list'),
+          put: useChannelAsInvoke('storageDemo.objects.put'),
+          verify: useChannelAsInvoke('storageDemo.objects.verify'),
+          remove: useChannelAsInvoke('storageDemo.objects.remove'),
+        },
+        tables: {
+          list: useChannelAsInvoke('storageDemo.tables.list'),
+          listRows: useChannelAsInvoke('storageDemo.tables.listRows'),
+          createRow: useChannelAsInvoke('storageDemo.tables.createRow'),
+          updateRow: useChannelAsInvoke('storageDemo.tables.updateRow'),
+          removeRow: useChannelAsInvoke('storageDemo.tables.removeRow'),
+        },
       },
     }),
   {

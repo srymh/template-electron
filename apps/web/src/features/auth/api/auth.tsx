@@ -72,8 +72,8 @@ export function AuthProvider(props: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="h-screen w-full grid place-items-center">
-        <div className="text-sm text-muted-foreground">Loading...</div>
+      <div className="grid h-screen w-full place-items-center">
+        <div className="text-muted-foreground text-sm">Loading...</div>
       </div>
     )
   }

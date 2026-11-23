@@ -3,7 +3,7 @@ import { StrictMode, useEffect, useRef } from 'react'
 import { RouterProvider, createHashHistory, createRouter } from '@tanstack/react-router'
 import ReactDOM from 'react-dom/client'
 
-import { Toaster } from '@repo/ui/components/sonner'
+import { Toaster } from '@repo/ui/components/toast'
 import { TooltipProvider } from '@repo/ui/components/tooltip'
 
 import { DevToolsProvider } from '@/components/devtools-provider.tsx'
@@ -16,7 +16,6 @@ import { routeTree } from './routeTree.gen'
 // 生成されたルートツリーをインポート
 
 import './styles.css'
-import '@repo/ui/globals.css'
 
 // プラットフォーム情報を CSS から参照できるよう data 属性にセット
 document.documentElement.dataset.platform = __PLATFORM__

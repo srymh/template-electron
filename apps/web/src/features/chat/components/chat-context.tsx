@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import type { Model } from '@repo/ai-chat/shared'
+import type { Model } from '@repo/ai/shared'
 
 type ChatContextValue = {
   open: boolean
@@ -11,6 +11,7 @@ type ChatContextValue = {
 
 const ChatContext = React.createContext<ChatContextValue | null>(null)
 
+/** チャットの開閉状態と選択モデルを配下のコンポーネントへ提供する。 */
 export function ChatContextProvider({
   children,
   value,

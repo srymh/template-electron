@@ -19,6 +19,7 @@ import {
   SidebarMenuSubItem,
 } from '@repo/ui/components/sidebar'
 
+/** サイドバーの画面リンクと、開閉できるドキュメントリンク群を表示する。 */
 export function NavMain({
   items,
 }: {
@@ -38,56 +39,52 @@ export function NavMain({
   return (
     <SidebarGroup>
       <SidebarMenu>
-        {items.map((item) => (
-          <Collapsible
-            key={item.title}
-            asChild
-            defaultOpen={item.isActive}
-            className="group/collapsible"
-          >
-            <SidebarMenuItem>
-              {item.items && item.items.length > 0 ? (
-                <>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton tooltip={item.title}>
-                      {item.icon && <item.icon />}
-                      <Link to={item.url} className="[&.active]:font-bold hover:font-bold">
-                        <span>{item.title}</span>
-                      </Link>
-                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      {item.items.map((subItem) => (
-                        <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild>
-                            {subItem.externalLink ? (
-                              <a href={subItem.url} target="_blank" rel="noopener noreferrer">
-                                <span>{subItem.title}</span>
-                              </a>
-                            ) : (
-                              <Link to={subItem.url} className="[&.active]:font-bold">
-                                <span>{subItem.title}</span>
-                              </Link>
-                            )}
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </>
-              ) : (
-                <SidebarMenuButton tooltip={item.title}>
-                  {item.icon && <item.icon />}
-                  <Link to={item.url} className="[&.active]:font-bold hover:font-bold">
-                    <span>{item.title}</span>
-                  </Link>
-                </SidebarMenuButton>
-              )}
+        {items.map((item) =>
+          item.items?.length ? (
+            <Collapsible key={item.title} defaultOpen={item.isActive} render={<SidebarMenuItem />}>
+              <CollapsibleTrigger render={<SidebarMenuButton tooltip={item.title} />}>
+                {item.icon && <item.icon />}
+                <span>{item.title}</span>
+                <ChevronRight className="ml-auto transition-transform duration-200 group-aria-expanded/menu-button:rotate-90" />
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  {item.items.map((subItem) => (
+                    <SidebarMenuSubItem key={subItem.title}>
+                      {subItem.externalLink ? (
+                        <SidebarMenuSubButton
+                          href={subItem.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <span>{subItem.title}</span>
+                        </SidebarMenuSubButton>
+                      ) : (
+                        <SidebarMenuSubButton
+                          className="[&.active]:font-bold"
+                          render={<Link to={subItem.url} />}
+                        >
+                          <span>{subItem.title}</span>
+                        </SidebarMenuSubButton>
+                      )}
+                    </SidebarMenuSubItem>
+                  ))}
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            </Collapsible>
+          ) : (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton
+                tooltip={item.title}
+                className="hover:font-bold [&.active]:font-bold"
+                render={<Link to={item.url} />}
+              >
+                {item.icon && <item.icon />}
+                <span>{item.title}</span>
+              </SidebarMenuButton>
             </SidebarMenuItem>
-          </Collapsible>
-        ))}
+          ),
+        )}
       </SidebarMenu>
     </SidebarGroup>
   )
